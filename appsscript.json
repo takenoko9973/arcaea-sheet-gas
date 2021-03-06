@@ -14,16 +14,8 @@
   "sheets": {
     "macros": [
       {
-        "menuName": "無題のマクロ",
-        "functionName": "myFunction"
-      },
-      {
         "menuName": "musicDataSort",
         "functionName": "musicDataSort"
-      },
-      {
-        "menuName": "無題のマクロ",
-        "functionName": "myFunction"
       }
     ]
   }

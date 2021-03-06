@@ -1,0 +1,137 @@
+function registMusic() {
+  // addUnregistedData("PST");
+  // addUnregistedData("PRS");
+  addUnregistedData("FTR");
+  addUnregistedData("BYD");
+}
+
+function addUnregistedData(difficulty) {
+  const dat = dataSheet.getDataRange().getValues();
+  const mDat = musicSheet.getDataRange().getValues();
+  const col = findCol(dat, difficulty, 0) + 1;
+  
+  for(var i = 1; i < dat.length; i++) {
+    var name = (dat[i][col + 2].match("(.+)>") || ["", dat[i][col + 2]])[1];
+    if(name == "") {
+      continue;
+    }
+
+    var isUnregist = isUnregistedMusic(mDat, name, difficulty);
+    Logger.log(name + " : " + isUnregist);
+
+    if(isUnregist) {
+      var url = dat[i][col];
+      var nameEn = dat[i][col + 3];
+      var composer = dat[i][col + 4];
+      var level = dat[i][col + 5];
+      var constant = dat[i][col + 6];
+      var addData = getMusicData(url, difficulty);
+      Utilities.sleep(2000);
+
+      addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
+    }
+  }
+}
+
+function addMusic(name, nameEn, composer, pack, version, difficulty, level, note, score, constant) { 
+  var addInfo = [[name, nameEn, composer, pack, version, difficulty, level, note, score, constant]];
+  
+  var AValues = musicSheet.getRange("A:A").getValues();
+  //空白の要素を除いた最後の行を取得
+  var lastRow = AValues.filter(String).length + 1;
+
+  musicSheet.getRange("A" + lastRow + ":J" + lastRow).setValues(addInfo);
+}
+
+function isUnregistedMusic(dat, name, difficulty) {
+    var row = -1;
+
+    //複数ある場合もすべて検索
+    do {
+      row = findRow(dat, name, 0, row + 1);
+      var col = findCol(dat, difficulty, row);
+      if(col != -1) {
+        return false;
+      }
+    } while(row >= 0)
+    
+    return true;
+}
+
+function findCol(dat, val, row, sCol = 0) {
+  var col = -1;
+
+  if(row >= 0) {
+    //指定の値の列番号を取得
+    for (var i = sCol; i < dat[row].length; i++) {
+      if (dat[row][i] === val) {
+        col = i;
+        break;
+      }
+    }
+  }
+  return col;
+}
+
+function findRow(dat, val, col, sRow = 0){
+  var row = -1;
+
+  if(col >= 0) {
+    //指定の値の行番号を取得
+    for (var i = sRow; i < dat.length; i++) {
+      if (dat[i][col] === val) {
+        row = i;
+        break;
+      }
+    }
+  }
+  return row;
+}
+
+//パック、バージョン、ノーツ数
+function getMusicData(url, difficulty) {
+  const html = UrlFetchApp.fetch(url).getContentText('UTF-8');
+  const noteIndex = getNotesIndex(difficulty);
+  const versionIndex = getVersionIndex(difficulty);
+
+  var notes = getVal(html, 4, noteIndex, "(\\d+)$");
+  var pack = getVal(html, 7, 0, ">(.+)");
+  var version = getVal(html, 9, versionIndex, "ver.([\\d.]+)[.]\\d");
+
+  return [pack, version, notes];
+}
+
+function getVal(html, row, col, regex) {
+  const table = Parser.data(html).from('<table>').to('</table>').iterate()[0];
+  const notes = Parser.data(table).from('<tr>').to('</tr>').iterate()[row];
+  const vals = Parser.data(notes).from('<td ').to('</td>').iterate();
+  if(col >= vals.length) {
+    col = vals.length - 1
+  }
+
+  return vals[col].match(regex)[1];
+}
+
+function getNotesIndex(difficulty) {
+  switch(difficulty) {
+    case "PST":
+      return 0;
+    case "PRS":
+      return 1;
+    case "FTR":
+      return 2;
+    case "BYD":
+      return 3;
+  }
+}
+
+function getVersionIndex(difficulty) {
+  switch(difficulty) {
+    case "PST":
+    case "PRS":
+    case "FTR":
+      return 0;
+    case "BYD":
+      return 1;
+  }
+}

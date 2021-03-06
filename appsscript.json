@@ -1,0 +1,30 @@
+{
+  "timeZone": "America/New_York",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "Parser",
+        "libraryId": "1Mc8BthYthXx6CoIz90-JiSzSafVnT6U3t0z_W3hLTAX5ek4w0G_EIrNw",
+        "version": "8"
+      }
+    ]
+  },
+  "sheets": {
+    "macros": [
+      {
+        "menuName": "無題のマクロ",
+        "functionName": "myFunction"
+      },
+      {
+        "menuName": "musicDataSort",
+        "functionName": "musicDataSort"
+      },
+      {
+        "menuName": "無題のマクロ",
+        "functionName": "myFunction"
+      }
+    ]
+  }
+}

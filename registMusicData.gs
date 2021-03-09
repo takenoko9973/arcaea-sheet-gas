@@ -17,7 +17,7 @@ function addUnregistedData(difficulty) {
     }
 
     var isUnregist = isUnregistedMusic(mDat, name, difficulty);
-    Logger.log(name + " : " + isUnregist);
+    Logger.log(name + "(" + difficulty + ")" + " : " + isUnregist);
 
     if(isUnregist) {
       var url = dat[i][col];

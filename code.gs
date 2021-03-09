@@ -5,22 +5,26 @@ var dataSheet = spreadsheet.getSheetByName("曲情報収集");
 function onEditCell(e) {
   var sheet = e.source.getActiveSheet();
   var cell = e.source.getActiveRange();
-    
+
   switch(sheet.getName()) {
     case "MusicData":
-      //S4の値が変更された時実行
-      if (cell.getColumn() === 19 &&
-          cell.getRow() === 4 &&
-          cell.getValues) {
-        Logger.log("Changed S4")
-        cell.setValue(false);
-        musicDataSort();
-      } else if (cell.getColumn() === 19 &&
-          cell.getRow() === 7 &&
-          cell.getValues) {
-        Logger.log("Changed S7")
-        cell.setValue(false);
-        registMusic();
+      Logger.log("Changed "+ cell.getA1Notation() + "(" + sheet.getName() + ")");
+
+      switch(cell.getA1Notation()) {
+        case "S4": {
+          if (cell.getValue = "TRUE") {
+            cell.setValue(false);
+            musicDataSort();
+          }
+          break;
+        }
+        case "S7": {
+          if (cell.getValue = "TRUE") {
+            cell.setValue(false);
+            registMusic();
+          }
+          break;
+        }
       }
       break;
   }
@@ -30,3 +34,4 @@ function musicDataSort(num = 17) {
   musicSheet.getRange('A1').activate();
   musicSheet.getActiveCell().getFilter().sort(num, true);
 }
+

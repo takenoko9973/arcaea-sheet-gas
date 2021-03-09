@@ -17,7 +17,6 @@ function addUnregistedData(difficulty) {
     }
 
     var isUnregist = isUnregistedMusic(mDat, name, difficulty);
-    Logger.log(name + "(" + difficulty + ")" + " : " + isUnregist);
 
     if(isUnregist) {
       var url = dat[i][col];
@@ -28,10 +27,12 @@ function addUnregistedData(difficulty) {
       var addData = getMusicData(url, difficulty);
 
       addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
-      Logger.log(name + ", note: " + addData[2]);
+      Logger.log(name + "(" + difficulty + ")" + ", note: " + addData[2]);
       Utilities.sleep(2000);
     }
   }
+
+  Logger.log("Regist complete" + "(" + difficulty + ")")
 }
 
 function addMusic(name, nameEn, composer, pack, version, difficulty, level, note, score, constant) { 

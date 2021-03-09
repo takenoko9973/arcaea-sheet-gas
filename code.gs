@@ -12,11 +12,13 @@ function onEditCell(e) {
       if (cell.getColumn() === 19 &&
           cell.getRow() === 4 &&
           cell.getValues) {
+        Logger.log("Changed S4")
         cell.setValue(false);
         musicDataSort();
       } else if (cell.getColumn() === 19 &&
-          cell.getRow() === 6 &&
+          cell.getRow() === 7 &&
           cell.getValues) {
+        Logger.log("Changed S7")
         cell.setValue(false);
         registMusic();
       }

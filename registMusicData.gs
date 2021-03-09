@@ -26,9 +26,10 @@ function addUnregistedData(difficulty) {
       var level = dat[i][col + 5];
       var constant = dat[i][col + 6];
       var addData = getMusicData(url, difficulty);
-      Utilities.sleep(2000);
 
       addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
+      Logger.log(name + ", note: " + addData[2]);
+      Utilities.sleep(2000);
     }
   }
 }

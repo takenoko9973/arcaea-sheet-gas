@@ -8,12 +8,17 @@ function onEditCell(e) {
     
   switch(sheet.getName()) {
     case "MusicData":
-      //S4の値が変更された時だけ実行
+      //S4の値が変更された時実行
       if (cell.getColumn() === 19 &&
           cell.getRow() === 4 &&
           cell.getValues) {
         cell.setValue(false);
         musicDataSort();
+      } else if (cell.getColumn() === 19 &&
+          cell.getRow() === 6 &&
+          cell.getValues) {
+        cell.setValue(false);
+        registMusic();
       }
       break;
   }

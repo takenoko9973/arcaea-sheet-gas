@@ -30,8 +30,18 @@ function onEditCell(e) {
   }
 }
 
+function onChangeData(e) {
+  var sheet = e.source.getActiveSheet();
+
+  Logger.log("Changed " + sheet.getName());
+  switch(sheet.getName()) {
+    case "曲情報収集":
+      registMusic();
+      break;
+  }
+}
+
 function musicDataSort(num = 17) {
   musicSheet.getRange('A1').activate();
   musicSheet.getActiveCell().getFilter().sort(num, true);
 }
-

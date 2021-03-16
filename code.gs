@@ -11,14 +11,14 @@ function onEditCell(e) {
       Logger.log("Changed "+ cell.getA1Notation() + "(" + sheet.getName() + ")");
 
       switch(cell.getA1Notation()) {
-        case "S4": {
+        case "T4": {
           if (cell.getValue = "TRUE") {
             cell.setValue(false);
             musicDataSort();
           }
           break;
         }
-        case "S7": {
+        case "T7": {
           if (cell.getValue = "TRUE") {
             cell.setValue(false);
             registMusic();

@@ -14,7 +14,7 @@ function onEditCell(e) {
         case "T4": {
           if (cell.getValue = "TRUE") {
             cell.setValue(false);
-            musicDataSort();
+            musicDataSort(18);
           }
           break;
         }
@@ -41,7 +41,7 @@ function onChangeData(e) {
   }
 }
 
-function musicDataSort(num = 17) {
+function musicDataSort(num) {
   musicSheet.getRange('A1').activate();
   musicSheet.getActiveCell().getFilter().sort(num, true);
 }

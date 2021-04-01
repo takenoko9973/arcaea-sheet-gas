@@ -1,3 +1,33 @@
+function manualRegist() {
+  Logger.log("start manual regist")
+
+  const dat = manualSheet.getDataRange().getValues();
+  const mDat = musicSheet.getDataRange().getValues();
+  const col = 0;
+
+  var url = dat[1][col];
+  var name = dat[1][col + 1];
+  var nameEn = dat[1][col + 2];
+  var composer = dat[1][col + 3];
+  var difficulty = dat[1][col + 4];
+  var level = dat[1][col + 5];
+  var constant = dat[1][col + 6];
+
+  var match = name.match("(.+)>");
+  if (match != null)
+    name = match[1];
+  else if (name == "")
+    return;
+
+  var isUnregist = isUnregistedMusic(mDat, name, difficulty);
+
+  if(isUnregist) {
+    var addData = getMusicData(url, difficulty);
+    addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
+    Logger.log(name + "(" + difficulty + ")" + ", note: " + addData[2]);
+  }
+}
+
 function registMusic() {
   // addUnregistedData("PST");
   // addUnregistedData("PRS");

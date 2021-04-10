@@ -49,7 +49,7 @@ function addUnregistedData(difficulty) {
     var isUnregist = isUnregistedMusic(mDat, name, difficulty);
 
     if(isUnregist) {
-      var url = dat[i][col];
+      var url = toHalfWidth(dat[i][col]);
       var nameEn = dat[i][col + 3];
       var composer = dat[i][col + 4];
       var level = dat[i][col + 5];

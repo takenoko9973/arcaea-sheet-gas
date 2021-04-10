@@ -24,7 +24,7 @@ function manualRegist() {
   if(isUnregist) {
     var addData = getMusicData(url, difficulty);
     addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
-    Logger.log(name + "(" + difficulty + ")" + ", note: " + addData[2]);
+    Logger.log(Utilities.formatString("%s(%s), note: %4d", name, difficulty, addData[2]));
   }
 }
 
@@ -57,12 +57,12 @@ function addUnregistedData(difficulty) {
       var addData = getMusicData(url, difficulty);
 
       addMusic(name, nameEn, composer, addData[0], addData[1], difficulty, level, addData[2], 0, constant);
-      Logger.log(name + "(" + difficulty + ")" + ", note: " + addData[2]);
+      Logger.log(Utilities.formatString("%s(%s), note: %4d", name, difficulty, addData[2]));
       Utilities.sleep(2000);
     }
   }
 
-  Logger.log("Regist complete" + "(" + difficulty + ")")
+  Logger.log(Utilities.formatString("Regist complete(%s)", difficulty))
 }
 
 function addMusic(name, nameEn, composer, pack, version, difficulty, level, note, score, constant) { 

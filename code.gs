@@ -7,7 +7,7 @@ function onEditCell(e) {
   var sheet = e.source.getActiveSheet();
   var cell = e.source.getActiveRange();
 
-  Logger.log("Changed "+ cell.getA1Notation() + "(" + sheet.getName() + ")");
+  Logger.log(Utilities.formatString("Edited %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch(sheet.getName()) {
     case "MusicData":
       switch(cell.getA1Notation()) {
@@ -43,8 +43,9 @@ function onEditCell(e) {
 
 function onChangeData(e) {
   var sheet = e.source.getActiveSheet();
+  var cell = e.source.getActiveRange();
 
-  Logger.log("Changed " + sheet.getName());
+  Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch(sheet.getName()) {
     case "曲情報収集":
       registMusic();

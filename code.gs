@@ -1,7 +1,7 @@
 var spreadsheet = SpreadsheetApp.openById("1fwOqteE3RDcdKQx-BoUutlCvrRImub-ILfKf6JplLOA");
 var musicSheet = spreadsheet.getSheetByName("MusicData");
 var dataSheet = spreadsheet.getSheetByName("曲情報収集");
-var manualSheet = spreadsheet.getSheetByName("手動登録用");
+var manualSheet = spreadsheet.getSheetByName("ManualRegister");
 
 function onChangeData(e) {
   var sheet = e.source.getActiveSheet();
@@ -22,6 +22,7 @@ function onChangeData(e) {
             musicDataSort(18);
           }
           break;
+
         case "T8":
           if (cell.getValue = "TRUE") {
             cell.setValue(false);

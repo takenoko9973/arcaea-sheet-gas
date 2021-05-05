@@ -1,6 +1,6 @@
 var spreadsheet = SpreadsheetApp.openById("1fwOqteE3RDcdKQx-BoUutlCvrRImub-ILfKf6JplLOA");
 var musicSheet = spreadsheet.getSheetByName("MusicData");
-var dataSheet = spreadsheet.getSheetByName("曲情報収集");
+var dataSheet = spreadsheet.getSheetByName("musicColl");
 var manualSheet = spreadsheet.getSheetByName("ManualRegister");
 
 function onChangeData(e) {
@@ -9,7 +9,7 @@ function onChangeData(e) {
 
   Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch(sheet.getName()) {
-    case "曲情報収集": {
+    case "musicColl": {
       registMusic();
       break;
     }
@@ -33,7 +33,7 @@ function onChangeData(e) {
       break;
     }
 
-    case "手動登録用": {
+    case "ManualRegister": {
       switch(cell.getA1Notation()) {
         case "I2":
           if (cell.getValue = "TRUE") {

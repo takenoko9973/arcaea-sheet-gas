@@ -26,7 +26,7 @@ function onChangeData(e) {
         case "T8":
           if (cell.getValue = "TRUE") {
             cell.setValue(false);
-            registMusic();
+            autoRegist();
           }
           break;
       }

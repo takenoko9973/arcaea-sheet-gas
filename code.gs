@@ -1,6 +1,6 @@
 var spreadsheet = SpreadsheetApp.openById("1fwOqteE3RDcdKQx-BoUutlCvrRImub-ILfKf6JplLOA");
-var dataSheet = spreadsheet.getSheetByName("musicColl");
 var musicSheet = spreadsheet.getSheetByName("MusicData");
+var dataSheet = spreadsheet.getSheetByName("musicColl");
 var manualSheet = spreadsheet.getSheetByName("ManualRegister");
 
 function onChangeData(e) {
@@ -9,37 +9,36 @@ function onChangeData(e) {
 
   Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch(sheet.getName()) {
-    case dataSheet.getName(): {
+    case "musicColl": {
       registMusic();
       break;
     }
 
-    case musicSheet.getName(): {
+    case "MusicData": {
       switch(cell.getA1Notation()) {
-        case "T5": {
-          if (cell.getValue()) {
+        case "T5":
+          if (cell.getValue = "TRUE") {
+            cell.setValue(false);
             musicDataSort(18);
-            cell.setValue(false);
           }
           break;
-        }
-        case "T8": {
-          if (cell.getValue()) {
+
+        case "T8":
+          if (cell.getValue = "TRUE") {
+            cell.setValue(false);
             autoRegist();
-            cell.setValue(false);
           }
           break;
-        }
       }
       break;
     }
 
-    case manualSheet.getName(): {
+    case "ManualRegister": {
       switch(cell.getA1Notation()) {
         case "I2":
-          if (cell.getValue()) {
-            manualRegist();
+          if (cell.getValue = "TRUE") {
             cell.setValue(false);
+            manualRegist();
           }
           break;
       }

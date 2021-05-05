@@ -37,7 +37,7 @@ function manualRegist() {
 
 function autoRegist() {
   // registMusicData("PST");
-  registMusicData("PRS");
+  // registMusicData("PRS");
   registMusicData("FTR");
   registMusicData("BYD");
 }

@@ -36,10 +36,12 @@ function manualRegist() {
 }
 
 function autoRegist() {
+  Logger.log("start auto regist");
   // registMusicData("PST");
   // registMusicData("PRS");
   registMusicData("FTR");
   registMusicData("BYD");
+  Logger.log("end auto regist");
 }
 
 function registMusicData(difficulty) {
@@ -100,7 +102,7 @@ function isUnregistedMusic(name, difficulty) {
     const mDat = musicSheet.getDataRange().getValues();
     var row = -1;
 
-    //複数ある場合もすべて検索
+    //指定の楽曲の難易度が一致するまで検索
     do {
       row = findRow(mDat, name, 0, row + 1);
       var col = findCol(mDat, difficulty, row);

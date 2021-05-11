@@ -10,9 +10,7 @@ function onChangeData(e) {
   Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch (sheet.getName()) {
     case dataSheet.getName(): {
-      Logger.log("start auto regist")
       autoRegist();
-      Logger.log("end auto regist")
       break;
     }
     case musicSheet.getName(): {

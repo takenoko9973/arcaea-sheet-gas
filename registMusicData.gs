@@ -69,6 +69,11 @@ function registMusicData(difficulty) {
     if(isUnregist) {
       //wikiで残りデータを取得
       var othersData = getMusicData(url, difficulty);
+      if (othersData.includes(null)) {
+        //wikiにデータがなければ飛ばす
+        Logger.log(Utilities.formatString("%s(%s), note: no wiki data", name, difficulty));
+        continue;
+      }
 
       addMusic(name, nameEn, composer, othersData[0], othersData[1], difficulty, level, othersData[2], 0, constant);
       Logger.log(Utilities.formatString("%s(%s), note: %4d", name, difficulty, othersData[2]));
@@ -122,15 +127,20 @@ function getMusicData(url, difficulty) {
 
 //テーブル内の任意の行、列にある値を取得
 function getVal(html, row, col, regex) {
-  const table = Parser.data(html).from('<table>').to('</table>').iterate()[0];
-  const notes = Parser.data(table).from('<tr>').to('</tr>').iterate()[row];
-  const vals = Parser.data(notes).from('<td ').to('</td>').iterate();
+  try {
+    const table = Parser.data(html).from('<table>').to('</table>').iterate()[0];
+    const notes = Parser.data(table).from('<tr>').to('</tr>').iterate()[row];
+    const vals = Parser.data(notes).from('<td ').to('</td>').iterate();
 
-  //列が足りなかったとき一番後ろの列を取得するよう調整
-  if(col >= vals.length) {
-    col = vals.length - 1
+    //列が足りなかったとき一番後ろの列を取得するよう調整
+    if(col >= vals.length) {
+      col = vals.length - 1
+    }
+    return vals[col].match(regex)[1];
+  } catch(e) {
+    //値が取れなかったとき、nullを返す
+    return null;
   }
-  return vals[col].match(regex)[1];
 }
 
 function getNotesIndex(difficulty) {

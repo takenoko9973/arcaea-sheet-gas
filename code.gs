@@ -8,24 +8,26 @@ function onChangeData(e) {
   var cell = e.source.getActiveRange();
 
   Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
-  switch(sheet.getName()) {
+  switch (sheet.getName()) {
     case dataSheet.getName(): {
-      registMusic();
+      Logger.log("start auto regist")
+      autoRegist();
+      Logger.log("end auto regist")
       break;
     }
     case musicSheet.getName(): {
-      switch(cell.getA1Notation()) {
+      switch (cell.getA1Notation()) {
         case "T5": {
           if (cell.getValue() === true) {
-            musicDataSort(18);
             cell.setValue(false);
+            musicDataSort(18);
           }
           break;
         }
         case "T8": {
           if (cell.getValue() === true) {
-            autoRegist();
             cell.setValue(false);
+            autoRegist();
           }
           break;
         }
@@ -33,11 +35,11 @@ function onChangeData(e) {
       break;
     }
     case manualSheet.getName(): {
-      switch(cell.getA1Notation()) {
+      switch (cell.getA1Notation()) {
         case "I2":
           if (cell.getValue() === true) {
-            manualRegist();
             cell.setValue(false);
+            manualRegist();
           }
           break;
       }

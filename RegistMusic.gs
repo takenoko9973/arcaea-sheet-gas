@@ -101,18 +101,18 @@ function registMusicData(difficulty) {
   Logger.log(Utilities.formatString("End registing(%s)", difficulty))
 }
 
+const musicSheetData = musicSheet.getRange(1, 1, musicSheet.getLastRow(), musicSheet.getRange(1, 1).getNextDataCell(SpreadsheetApp.Direction.NEXT).getColumn()).getValues();
 function isUnregistedMusic(name, difficulty) {
-  const mDat = musicSheet.getRange(1, 1, musicSheet.getLastRow(), musicSheet.getRange(1, 1).getNextDataCell(SpreadsheetApp.Direction.NEXT).getColumn()).getValues();
   var row = -1;
 
   //指定の楽曲の難易度が一致するまで検索
   do {
-    row = findRow(mDat, name, 0, row + 1);
+    row = findRow(musicSheetData, name, 0, row + 1);
     if (row < 0) {
       return true;
     } else {
       //指定の難易度か確認
-      var isExist = mDat[row].includes(difficulty);
+      var isExist = musicSheetData[row].includes(difficulty);
       if(isExist) {
         return false;
       }

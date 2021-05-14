@@ -1,7 +1,9 @@
-var spreadsheet = SpreadsheetApp.openById("1fwOqteE3RDcdKQx-BoUutlCvrRImub-ILfKf6JplLOA");
-var dataSheet = spreadsheet.getSheetByName("musicColl");
-var musicSheet = spreadsheet.getSheetByName("MusicData");
-var manualSheet = spreadsheet.getSheetByName("ManualRegister");
+const sheetId = PropertiesService.getScriptProperties().getProperty("sheetId")
+const sheetBook = SpreadsheetApp.openById(sheetId);
+
+var collectSheet = sheetBook.getSheetByName("MusicCollection");
+var musicSheet = sheetBook.getSheetByName("MusicData");
+var manualSheet = sheetBook.getSheetByName("ManualRegister");
 
 function onChangeData(e) {
   var sheet = e.source.getActiveSheet();
@@ -9,7 +11,7 @@ function onChangeData(e) {
 
   Logger.log(Utilities.formatString("Changed %s(%s)", cell.getA1Notation(), sheet.getName()));
   switch (sheet.getName()) {
-    case dataSheet.getName(): {
+    case collectSheet.getName(): {
       autoRegist();
       break;
     }

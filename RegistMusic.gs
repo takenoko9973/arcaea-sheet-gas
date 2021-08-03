@@ -85,6 +85,7 @@ function registMusicData(difficulty) {
       //wikiで残りデータを取得
       music.getDataFromWiki(url);
 
+      //すべてのデータが取得できているか確認
       if (music.isGettedData()) {
         music.addMusic();
         Logger.log(Utilities.formatString("%s, note: %4d", music.name, music.note));

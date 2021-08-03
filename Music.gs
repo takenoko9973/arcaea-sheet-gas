@@ -54,6 +54,9 @@ class Music {
     }
   }
   
+  /**
+   * Arcaea wikiからノーツ数、パック名、追加バージョンを取得
+   */
   getDataFromWiki(url) {
     const html = UrlFetchApp.fetch(url).getContentText('UTF-8');
     const table = Parser.data(html).from('<table>').to('</table>').iterate()[0];
@@ -62,7 +65,7 @@ class Music {
     const verIndex = this.getVerIndex(this.difficulty);
 
     this.note = this.getValFromTable(table, 4, noteIndex, "(\\d+)$");
-    this.pack = this.getValFromTable(table, 7, 0, ">(.+)");
+    this.pack = this.getValFromTable(table, 7, 0, 'class="rel-wiki-page">([^<]+)<');
     this.version = this.getValFromTable(table, 9, verIndex, "ver.([\\d.]+)[.]\\d");
   }
   
@@ -70,9 +73,12 @@ class Music {
     return [this.name, this.nameEn, this.composer, this.pack, this.version, this.difficulty, this.level, this.note, 0, this.constant];
   }
   
+  /**
+   * 必要なデータがすべてあるかどうかを取得
+   */
   isGettedData() {
     var dataList = this.getMusicDataList()
-    var getted = !dataList.includes(null);
+    var getted = !dataList.includes(null); //一つでも空のデータがあればfalseを返す
     return getted;
   }
 

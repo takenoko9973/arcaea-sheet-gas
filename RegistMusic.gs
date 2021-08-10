@@ -26,27 +26,44 @@ function manualRegist() {
   //存在確認
   var isUnregist = isUnregistedMusic(name, difficulty);
   if(isUnregist) {
+    Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
     //wikiで残りデータを取得
     const othersData = getMusicData(url, difficulty);
     addMusic(name, nameEn, composer, othersData[0], othersData[1], difficulty, level, othersData[2], 0, constant);
-
-    Logger.log(Utilities.formatString("%s(%s), note: %4d", name, difficulty, note));
   }
   Logger.log("end manual regist")
 }
 
 /**
- * url用の名前を取り除く
+ * 日本語用曲名を取得
  */
-function deleteNameForUrl(name) {
-    var match = name.match("(.+)>");
+function extractionJaName(name) {
+    var match = name.match(/(.+)>/);
 
     if (match != null) {
-      name = match[1];
+      name = changeCodeToString(match[1]);
     } else if (name == "") {
       return "";
     }
     return name;
+}
+
+/**
+ * 文字コード化しているところを置き換え
+ */
+function changeCodeToString(s) {
+  var chars = s.match(/&#(\d+);/);
+  if (chars == null)
+    return s;
+
+  //文字コード化している部分を一つずつ変換
+  for (i = 1; i < chars.length; i++) {
+    var char = chars[i];
+    var cs = String.fromCharCode(char);
+    var replaceWord = new RegExp("&#" + char + ";", "g");
+    s = s.replace(replaceWord, cs);
+  }
+  return s;
 }
 
 function autoRegist() {
@@ -67,7 +84,7 @@ function registMusicData(difficulty) {
   
   //全データチェック
   for(var i = 1; i < dat.length; i++) {
-    const name = deleteNameForUrl(dat[i][col + 1])
+    const name = extractionJaName(dat[i][col + 1])
     if (name == "") {
       continue;
     }
@@ -82,23 +99,22 @@ function registMusicData(difficulty) {
       const url = toHalfWidth(dat[i][col]);
       var music = new Music(name, nameEn, composer, difficulty, level, constant)
 
+      Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
       //wikiで残りデータを取得
       music.getDataFromWiki(url);
 
       //すべてのデータが取得できているか確認
       if (music.isGettedData()) {
         music.addMusic();
-        Logger.log(Utilities.formatString("%s, note: %4d", music.name, music.note));
       } else {
         //wikiにデータがなければ飛ばす
-        Logger.log(Utilities.formatString("%s, note: no wiki data", music.name));
+        Logger.log("No wiki data");
       }
 
       //サーバーに負荷をかけないようにする
       Utilities.sleep(2000);
     }
   }
-
   Logger.log(Utilities.formatString("End registing(%s)", difficulty))
 }
 

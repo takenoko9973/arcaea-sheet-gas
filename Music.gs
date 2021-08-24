@@ -1,5 +1,5 @@
 class Music {
-  constructor(name, nameEn, composer, difficulty, level, constant) {
+  constructor(name, nameEn, composer, difficulty, level, constant, pack = null, version = null, notes = null) {
     this.name = name;
     this.nameEn = nameEn;
     this.composer = composer;
@@ -7,9 +7,9 @@ class Music {
     this.level = level;
     this.constant = constant;
     
-    this.pack = null;
-    this.version = null;
-    this.note = null;
+    this.pack = pack;
+    this.version = version;
+    this.notes = notes;
   }
   
   getNotesIndex() {
@@ -36,43 +36,6 @@ class Music {
     }
   }
   
-  /**
-   * テーブル内の任意の行、列にある値を取得
-   */
-  getValFromTable(table, row, col, regex) {
-    try {
-      const notes = Parser.data(table).from('<tr>').to('</tr>').iterate()[row];
-      const vals = Parser.data(notes).from('<td ').to('</td>').iterate();
-
-      //列が足りなかったとき一番後ろの列を取得するよう調整
-      col = Math.min(col, vals.length - 1)
-
-      return vals[col].match(regex)[1];
-    } catch(e) {
-      //値が取れなかったとき、nullを返す
-      return null;
-    }
-  }
-  
-  /**
-   * Arcaea wikiからノーツ数、パック名、追加バージョンを取得
-   */
-  getDataFromWiki(url) {
-    try {
-      const html = UrlFetchApp.fetch(url).getContentText('UTF-8');
-      const table = Parser.data(html).from('<table>').to('</table>').iterate()[0];
-
-      const noteIndex = this.getNotesIndex(this.difficulty);
-      const verIndex = this.getVerIndex(this.difficulty);
-
-      this.note = this.getValFromTable(table, 4, noteIndex, "(\\d+)$");
-      this.pack = this.getValFromTable(table, 7, 0, 'class="rel-wiki-page">([^<]+)<');
-      this.version = this.getValFromTable(table, 9, verIndex, "ver.([\\d.]+)[.]\\d");
-    } catch {
-      Logger.log("Wiki error (" + url + ")")
-    }
-  }
-  
   getMusicDataList() {
     return [this.name,
             this.nameEn,
@@ -81,7 +44,7 @@ class Music {
             this.version,
             this.difficulty,
             this.level,
-            this.note,
+            this.notes,
             0,
             this.constant];
   }

@@ -34,38 +34,6 @@ function manualRegist() {
   Logger.log("end manual regist")
 }
 
-/**
- * 日本語用曲名を取得
- */
-function extractionJaName(name) {
-    var match = name.match(/(.+)>/);
-
-    if (match != null) {
-      name = changeCodeToString(match[1]);
-    } else if (name == "") {
-      return "";
-    }
-    return name;
-}
-
-/**
- * 文字コード化しているところを置き換え
- */
-function changeCodeToString(s) {
-  var chars = s.match(/&#(\d+);/);
-  if (chars == null)
-    return s;
-
-  //文字コード化している部分を一つずつ変換
-  for (i = 1; i < chars.length; i++) {
-    var char = chars[i];
-    var cs = String.fromCharCode(char);
-    var replaceWord = new RegExp("&#" + char + ";", "g");
-    s = s.replace(replaceWord, cs);
-  }
-  return s;
-}
-
 function autoRegist() {
   Logger.log("Start auto regist");
   // registMusicData("PST");
@@ -84,24 +52,29 @@ function registMusicData(difficulty) {
   
   //全データチェック
   for(var i = 1; i < dat.length; i++) {
+    //曲名取得
     const name = extractionJaName(dat[i][col + 1])
-    if (name == "") {
-      continue;
-    }
-
+    if (name == "") continue;
+    
     //存在確認
     const isUnregist = isUnregistedMusic(name, difficulty);
     if(isUnregist) {
       const nameEn = dat[i][col + 2];
-      const composer = dat[i][col + 3];
-      const level = dat[i][col + 4];
-      const constant = dat[i][col + 5];
-      const url = toHalfWidth(dat[i][col]);
-      var music = new Music(name, nameEn, composer, difficulty, level, constant)
+      const urlName = extractionUrlName(dat[i][col + 1])
+      const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName)
+      var music = new Music(
+          musicData.name,
+          nameEn,
+          musicData.composer,
+          difficulty,
+          musicData.level[difficulty],
+          musicData.constant[difficulty],
+          musicData.pack,
+          musicData.version,
+          musicData.notes[difficulty]
+      )
 
-      Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
-      //wikiで残りデータを取得
-      music.getDataFromWiki(url);
+      Logger.log(Utilities.formatString("%s(%s)", musicData.name, difficulty));
 
       //すべてのデータが取得できているか確認
       if (music.isGettedData()) {
@@ -135,4 +108,50 @@ function isUnregistedMusic(name, difficulty) {
       }
     }
   } while(true)
+}
+
+/**
+ * Url用の名前を取得
+ */
+function extractionUrlName(name) {
+    var match = name.match(/>(.+)/);
+
+    if (match != null) {
+      name = match[1];
+    } else if (name == "") {
+      return "";
+    }
+    return name;
+}
+
+/**
+ * 日本語用曲名を取得
+ */
+function extractionJaName(name) {
+    var match = name.match(/(.+)>/);
+
+    if (match != null) {
+      name = match[1];
+    } else if (name == "") {
+      return "";
+    }
+    return changeCodeToString(name);
+}
+
+/**
+ * 文字コード化しているところを置き換え
+ */
+function changeCodeToString(s) {
+  var chars = s.match(/&#([0-9]+);/);
+  if (chars == null)
+    return s;
+
+  //文字コード化している部分を一つずつ変換
+  for (i = 1; i < chars.length; i++) {
+    var char = chars[i];
+    var cs = String.fromCharCode(char);
+    var replaceWord = new RegExp("&#" + char + ";", "g");
+    s = s.replace(replaceWord, cs);
+  }
+  return s;
 }

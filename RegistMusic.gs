@@ -7,25 +7,18 @@ function manualRegist() {
   const col = 0;
   const dat = manualSheet.getDataRange().getValues()[1];
 
-  //各局情報を取得
+  //各曲情報を取得
   const url = toHalfWidth(dat[col]);
-  var name = dat[col + 1];
+  const name = extractionJaName(dat[col + 1]);
   const nameEn = dat[col + 2];
   const composer = dat[col + 3];
   const difficulty = dat[col + 4];
   const level = dat[col + 5];
   const constant = dat[col + 6];
 
-  //url用の名前を取り除く
-  var match = name.match("(.+)>");
-  if (match != null)
-    name = match[1];
-  else if (name == "")
-    return;
-
   //存在確認
-  var isUnregist = isUnregistedMusic(name, difficulty);
-  if(isUnregist) {
+  const isUnregist = isUnregistedMusic(name, difficulty);
+  if (isUnregist) {
     Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
     //wikiで残りデータを取得
     const othersData = getMusicData(url, difficulty);
@@ -49,29 +42,38 @@ function registMusicData(difficulty) {
   const dat = collectSheet.getRange(1, 1, collectSheet.getLastRow(), collectSheet.getLastColumn()).getValues();
   //指定の難易度の曲データの行番号を取得
   const col = dat[0].indexOf(difficulty) + 1;
-  
+
   //全データチェック
-  for(var i = 1; i < dat.length; i++) {
+  for (var i = 1; i < dat.length; i++) {
     //曲名取得
-    const name = extractionJaName(dat[i][col + 1])
+    var name = extractionJaName(dat[i][col + 1]);
     if (name == "") continue;
-    
+    name = changeCodeToString(name);
+
     //存在確認
     const isUnregist = isUnregistedMusic(name, difficulty);
-    if(isUnregist) {
+    if (isUnregist) {
       const nameEn = dat[i][col + 2];
-      const urlName = extractionUrlName(dat[i][col + 1])
+      const constant = dat[i][col + 5];
+      const urlName = extractionUrlName(dat[i][col + 1]);
+      if (constant == null) continue
+
       const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName)
+      if (musicData == null) {
+        Utilities.sleep(1500);
+        continue;
+      }
+
       var music = new Music(
-          musicData.name,
-          nameEn,
-          musicData.composer,
-          difficulty,
-          musicData.level[difficulty],
-          musicData.constant[difficulty],
-          musicData.pack,
-          musicData.version,
-          musicData.notes[difficulty]
+        name,
+        nameEn,
+        musicData.composer,
+        difficulty,
+        musicData.level[difficulty],
+        constant,
+        musicData.pack,
+        musicData.version,
+        musicData.notes[difficulty]
       )
 
       Logger.log(Utilities.formatString("%s(%s)", musicData.name, difficulty));
@@ -81,11 +83,11 @@ function registMusicData(difficulty) {
         music.addMusic();
       } else {
         //wikiにデータがなければ飛ばす
-        Logger.log("No wiki data");
+        Logger.log(Utilities.formatString("No wiki data (%s)", name));
       }
 
       //サーバーに負荷をかけないようにする
-      Utilities.sleep(2000);
+      Utilities.sleep(1500);
     }
   }
   Logger.log(Utilities.formatString("End registing(%s)", difficulty))
@@ -103,39 +105,41 @@ function isUnregistedMusic(name, difficulty) {
     } else {
       //指定の難易度か確認
       var isExist = musicSheetData[row].includes(difficulty);
-      if(isExist) {
+      if (isExist) {
         return false;
       }
     }
-  } while(true)
+  } while (true)
 }
 
 /**
  * Url用の名前を取得
  */
 function extractionUrlName(name) {
-    var match = name.match(/>(.+)/);
+  var match = name.match(/>(.+)/);
 
-    if (match != null) {
-      name = match[1];
-    } else if (name == "") {
-      return "";
-    }
-    return name;
+  if (match != null) {
+    name = match[1];
+  } else if (name == "") {
+    return "";
+  }
+  name = extractionJaName(name); // Löschenだけコード標記なので、変換して対応
+
+  return name;
 }
 
 /**
  * 日本語用曲名を取得
  */
 function extractionJaName(name) {
-    var match = name.match(/(.+)>/);
+  var match = name.match(/(.+)>/);
 
-    if (match != null) {
-      name = match[1];
-    } else if (name == "") {
-      return "";
-    }
-    return changeCodeToString(name);
+  if (match != null) {
+    name = match[1];
+  } else if (name == "") {
+    return "";
+  }
+  return changeCodeToString(name);
 }
 
 /**

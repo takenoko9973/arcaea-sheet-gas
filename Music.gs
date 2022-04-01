@@ -54,7 +54,7 @@ class Music {
    */
   isGettedData() {
     var dataList = this.getMusicDataList()
-    var getted = !dataList.includes(null); //一つでも空のデータがあればfalseを返す
+    var getted = !(dataList.includes(null) || dataList.includes("")); //一つでも空のデータがあればfalseを返す
     return getted;
   }
 

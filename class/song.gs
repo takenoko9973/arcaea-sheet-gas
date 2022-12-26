@@ -1,7 +1,14 @@
 class Song {
   constructor(record, difficulty) {
-    [this.songTitle, this.nameJp, this.nameEn, this.composer, this.side, level, notes, constant] = record;
-    this.chartInfo = new chartInfo(difficulty, level, constant, notes);
+    let level, notes, constant;
+
+    [this.songTitle, this.nameJp, this.nameEn, this.composer, this.side, level, constant, notes] = record;
+    this.chartInfo = new ChartInfo(difficulty, level, constant, notes);
+
+    // url用の名前も含んでいるので分離
+    // また、文字コードもあるのでそれも変換
+    this.urlName = extractionUrlName(this.nameJp);
+    this.nameJp = extractionJaName(this.nameJp);
 
     this.pack = null;
     this.version = null;
@@ -18,8 +25,8 @@ class Song {
       this.side,
       this.chartInfo.difficulty,
       this.chartInfo.level,
-      this.chartInfo.notes,
       this.chartInfo.constant,
+      this.chartInfo.notes,
       0, // スコア
     ];
   }
@@ -28,6 +35,6 @@ class Song {
    * 不足しているデータがあるかどうか
    */
   isLuckData() {
-    return getMusicDataList().include(null);
+    return this.getSongDataList().includes(null);
   }
 }

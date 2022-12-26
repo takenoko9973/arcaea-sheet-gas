@@ -8,23 +8,56 @@ function manualRegist() {
   const dat = manualSheet.getDataRange().getValues()[1];
 
   //各曲情報を取得
-  const url = toHalfWidth(dat[col]);
-  const name = extractionJaName(dat[col + 1]);
-  const nameEn = dat[col + 2];
-  const composer = dat[col + 3];
-  const difficulty = dat[col + 4];
-  const level = dat[col + 5];
-  const constant = dat[col + 6];
+  var name = extractionJaName(dat[col]);
+  name = changeCodeToString(name);
+  const songTitle = dat[col + 1];
+  const difficulty = dat[col + 2];
 
   //存在確認
-  const isUnregist = isUnregistedMusic(name, difficulty);
-  if (isUnregist) {
-    Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
-    //wikiで残りデータを取得
-    const othersData = getMusicData(url, difficulty);
-    addMusic(name, nameEn, composer, othersData[0], othersData[1], difficulty, level, othersData[2], 0, constant);
+  const isUnregist = isUnregistedMusic(songTitle, difficulty);
+  if (!isUnregist) return;
+
+  const urlName = extractionUrlName(toHalfWidth(dat[col]));
+  const level = dat[col + 3];
+  const constant = dat[col + 4];
+
+  Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
+  //wikiで残りデータを取得
+  const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName)
+  var song = new Song(
+    name,
+    songTitle,
+    musicData.composer,
+    difficulty,
+    level,
+    constant,
+    musicData.pack,
+    musicData.version,
+    musicData.notes[difficulty]
+  )
+
+  //すべてのデータが取得できているか確認
+  if (song.isLuckData()) {
+    addMusic(song);
+  } else {
+    Logger.log(Utilities.formatString("No wiki data (%s)", name));
   }
+
   Logger.log("end manual regist")
+}
+
+function addMusic(song) {
+  if (song.isLuckData()) return;
+
+  var addInfo = [song.getSongDataList()];
+
+  var aCol = songSheet.getRange("A:A").getValues();
+  //空白の要素を除いた最後の行を取得
+  var lastRow = aCol.filter(String).length + 1;
+  //行追加
+  songSheet.insertRowAfter(lastRow);
+
+  songSheet.getRange("A" + lastRow + ":J" + lastRow).setValues(addInfo);
 }
 
 function autoRegist() {
@@ -58,13 +91,15 @@ function registMusicData(difficulty) {
       const urlName = extractionUrlName(dat[i][col + 1]);
       if (constant == null) continue
 
+      Logger.log(Utilities.formatString("getting data of %s(%s)", name, difficulty));
+
       const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName)
       if (musicData == null) {
         Utilities.sleep(1500);
         continue;
       }
 
-      var music = new Music(
+      var music = new Song(
         name,
         nameEn,
         musicData.composer,
@@ -76,11 +111,9 @@ function registMusicData(difficulty) {
         musicData.notes[difficulty]
       )
 
-      Logger.log(Utilities.formatString("%s(%s)", musicData.name, difficulty));
-
       //すべてのデータが取得できているか確認
-      if (music.isGettedData()) {
-        music.addMusic();
+      if (music.isLuckData()) {
+        addMusic();
       } else {
         //wikiにデータがなければ飛ばす
         Logger.log(Utilities.formatString("No wiki data (%s)", name));
@@ -93,18 +126,17 @@ function registMusicData(difficulty) {
   Logger.log(Utilities.formatString("End registing(%s)", difficulty))
 }
 
-const musicSheetData = musicSheet.getRange(1, 1, musicSheet.getLastRow(), musicSheet.getRange(1, 1).getNextDataCell(SpreadsheetApp.Direction.NEXT).getColumn()).getValues();
-function isUnregistedMusic(name, difficulty) {
+function isUnregistedMusic(songTitle, difficulty) {
   var row = -1;
 
   //指定の楽曲の難易度が一致するまで検索
   do {
-    row = findRow(musicSheetData, name, 0, row + 1);
+    row = findRow(songSheetData, songTitle, 1, row + 1);
     if (row < 0) {
       return true;
     } else {
       //指定の難易度か確認
-      var isExist = musicSheetData[row].includes(difficulty);
+      var isExist = songSheetData[row].includes(difficulty);
       if (isExist) {
         return false;
       }
@@ -123,7 +155,7 @@ function extractionUrlName(name) {
   } else if (name == "") {
     return "";
   }
-  name = extractionJaName(name); // Löschenだけコード標記なので、変換して対応
+  name = changeCodeToString(name); // Löschenだけコード標記なので、変換して対応
 
   return name;
 }

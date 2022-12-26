@@ -1,13 +1,8 @@
-const sheetId = PropertiesService.getScriptProperties().getProperty("sheetId")
-const sheetBook = SpreadsheetApp.openById(sheetId);
-
-const collectSheet = sheetBook.getSheetByName("MusicCollection");
-const musicSheet = sheetBook.getSheetByName("MusicData");
-const manualSheet = sheetBook.getSheetByName("ManualRegister");
-
 function onChangeData(e) {
   const sheet = e.source.getActiveSheet();
   const cell = e.source.getActiveRange();
+
+  return;
 
   const lock = LockService.getScriptLock(); // 二重実行防止
   if (lock.tryLock(1)) {
@@ -17,7 +12,7 @@ function onChangeData(e) {
         autoRegist();
         break;
       }
-      case musicSheet.getName(): {
+      case songSheet.getName(): {
         switch (cell.getA1Notation()) {
           case "T5": {
             if (cell.getValue() === true) {
@@ -53,6 +48,6 @@ function onChangeData(e) {
 }
 
 function musicDataSort_(num) {
-  musicSheet.getRange('A1').activate();
-  musicSheet.getActiveCell().getFilter().sort(num, true);
+  songSheet.getRange('A1').activate();
+  songSheet.getActiveCell().getFilter().sort(num, true);
 }

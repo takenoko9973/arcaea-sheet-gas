@@ -5,18 +5,12 @@
   "dependencies": {
     "libraries": [
       {
-        "userSymbol": "Parser",
-        "libraryId": "1Mc8BthYthXx6CoIz90-JiSzSafVnT6U3t0z_W3hLTAX5ek4w0G_EIrNw",
-        "version": "8"
-      },
-      {
-        "userSymbol": "ArcaeaWikiAPI",
+        "userSymbol": "FetchArcaeaWiki",
         "libraryId": "1P1lGSAOpbLrT9crK--2VkIbWaYtZa1-JExQ2ZXH4pBo9IwQwTM0Pu01D",
         "version": "0",
         "developmentMode": true
       }
-    ],
-    "enabledAdvancedServices": []
+    ]
   },
   "sheets": {
     "macros": [

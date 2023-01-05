@@ -27,9 +27,9 @@ function findRow(dat, val, col, sRow = 0){
  */
 function fetchDifficultyCollectData(difficulty) {
   //指定の難易度の曲データの行番号を取得
-  const col = diffData[0].indexOf(difficulty) + 1;
+  const col = COLLECT_SHEET_DATA[0].indexOf(difficulty) + 1;
   // 指定の難易度のみのデータを取り出し
-  const fetchedDiffData = diffData.map(item => item.slice(col, col + 8));
+  const fetchedDiffData = COLLECT_SHEET_DATA.map(item => item.slice(col, col + 8));
   
   return fetchedDiffData;
 }

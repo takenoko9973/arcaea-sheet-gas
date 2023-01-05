@@ -6,13 +6,13 @@ function addSong(song) {
 
   const addInfo = [song.getSongDataList()];
 
-  const aCol = songSheet.getRange("A:A").getValues();
+  const aCol = SONG_SHEET.getRange("A:A").getValues();
   //空白の要素を除いた最後の行を取得
   const lastRow = aCol.filter(String).length + 1;
   //行追加
-  songSheet.insertRowAfter(lastRow);
+  SONG_SHEET.insertRowAfter(lastRow);
 
-  songSheet.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
+  SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
 }
 
 function registSongData(difficulty) {
@@ -37,14 +37,12 @@ function registSongData(difficulty) {
     Logger.log(Utilities.formatString("getting data of %s(%s)", song.nameJp, song.chartInfo.difficulty));
 
     // wikiから、追加のデータを取得
-    const musicData = ArcaeaWikiAPI.getMusicFromWiki(song.urlName)
+    const songData = FetchArcaeaWiki.createSongData(song.urlName)
     Utilities.sleep(1500); //サーバーに負荷をかけないようにする
 
-    if (musicData == null) continue;
-
     // wikiからのデータを取り込む
-    song.pack = musicData.pack;
-    song.version = musicData.version;
+    song.pack = songData.pack;
+    song.version = songData.version.match(/^(\d+\.\d+)/)[1];
 
     // 欠けがあるか確認
     if (song.isLuckData()) {
@@ -66,12 +64,12 @@ function isRegistedSong(song) {
 
   //指定の楽曲の難易度が一致するまで検索
   do {
-    row = findRow(songSheetData, song.songTitle, 0, row + 1);
+    row = findRow(SONG_SHEET_DATA, song.songTitle, 0, row + 1);
     if (row < 0) {
       return false;
     } else {
       //指定の難易度か確認
-      var isExist = songSheetData[row].includes(song.chartInfo.difficulty);
+      var isExist = SONG_SHEET_DATA[row].includes(song.chartInfo.difficulty);
       if (isExist) return true;
     }
   } while (true)

@@ -5,7 +5,7 @@ function manualRegist() {
   Logger.log("start manual regist")
 
   const col = 0;
-  const dat = manualSheet.getDataRange().getValues()[1];
+  const dat = MANUAL_REGIST_SHEET.getDataRange().getValues()[1];
 
   //各曲情報を取得
   var name = extractionJaName(dat[col]);

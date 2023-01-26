@@ -16,7 +16,7 @@ function addSong(song) {
 }
 
 function registSongData(difficulty) {
-  Logger.log(Utilities.formatString("Start registing(%s)", difficulty))
+  console.log("Start registing(%s)", difficulty);
 
   // 指定の難易度のみのデータを取り出し
   const diffData = fetchDifficultyCollectData(difficulty);
@@ -34,7 +34,7 @@ function registSongData(difficulty) {
     // まだ定数が判明していなければ、無視
     if (song.chartInfo.constant == null) continue;
 
-    Logger.log(Utilities.formatString("getting data of %s(%s)", song.nameJp, song.chartInfo.difficulty));
+    console.log("getting data of %s(%s)", song.nameJp, song.chartInfo.difficulty);
 
     // wikiから、追加のデータを取得
     const songData = FetchArcaeaWiki.createSongData(song.urlName)
@@ -47,13 +47,13 @@ function registSongData(difficulty) {
     // 欠けがあるか確認
     if (song.isLuckData()) {
       // データが足りなければ飛ばす
-      Logger.info(Utilities.formatString("Exist luck data (%s)", song.nameJp));
+      console.warn("Exist luck data (%s)", song.nameJp);
       continue;
     }
 
     addSong(song);
   }
-  Logger.log(Utilities.formatString("End registing(%s)", difficulty))
+  console.log("End registing(%s)", difficulty);
 }
 
 /**

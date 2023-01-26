@@ -2,7 +2,7 @@
  * 手動登録ルーチン
  */
 function manualRegist() {
-  Logger.log("start manual regist")
+  console.log("start manual regist")
 
   const col = 0;
   const dat = MANUAL_REGIST_SHEET.getDataRange().getValues()[1];
@@ -21,7 +21,7 @@ function manualRegist() {
   const level = dat[col + 3];
   const constant = dat[col + 4];
 
-  Logger.log(Utilities.formatString("%s(%s)", name, difficulty));
+  console.log("%s(%s)", name, difficulty);
   //wikiで残りデータを取得
   const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName)
   var song = new Song(
@@ -40,8 +40,8 @@ function manualRegist() {
   if (song.isLuckData()) {
     addSong(song);
   } else {
-    Logger.log(Utilities.formatString("No wiki data (%s)", name));
+    console.log("No wiki data (%s)", name);
   }
 
-  Logger.log("end manual regist")
+  console.log("end manual regist")
 }

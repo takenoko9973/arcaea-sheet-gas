@@ -46,8 +46,8 @@ function registSongData(difficulty) {
 
     // 欠けがあるか確認
     if (song.isLuckData()) {
-      //wikiにデータがなければ飛ばす
-      Logger.log(Utilities.formatString("No wiki data (%s)", name));
+      // データが足りなければ飛ばす
+      Logger.info(Utilities.formatString("Exist luck data (%s)", song.nameJp));
       continue;
     }
 

@@ -35,6 +35,8 @@ class Song {
    * 不足しているデータがあるかどうか
    */
   isLuckData() {
-    return this.getSongDataList().includes(null);
+    const existNull = this.getSongDataList().includes(null);
+    const existBlank = this.getSongDataList().includes("");
+    return existNull || existBlank;
   }
 }

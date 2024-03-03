@@ -14,7 +14,7 @@ function runTrigger(changedPair) {
   const triggerList = [
     [new SheetCellPair(SONG_SHEET_NAME, "AA5"), songDifficultySort],
     [new SheetCellPair(SONG_SHEET_NAME, "AA6"), songNameSort],
-    [new SheetCellPair(SONG_SHEET_NAME, "AA8"), autoRegist],
+    [new SheetCellPair(SONG_SHEET_NAME, "AA8"), checkCollectedSong],
     [new SheetCellPair(MANUAL_REGIST_SHEET_NAME, "G2"), manualRegist],
   ]
   const pairIndex = triggerList.findIndex(pair => equalSheetCellPair(pair[0], changedPair));

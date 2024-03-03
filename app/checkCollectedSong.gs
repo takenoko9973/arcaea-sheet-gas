@@ -1,3 +1,7 @@
+function checkCollectedSong() {
+  autoRegist();
+}
+
 function autoRegist() {
   console.log("Start auto regist");
   // registSongData("PST");

@@ -6,28 +6,27 @@ function registSongData(difficulty) {
 
   //全データチェック
   for (var i = 1; i < diffData.length; i++) {
-    const song = new Song(diffData[i], difficulty);
-    if (song.nameJp == "") continue;
-    if (song.nameJp == null) continue;
+    const collectSong = new CollectionSong(difficulty, diffData[i]);
+    if (collectSong.nameJp == "") continue;
+    if (collectSong.nameJp == null) continue;
 
     //存在確認
-    const isRegisted = isRegistedSong(song);
+    const isRegisted = isRegistedSong(collectSong);
     if (isRegisted) continue;
 
     // まだ定数が判明していなければ、無視
-    if (song.constant == null) continue;
+    if (collectSong.constant == "") continue;
 
-    console.log("getting data of %s(%s)", song.nameJp, song.difficulty);
-
-    fetchSongDataFromWiki(song)
+    console.log("getting data of %s(%s)", collectSong.nameJp, collectSong.difficulty);
+    fetchSongDataFromWiki(collectSong)
 
     // 欠けがあるか確認
+    const song = collectSong.toSongData();
     if (song.isLuckData()) {
       // データが足りなければ飛ばす
       console.warn("Exist luck data (%s)", song.nameJp);
       continue;
     }
-
     addSong(song);
   }
   console.log("End registing(%s)", difficulty);
@@ -37,28 +36,14 @@ function registSongData(difficulty) {
  * songをリストの一番後ろに追加する
  */
 function addSong(song) {
-  if (song.isLuckData()) return;
-
   const addInfo = [song.getSongDataList()];
 
   const aCol = SONG_SHEET.getRange("A:A").getValues();
-  //空白の要素を除いた最後の行を取得
-  const lastRow = aCol.filter(String).length + 1;
+  const lastRow = aCol.filter(String).length + 1; //空白の要素を除いた最後の行を取得
+
   //行追加
   SONG_SHEET.insertRowAfter(lastRow);
-
   SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
-}
-
-function fetchSongDataFromWiki(song) {
-  // wikiから、追加のデータを取得
-  const songData = FetchArcaeaWiki.createSongData(song.urlName)
-  Utilities.sleep(1500); //サーバーに負荷をかけないようにする
-
-  // wikiからのデータを取り込む
-  song.notes = (song.notes != "") ? song.notes : songData.notes;
-  song.pack = songData.pack;
-  song.version = songData.version.match(/^(\d+\.\d+)/)[1];
 }
 
 /**

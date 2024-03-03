@@ -4,5 +4,6 @@ function autoRegist() {
   // registSongData("PRS");
   registSongData("FTR");
   registSongData("BYD");
+  registSongData("ETR");
   console.log("End auto regist");
 }

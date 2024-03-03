@@ -1,9 +1,11 @@
 class Song {
-  constructor(record, difficulty) {
-    let level, notes, constant;
+  constructor(record, difficulty, score = 0) {
+    let constantOld, constantNow;
 
-    [this.songTitle, this.nameJp, this.nameEn, this.composer, this.side, level, constant, notes] = record;
-    this.chartInfo = new ChartInfo(difficulty, level, constant, notes);
+    [this.songTitle, this.nameJp, this.nameEn, this.composer, this.side, this.level, constantOld, constantNow, this.notes] = record;
+    this.constant = (constantNow != "") ? constantNow : constantOld;
+    this.difficulty = difficulty
+    this.score = score
 
     // url用の名前も含んでいるので分離
     // また、文字コードもあるのでそれも変換
@@ -21,13 +23,13 @@ class Song {
       this.nameEn,
       this.composer,
       this.pack,
-      this.version,
+      "'" + this.version,
       this.side,
-      this.chartInfo.difficulty,
-      this.chartInfo.level,
-      this.chartInfo.constant,
-      this.chartInfo.notes,
-      0, // スコア
+      this.difficulty,
+      this.level,
+      this.constant,
+      this.notes,
+      this.score,
     ];
   }
 
@@ -37,6 +39,7 @@ class Song {
   isLuckData() {
     const existNull = this.getSongDataList().includes(null);
     const existBlank = this.getSongDataList().includes("");
-    return existNull || existBlank;
+    const existNegative = this.getSongDataList().includes(-1);
+    return existNull || existBlank || existNegative;
   }
 }

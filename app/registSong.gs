@@ -1,3 +1,38 @@
+function registSongData(difficulty) {
+  console.log("Start registing(%s)", difficulty);
+
+  // 指定の難易度のみのデータを取り出し
+  const diffData = fetchDifficultyCollectData(difficulty);
+
+  //全データチェック
+  for (var i = 1; i < diffData.length; i++) {
+    const song = new Song(diffData[i], difficulty);
+    if (song.nameJp == "") continue;
+    if (song.nameJp == null) continue;
+
+    //存在確認
+    const isRegisted = isRegistedSong(song);
+    if (isRegisted) continue;
+
+    // まだ定数が判明していなければ、無視
+    if (song.constant == null) continue;
+
+    console.log("getting data of %s(%s)", song.nameJp, song.difficulty);
+
+    fetchSongDataFromWiki(song)
+
+    // 欠けがあるか確認
+    if (song.isLuckData()) {
+      // データが足りなければ飛ばす
+      console.warn("Exist luck data (%s)", song.nameJp);
+      continue;
+    }
+
+    addSong(song);
+  }
+  console.log("End registing(%s)", difficulty);
+}
+
 /**
  * songをリストの一番後ろに追加する
  */
@@ -15,45 +50,15 @@ function addSong(song) {
   SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
 }
 
-function registSongData(difficulty) {
-  console.log("Start registing(%s)", difficulty);
+function fetchSongDataFromWiki(song) {
+  // wikiから、追加のデータを取得
+  const songData = FetchArcaeaWiki.createSongData(song.urlName)
+  Utilities.sleep(1500); //サーバーに負荷をかけないようにする
 
-  // 指定の難易度のみのデータを取り出し
-  const diffData = fetchDifficultyCollectData(difficulty);
-
-  //全データチェック
-  for (var i = 1; i < diffData.length; i++) {
-    const song = new Song(diffData[i], difficulty);
-    if (song.nameJp == "") continue;
-    if (song.nameJp == null) continue;
-
-    //存在確認
-    const isRegisted = isRegistedSong(song);
-    if (isRegisted) continue;
-    
-    // まだ定数が判明していなければ、無視
-    if (song.chartInfo.constant == null) continue;
-
-    console.log("getting data of %s(%s)", song.nameJp, song.chartInfo.difficulty);
-
-    // wikiから、追加のデータを取得
-    const songData = FetchArcaeaWiki.createSongData(song.urlName)
-    Utilities.sleep(1500); //サーバーに負荷をかけないようにする
-
-    // wikiからのデータを取り込む
-    song.pack = songData.pack;
-    song.version = songData.version.match(/^(\d+\.\d+)/)[1];
-
-    // 欠けがあるか確認
-    if (song.isLuckData()) {
-      // データが足りなければ飛ばす
-      console.warn("Exist luck data (%s)", song.nameJp);
-      continue;
-    }
-
-    addSong(song);
-  }
-  console.log("End registing(%s)", difficulty);
+  // wikiからのデータを取り込む
+  song.notes = (song.notes != "") ? song.notes : songData.notes;
+  song.pack = songData.pack;
+  song.version = songData.version.match(/^(\d+\.\d+)/)[1];
 }
 
 /**
@@ -69,7 +74,7 @@ function isRegistedSong(song) {
       return false;
     } else {
       //指定の難易度か確認
-      var isExist = SONG_SHEET_DATA[row].includes(song.chartInfo.difficulty);
+      var isExist = SONG_SHEET_DATA[row].includes(song.difficulty);
       if (isExist) return true;
     }
   } while (true)

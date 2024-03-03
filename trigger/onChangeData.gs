@@ -1,14 +1,21 @@
-function songDifficultySort(num) {
-  const col = SONG_SHEET_DATA[0].indexOf("並び替え用") + 1;
+function songDifficultySort() {
+  const col = SONG_SHEET_DATA[0].indexOf("並び替え用(難易度順)") + 1;
+  SONG_SHEET.getRange('A1').activate();
+  SONG_SHEET.getActiveCell().getFilter().sort(col, true);
+}
+
+function songNameSort() {
+  const col = SONG_SHEET_DATA[0].indexOf("並び替え用(曲名順)") + 1;
   SONG_SHEET.getRange('A1').activate();
   SONG_SHEET.getActiveCell().getFilter().sort(col, true);
 }
 
 function runTrigger(changedPair) {
   const triggerList = [
-    [new SheetCellPair(SONG_SHEET_NAME, "V5"), songDifficultySort],
-    [new SheetCellPair(SONG_SHEET_NAME, "V8"), autoRegist],
-    [new SheetCellPair(MANUAL_REGIST_SHEET_NAME, "I2"), manualRegist],
+    [new SheetCellPair(SONG_SHEET_NAME, "AA5"), songDifficultySort],
+    [new SheetCellPair(SONG_SHEET_NAME, "AA6"), songNameSort],
+    [new SheetCellPair(SONG_SHEET_NAME, "AA8"), autoRegist],
+    [new SheetCellPair(MANUAL_REGIST_SHEET_NAME, "G2"), manualRegist],
   ]
   const pairIndex = triggerList.findIndex(pair => equalSheetCellPair(pair[0], changedPair));
   if (pairIndex == -1) return;

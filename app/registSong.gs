@@ -11,7 +11,7 @@ function registSongData(difficulty) {
     if (collectSong.nameJp == null) continue;
 
     //存在確認
-    const isRegisted = isRegistedSong(collectSong);
+    const isRegisted = isRegistedSong(collectSong.difficulty, collectSong.songTitle);
     if (isRegisted) continue;
 
     // まだ定数が判明していなければ、無視
@@ -46,21 +46,3 @@ function addSong(song) {
   SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
 }
 
-/**
- * 指定の楽曲とレベルが登録されているかどうか
- */
-function isRegistedSong(song) {
-  var row = -1;
-
-  //指定の楽曲の難易度が一致するまで検索
-  do {
-    row = findRow(SONG_SHEET_DATA, song.songTitle, 0, row + 1);
-    if (row < 0) {
-      return false;
-    } else {
-      //指定の難易度か確認
-      var isExist = SONG_SHEET_DATA[row].includes(song.difficulty);
-      if (isExist) return true;
-    }
-  } while (true)
-}

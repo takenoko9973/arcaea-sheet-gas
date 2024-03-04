@@ -36,7 +36,7 @@ function fetchSongDataFromWiki(collectSong) {
   Utilities.sleep(1500); //サーバーに負荷をかけないようにする
 
   // wikiからのデータを取り込む
-  collectSong.notes = (collectSong.notes != "") ? collectSong.notes : songData.notes;
+  collectSong.notes = (collectSong.notes != "") ? collectSong.notes : songData.getNotesByDiff(collectSong.difficulty)[0];
   collectSong.pack = songData.pack;
   collectSong.version = songData.version.match(/^(\d+\.\d+)/)[1];
 }

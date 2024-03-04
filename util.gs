@@ -23,6 +23,33 @@ function findRow(dat, val, col, sRow = 0){
 }
 
 /**
+ * 指定の楽曲が何行目にあるか (存在しない場合、-1)
+ */
+function registedSongRow(difficulty, songTitle) {
+  const row = -1;
+
+  //指定の楽曲の難易度が一致するまで検索
+  do {
+    row = findRow(SONG_SHEET_DATA, songTitle, 0, row + 1);
+    if (row < 0) {
+      return -1;
+    } else {
+      //指定の難易度か確認
+      var isExist = SONG_SHEET_DATA[row].includes(difficulty);
+      if (isExist) return row;
+    }
+  } while (true)
+}
+
+/**
+ * 指定の楽曲とレベルが登録されているかどうか
+ */
+function isRegistedSong(difficulty, songTitle) {
+  const row = registedRow(difficulty, songTitle);
+  return row < 0;
+}
+
+/**
  * 指定の難易度のデータのみを取り出し
  */
 function fetchDifficultyCollectData(difficulty) {

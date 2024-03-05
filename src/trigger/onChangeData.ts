@@ -1,0 +1,103 @@
+import { checkCollectedSong } from '../app/checkCollectedSong';
+import { manualRegist } from '../app/manualRegist';
+import { SheetCellPair, equalSheetCellPair } from '../class/sheet-cell-pair';
+import {
+  MANUAL_REGIST_SHEET_NAME,
+  SHEET_BOOK,
+  SONG_SHEET,
+  SONG_SHEET_DATA,
+  SONG_SHEET_NAME,
+} from '../const';
+
+/**
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function songDifficultySort() {
+  const col = SONG_SHEET_DATA[0].indexOf('並び替え用(難易度順)') + 1;
+  SONG_SHEET.getRange('A1').activate();
+  SONG_SHEET.getActiveCell().getFilter()?.sort(col, true);
+}
+
+function songNameSort() {
+  const col = SONG_SHEET_DATA[0].indexOf('並び替え用(曲名順)') + 1;
+  SONG_SHEET.getRange('A1').activate();
+  SONG_SHEET.getActiveCell().getFilter()?.sort(col, true);
+}
+
+function runTrigger(changedPair: SheetCellPair) {
+  const triggerList = [
+    {
+      pair: new SheetCellPair(SONG_SHEET_NAME, 'AA5'),
+      func: songDifficultySort,
+    },
+    {
+      pair: new SheetCellPair(SONG_SHEET_NAME, 'AA6'),
+      func: songNameSort,
+    },
+    {
+      pair: new SheetCellPair(SONG_SHEET_NAME, 'AA8'),
+      func: checkCollectedSong,
+    },
+    {
+      pair: new SheetCellPair(MANUAL_REGIST_SHEET_NAME, 'G2'),
+      func: manualRegist,
+    },
+  ];
+  const pairIndex = triggerList.findIndex(pair =>
+    equalSheetCellPair(pair['pair'], changedPair)
+  );
+  if (pairIndex === -1) return;
+
+  try {
+    if (triggerList[pairIndex]['pair'].cell_location === '') {
+      triggerList[pairIndex]['func']();
+    } else {
+      const changeSheet = SHEET_BOOK.getSheetByName(
+        triggerList[pairIndex]['pair'].sheet_name
+      )!;
+      const cell = changeSheet.getRange(
+        triggerList[pairIndex]['pair'].cell_location
+      );
+
+      if (cell.getValue() === true) {
+        cell.setValue(false);
+        triggerList[pairIndex]['func']();
+      }
+    }
+  } catch (e: any) {
+    console.error(e.message);
+  }
+}
+
+export function onChangeData(e: any) {
+  const sheet = e.source.getActiveSheet();
+  const cell = e.source.getActiveRange();
+
+  const lock = LockService.getScriptLock(); // 二重実行防止
+  if (!lock.tryLock(1)) return;
+
+  const changedPair = new SheetCellPair(sheet.getName(), cell.getA1Notation());
+  console.log(
+    Utilities.formatString(
+      'Changed %s(%s)',
+      changedPair.cell_location,
+      changedPair.sheet_name
+    )
+  );
+
+  runTrigger(changedPair);
+
+  lock.releaseLock();
+}

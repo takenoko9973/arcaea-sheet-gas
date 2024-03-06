@@ -1,24 +1,13 @@
-import typescript from 'rollup-plugin-typescript2';
-import cleanup from 'rollup-plugin-cleanup';
-import license from 'rollup-plugin-license';
-import { fileURLToPath } from 'url';
+import typescript from "@rollup/plugin-typescript";
+import cleanup from "rollup-plugin-cleanup";
+import commonjs from "rollup-plugin-commonjs";
 
 export default {
-    input: 'src/main.ts',
+    input: "src/main.ts",
     output: {
-        dir: 'dist',
-        format: 'esm',
+        dir: "dist",
+        format: "cjs",
     },
-    plugins: [
-        cleanup({ comments: 'none', extensions: ['.ts'] }),
-        license({
-            banner: {
-                content: {
-                    file: fileURLToPath(new URL('license-header.txt', import.meta.url)),
-                },
-            },
-        }),
-        typescript(),
-    ],
-    context: 'this',
+    plugins: [typescript(), cleanup({ comments: "none", extensions: [".ts"] }), commonjs()],
+    context: "this",
 };

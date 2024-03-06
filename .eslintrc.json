@@ -4,16 +4,23 @@
     "node": true,
     "es2020": true
   },
-  "extends": ["./node_modules/gts", "prettier"],
+  "extends": [
+    "./node_modules/gts",
+    "prettier"
+  ],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["prettier"],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
     "prettier/prettier": "error"
   },
-  "ignorePatterns": ["template/**/*"]
+  "ignorePatterns": [
+    "dist/**/*.js"
+  ]
 }

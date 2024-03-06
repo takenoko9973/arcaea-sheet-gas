@@ -1,8 +1,18 @@
 {
   "name": "arcaea-potential",
   "version": "1.0.0",
-  "main": "index.js",
+  "author": "Takenoko-ya",
   "license": "MIT",
+  "scripts": {
+    "clean": "rimraf build dist",
+    "lint": "yarn run license && eslint src/**/*.{js,ts} --fix",
+    "bundle": "rollup --no-treeshake -c rollup.config.mjs",
+    "build": "yarn run clean && yarn run bundle && ncp appsscript.json dist/appsscript.json",
+    "license": "license-check-and-add add -f license-config.json",
+    "test": "jest test/ --passWithNoTests --detectOpenHandles",
+    "deploy": "yarn run lint && yarn run test && yarn run build && ncp .clasp-dev.json .clasp.json && clasp push -f",
+    "deploy:prod": "yarn run lint && yarn run test && yarn run build && ncp .clasp-prod.json .clasp.json && clasp push"
+  },
   "devDependencies": {
     "@google/aside": "^1.3.4",
     "@google/clasp": "^2.4.2",
@@ -10,21 +20,10 @@
     "esbuild": "^0.20.1",
     "esbuild-gas-plugin": "^0.8.0",
     "eslint": "^8.57.0",
+    "eslint-plugin-node": "^11.1.0",
     "prettier": "^3.2.5",
     "ts-migrate": "^0.1.35",
-    "typescript": "^5.3.3"
-  },
-  "scripts": {
-    "clean": "rimraf build dist",
-    "lint": "npm run license && eslint --fix --no-error-on-unmatched-pattern src/ test/",
-    "bundle": "rollup --no-treeshake -c rollup.config.mjs",
-    "build": "npm run clean && npm run bundle && ncp appsscript.json dist/appsscript.json",
-    "license": "license-check-and-add add -f license-config.json",
-    "test": "jest test/ --passWithNoTests --detectOpenHandles",
-    "deploy": "npm run lint && npm run test && npm run build && ncp .clasp-dev.json .clasp.json && clasp push -f",
-    "deploy:prod": "npm run lint && npm run test && npm run build && ncp .clasp-prod.json .clasp.json && clasp push"
-  },
-  "dependencies": {
+    "typescript": "^5.3.3",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "eslint-config-prettier": "^9.1.0",
@@ -43,6 +42,11 @@
   "directories": {
     "test": "test"
   },
-  "author": "",
-  "description": ""
+  "repository": "git+https://github.com/takenoko9973/arcaea-sheet-gas.git",
+  "bugs": {
+    "url": "https://github.com/takenoko9973/arcaea-sheet-gas/issues"
+  },
+  "homepage": "https://github.com/takenoko9973/arcaea-sheet-gas#readme",
+  "description": "",
+  "main": "index.js"
 }

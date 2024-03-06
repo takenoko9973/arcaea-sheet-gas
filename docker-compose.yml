@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+    myservice:
+        build: ./.devcontainer
+        container_name: arcaea-potential
+        working_dir: /workspace
+        volumes:
+            # node_modulesディレクトリはホスト側に渡さないようにDockerのvolume内に格納
+            - node-modules:/workspace/node_modules
+            - ./:/workspace
+        tty: true
+
+volumes:
+    node-modules:

@@ -8,13 +8,13 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "rootDir": ".",
-        "allowJs": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "allowUnreachableCode": false,
-        "allowUnusedLabels": false
+        "allowUnusedLabels": false,
+        "strict": true
     },
     "include": [
         "src/**/*",

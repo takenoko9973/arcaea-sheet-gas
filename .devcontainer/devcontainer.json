@@ -1,6 +1,9 @@
 {
     "name": "ArcaeaPotential",
-    "dockerFile": "Dockerfile",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "myservice",
     "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
@@ -31,10 +34,6 @@
             ]
         }
     },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-    "mounts": [
-        "target=/workspace/node_modules"
-    ],
     "features": {
         "ghcr.io/devcontainers/features/git:latest": {
             "version": "latest",

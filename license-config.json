@@ -1,5 +1,6 @@
 {
   "ignore": [
+    ".devcontainer",
     ".claspignore",
     ".editorconfig",
     ".eslintignore",
@@ -8,6 +9,9 @@
     "*.txt",
     ".github",
     "CONTRIBUTING",
+    "docker-compose.yml",
+    "rollup.config.mjs",
+    "yarn.lock",
     "build",
     "src",
     "test",

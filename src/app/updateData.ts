@@ -1,10 +1,10 @@
-import { fetchDifficultyCollectData, registedSongRow } from '../util';
-import { CollectionSong } from '../class/collectionSong';
-import { Song } from '../class/song';
-import { SONG_SHEET, SONG_SHEET_DATA } from '../const';
+import { fetchDifficultyCollectData, registedSongRow } from "../util";
+import { CollectionSong } from "../class/collectionSong";
+import { Song } from "../class/song";
+import { SONG_SHEET, SONG_SHEET_DATA } from "../const";
 
 export function updateData(difficulty: string) {
-    console.log('Start updating(%s)', difficulty);
+    console.log("Start updating(%s)", difficulty);
 
     // 指定の難易度のみのデータを取り出し
     const diffData = fetchDifficultyCollectData(difficulty);
@@ -12,12 +12,12 @@ export function updateData(difficulty: string) {
     //全データチェック
     for (let i = 1; i < diffData.length; i++) {
         const collectedSong = new CollectionSong(difficulty, diffData[i]);
-        if (collectedSong.nameJp === '') continue;
+        if (collectedSong.nameJp === "") continue;
 
         updateSongData(collectedSong);
     }
 
-    console.log('End updating(%s)', difficulty);
+    console.log("End updating(%s)", difficulty);
 }
 
 function updateSongData(collectedSong: CollectionSong) {
@@ -30,7 +30,7 @@ function updateSongData(collectedSong: CollectionSong) {
     if (equalSongData) return;
 
     // 更新
-    console.log('update data of %s(%s)', registedSong.nameJp, registedSong.difficulty);
+    console.log("update data of %s(%s)", registedSong.nameJp, registedSong.difficulty);
     const newSongData = updateSongDataWithDelta(registedSong, collectedSong.toSongData());
     overwriteSongData(newSongData);
 }
@@ -69,5 +69,5 @@ function overwriteSongData(songData: Song) {
     const registedRow = registedSongRow(songData.difficulty, songData.songTitle);
     const updateInfo = [songData.getSongDataList()];
 
-    SONG_SHEET.getRange('A' + (registedRow + 1) + ':L' + (registedRow + 1)).setValues(updateInfo);
+    SONG_SHEET.getRange("A" + (registedRow + 1) + ":L" + (registedRow + 1)).setValues(updateInfo);
 }

@@ -1,5 +1,5 @@
-import { extractionJaName, extractionUrlName } from '../util';
-import { Song } from './song';
+import { extractionJaName, extractionUrlName } from "../util";
+import { Song } from "./song";
 
 export class CollectionSong {
     composer: string;
@@ -30,14 +30,14 @@ export class CollectionSong {
             constantNow,
             this.notes,
         ] = data;
-        this.constant = constantNow !== '' ? constantNow : constantOld;
+        this.constant = constantNow !== "" ? constantNow : constantOld;
 
         // url用の名前も含んでいるので分離
         // また、文字コードもあるのでそれも変換
         this.urlName = extractionUrlName(this.nameJp);
         this.nameJp = extractionJaName(this.nameJp);
-        this.pack = '';
-        this.version = '';
+        this.pack = "";
+        this.version = "";
     }
 
     toSongData() {
@@ -65,7 +65,7 @@ export function fetchSongDataFromWiki(collectSong: CollectionSong) {
 
     // wikiからのデータを取り込む
     collectSong.notes =
-        collectSong.notes !== ''
+        collectSong.notes !== ""
             ? collectSong.notes
             : songData.getNotesByDiff(collectSong.difficulty)[0];
     collectSong.pack = songData.pack;

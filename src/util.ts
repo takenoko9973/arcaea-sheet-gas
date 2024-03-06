@@ -1,4 +1,4 @@
-import { COLLECT_SHEET_DATA, SONG_SHEET_DATA } from './const';
+import { COLLECT_SHEET_DATA, SONG_SHEET_DATA } from "./const";
 
 /**
  * カタカナ以外を全角から半角へ変換
@@ -71,8 +71,8 @@ export function extractionUrlName(name: string) {
 
     if (match !== null) {
         name = match[1];
-    } else if (name === '') {
-        return '';
+    } else if (name === "") {
+        return "";
     }
     name = changeCodeToString(name); // Löschenだけコード標記なので、変換して対応
 
@@ -87,8 +87,8 @@ export function extractionJaName(name: string) {
 
     if (match !== null) {
         name = match[1];
-    } else if (name === '') {
-        return '';
+    } else if (name === "") {
+        return "";
     }
     return changeCodeToString(name);
 }
@@ -104,7 +104,7 @@ export function changeCodeToString(s: string) {
     for (let i = 1; i < chars.length; i++) {
         const char = Number(chars[i]);
         const cs = String.fromCharCode(char);
-        const replaceWord = new RegExp('&#' + char + ';', 'g');
+        const replaceWord = new RegExp("&#" + char + ";", "g");
         s = s.replace(replaceWord, cs);
     }
     return s;

@@ -49,7 +49,7 @@ export class Song {
      * 不足しているデータがあるかどうか
      */
     isLuckData() {
-        const existBlank = this.getSongDataList().includes('');
+        const existBlank = this.getSongDataList().includes("");
         const existNegative = this.getSongDataList().includes(-1);
         return existBlank || existNegative;
     }

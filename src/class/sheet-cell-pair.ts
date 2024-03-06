@@ -19,8 +19,8 @@ export function equalSheetName(pair1: SheetCellPair, pair2: SheetCellPair) {
 
 // セルの場所が一致しているか (ただし、片方が空白だった場合は常にtrue)
 export function equalCellLocation(pair1: SheetCellPair, pair2: SheetCellPair) {
-    if (pair1.cell_location === '') return true;
-    if (pair2.cell_location === '') return true;
+    if (pair1.cell_location === "") return true;
+    if (pair2.cell_location === "") return true;
 
     return pair1.cell_location === pair2.cell_location;
 }

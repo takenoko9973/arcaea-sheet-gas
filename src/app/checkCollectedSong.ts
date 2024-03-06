@@ -1,5 +1,5 @@
-import { updateData } from './updateData';
-import { registSongData } from './registSong';
+import { updateData } from "./updateData";
+import { registSongData } from "./registSong";
 
 export function checkCollectedSong() {
     autoRegist();
@@ -7,19 +7,19 @@ export function checkCollectedSong() {
 }
 
 function autoRegist() {
-    console.log('Start auto regist');
+    console.log("Start auto regist");
     // registSongData("PST");
     // registSongData("PRS");
-    registSongData('FTR');
-    registSongData('BYD');
-    registSongData('ETR');
-    console.log('End auto regist');
+    registSongData("FTR");
+    registSongData("BYD");
+    registSongData("ETR");
+    console.log("End auto regist");
 }
 
 function update() {
-    console.log('Start update');
-    updateData('FTR');
-    updateData('BYD');
-    updateData('ETR');
-    console.log('Start update');
+    console.log("Start update");
+    updateData("FTR");
+    updateData("BYD");
+    updateData("ETR");
+    console.log("Start update");
 }

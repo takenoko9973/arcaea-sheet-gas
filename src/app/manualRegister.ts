@@ -7,7 +7,7 @@ import {
     isRegisteredSong,
     toHalfWidth,
 } from "../util";
-import { addSong } from "./registSong";
+import { addSong } from "./registerSong";
 
 /**
  * 手動登録ルーチン

@@ -1,6 +1,6 @@
 import { checkCollectedSong } from "../app/checkCollectedSong";
-import { manualRegister } from "../app/manualRegist";
-import { SheetCellPair, equalSheetCellPair } from "../class/sheet-cell-pair";
+import { manualRegister } from "../app/manualRegister";
+import { SheetCellPair, equalSheetCellPair } from "../class/sheetCellPair";
 import {
     MANUAL_REGISTER_SHEET_NAME,
     SHEET_BOOK,
@@ -8,6 +8,25 @@ import {
     SONG_SHEET_DATA,
     SONG_SHEET_NAME,
 } from "../const";
+
+const triggerList = [
+    {
+        pair: new SheetCellPair(SONG_SHEET_NAME, "AA5"),
+        func: songDifficultySort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SHEET_NAME, "AA6"),
+        func: songNameSort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SHEET_NAME, "AA8"),
+        func: checkCollectedSong,
+    },
+    {
+        pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"),
+        func: manualRegister,
+    },
+];
 
 function songDifficultySort() {
     const col = SONG_SHEET_DATA[0].indexOf("並び替え用(難易度順)") + 1;
@@ -22,24 +41,6 @@ function songNameSort() {
 }
 
 export function runTrigger(changedPair: SheetCellPair) {
-    const triggerList = [
-        {
-            pair: new SheetCellPair(SONG_SHEET_NAME, "AA5"),
-            func: songDifficultySort,
-        },
-        {
-            pair: new SheetCellPair(SONG_SHEET_NAME, "AA6"),
-            func: songNameSort,
-        },
-        {
-            pair: new SheetCellPair(SONG_SHEET_NAME, "AA8"),
-            func: checkCollectedSong,
-        },
-        {
-            pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"),
-            func: manualRegister,
-        },
-    ];
     const pairIndex = triggerList.findIndex(pair => equalSheetCellPair(pair["pair"], changedPair));
     if (pairIndex === -1) return;
 

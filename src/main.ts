@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SheetCellPair } from "./class/sheet-cell-pair";
+import { SheetCellPair } from "./class/sheetCellPair";
 import {
     SUM_SCORE_DATE_SHEET,
     POTENTIAL_SHEET,

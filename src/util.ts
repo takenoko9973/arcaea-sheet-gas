@@ -1,129 +1,111 @@
-/**
- * Copyright 2023 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import { COLLECT_SHEET_DATA, SONG_SHEET_DATA } from './const';
 
 /**
  * カタカナ以外を全角から半角へ変換
  **/
 export function toHalfWidth(str: string) {
-  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s: string) => {
-    return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
-  });
+    return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s: string) => {
+        return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
+    });
 }
 
 /**
  * 行検索
  */
 function findRow(dat: unknown[][], val: unknown, col: number, sRow = 0) {
-  let row = -1;
+    let row = -1;
 
-  if (col >= 0) {
-    //指定の行だけ抜き出し
-    const colList = dat.map((row: unknown[]) => row[col]);
-    //リスト検索
-    row = colList.indexOf(val, sRow);
-  }
-  return row;
+    if (col >= 0) {
+        //指定の行だけ抜き出し
+        const colList = dat.map((row: unknown[]) => row[col]);
+        //リスト検索
+        row = colList.indexOf(val, sRow);
+    }
+    return row;
 }
 
 /**
  * 指定の楽曲が何行目にあるか (存在しない場合、-1)
  */
 export function registedSongRow(difficulty: string, songTitle: string) {
-  let row = -1;
+    let row = -1;
 
-  //指定の楽曲の難易度が一致するまで検索
-  do {
-    row = findRow(SONG_SHEET_DATA, songTitle, 0, row + 1);
-    if (row < 0) {
-      return -1;
-    } else {
-      //指定の難易度か確認
-      const isExist = SONG_SHEET_DATA[row].includes(difficulty);
-      if (isExist) return row;
-    }
-  } while (true);
+    //指定の楽曲の難易度が一致するまで検索
+    do {
+        row = findRow(SONG_SHEET_DATA, songTitle, 0, row + 1);
+        if (row < 0) {
+            return -1;
+        } else {
+            //指定の難易度か確認
+            const isExist = SONG_SHEET_DATA[row].includes(difficulty);
+            if (isExist) return row;
+        }
+    } while (true);
 }
 
 /**
  * 指定の楽曲とレベルが登録されているかどうか
  */
 export function isRegistedSong(difficulty: string, songTitle: string) {
-  const row = registedSongRow(difficulty, songTitle);
-  return row > 0;
+    const row = registedSongRow(difficulty, songTitle);
+    return row > 0;
 }
 
 /**
  * 指定の難易度のデータのみを取り出し
  */
 export function fetchDifficultyCollectData(difficulty: string) {
-  //指定の難易度の曲データの行番号を取得
-  const col = COLLECT_SHEET_DATA[0].indexOf(difficulty) + 1;
-  // 指定の難易度のみのデータを取り出し
-  const fetchedDiffData = COLLECT_SHEET_DATA.map((item: unknown[]) =>
-    item.slice(col, col + 9)
-  );
+    //指定の難易度の曲データの行番号を取得
+    const col = COLLECT_SHEET_DATA[0].indexOf(difficulty) + 1;
+    // 指定の難易度のみのデータを取り出し
+    const fetchedDiffData = COLLECT_SHEET_DATA.map((item: unknown[]) => item.slice(col, col + 9));
 
-  return fetchedDiffData;
+    return fetchedDiffData;
 }
 
 /**
  * Url用の名前を取得
  */
 export function extractionUrlName(name: string) {
-  const match = name.match(/>(.+)/);
+    const match = name.match(/>(.+)/);
 
-  if (match !== null) {
-    name = match[1];
-  } else if (name === '') {
-    return '';
-  }
-  name = changeCodeToString(name); // Löschenだけコード標記なので、変換して対応
+    if (match !== null) {
+        name = match[1];
+    } else if (name === '') {
+        return '';
+    }
+    name = changeCodeToString(name); // Löschenだけコード標記なので、変換して対応
 
-  return name;
+    return name;
 }
 
 /**
  * 日本語用曲名を取得
  */
 export function extractionJaName(name: string) {
-  const match = name.match(/(.+)>/);
+    const match = name.match(/(.+)>/);
 
-  if (match !== null) {
-    name = match[1];
-  } else if (name === '') {
-    return '';
-  }
-  return changeCodeToString(name);
+    if (match !== null) {
+        name = match[1];
+    } else if (name === '') {
+        return '';
+    }
+    return changeCodeToString(name);
 }
 
 /**
  * 文字コード化しているところを置き換え
  */
 export function changeCodeToString(s: string) {
-  const chars = s.match(/&#([0-9]+);/);
-  if (chars === null) return s;
+    const chars = s.match(/&#([0-9]+);/);
+    if (chars === null) return s;
 
-  //文字コード化している部分を一つずつ変換
-  for (let i = 1; i < chars.length; i++) {
-    const char = Number(chars[i]);
-    const cs = String.fromCharCode(char);
-    const replaceWord = new RegExp('&#' + char + ';', 'g');
-    s = s.replace(replaceWord, cs);
-  }
-  return s;
+    //文字コード化している部分を一つずつ変換
+    for (let i = 1; i < chars.length; i++) {
+        const char = Number(chars[i]);
+        const cs = String.fromCharCode(char);
+        const replaceWord = new RegExp('&#' + char + ';', 'g');
+        s = s.replace(replaceWord, cs);
+    }
+    return s;
 }

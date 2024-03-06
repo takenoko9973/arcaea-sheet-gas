@@ -1,20 +1,4 @@
-/**
- * Copyright 2023 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const SHEET_ID: string =
-  PropertiesService.getScriptProperties().getProperty('sheetId')!;
+const SHEET_ID: string = PropertiesService.getScriptProperties().getProperty('sheetId')!;
 export const SHEET_BOOK = SpreadsheetApp.openById(SHEET_ID);
 
 export const COLLECT_SHEET_NAME = 'SongCollection';
@@ -27,27 +11,21 @@ export const SUM_SCORE_DATE_SHEET_NAME = 'DataEachDate';
 export const COLLECT_SHEET = SHEET_BOOK.getSheetByName(COLLECT_SHEET_NAME)!;
 export const SONG_SHEET = SHEET_BOOK.getSheetByName(SONG_SHEET_NAME)!;
 export const POTENTIAL_SHEET = SHEET_BOOK.getSheetByName(POTENTIAL_SHEET_NAME)!;
-export const MANUAL_REGIST_SHEET = SHEET_BOOK.getSheetByName(
-  MANUAL_REGIST_SHEET_NAME
-)!;
-export const SCORE_STATISTICS_SHEET = SHEET_BOOK.getSheetByName(
-  SCORE_STATISTICS_SHEET_NAME
-)!;
-export const SUM_SCORE_DATE_SHEET = SHEET_BOOK.getSheetByName(
-  SUM_SCORE_DATE_SHEET_NAME
-)!;
+export const MANUAL_REGIST_SHEET = SHEET_BOOK.getSheetByName(MANUAL_REGIST_SHEET_NAME)!;
+export const SCORE_STATISTICS_SHEET = SHEET_BOOK.getSheetByName(SCORE_STATISTICS_SHEET_NAME)!;
+export const SUM_SCORE_DATE_SHEET = SHEET_BOOK.getSheetByName(SUM_SCORE_DATE_SHEET_NAME)!;
 
 export const SONG_SHEET_DATA = SONG_SHEET.getRange(
-  1,
-  1,
-  SONG_SHEET.getLastRow(),
-  SONG_SHEET.getLastColumn()
+    1,
+    1,
+    SONG_SHEET.getLastRow(),
+    SONG_SHEET.getLastColumn()
 ).getValues();
 export const COLLECT_SHEET_DATA = COLLECT_SHEET.getRange(
-  1,
-  1,
-  COLLECT_SHEET.getLastRow(),
-  COLLECT_SHEET.getLastColumn()
+    1,
+    1,
+    COLLECT_SHEET.getLastRow(),
+    COLLECT_SHEET.getLastColumn()
 ).getValues();
 
 export const BEST_POTENTIAL_CELL = 'O4';

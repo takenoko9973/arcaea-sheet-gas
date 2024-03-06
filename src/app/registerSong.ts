@@ -1,10 +1,10 @@
 import { CollectionSong, fetchSongDataFromWiki } from "../class/collectionSong";
 import { Song } from "../class/song";
 import { SONG_SHEET } from "../const";
-import { fetchDifficultyCollectData, isRegistedSong } from "../util";
+import { fetchDifficultyCollectData, isRegisteredSong } from "../util";
 
-export function registSongData(difficulty: string) {
-    console.log("Start registing(%s)", difficulty);
+export function registerSongData(difficulty: string) {
+    console.log("Start registering(%s)", difficulty);
 
     // 指定の難易度のみのデータを取り出し
     const diffData = fetchDifficultyCollectData(difficulty);
@@ -16,8 +16,8 @@ export function registSongData(difficulty: string) {
         if (collectSong.nameJp === null) continue;
 
         //存在確認
-        const isRegisted = isRegistedSong(collectSong.difficulty, collectSong.songTitle);
-        if (isRegisted) continue;
+        const isRegistered = isRegisteredSong(collectSong.difficulty, collectSong.songTitle);
+        if (isRegistered) continue;
 
         // まだ定数が判明していなければ、無視
         if (collectSong.constant === "") continue;
@@ -34,7 +34,7 @@ export function registSongData(difficulty: string) {
         }
         addSong(song);
     }
-    console.log("End registing(%s)", difficulty);
+    console.log("End registering(%s)", difficulty);
 }
 
 /**

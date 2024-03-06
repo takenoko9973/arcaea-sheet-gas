@@ -1,4 +1,4 @@
-import { fetchDifficultyCollectData, registedSongRow } from "../util";
+import { fetchDifficultyCollectData, registeredSongRow as registeredSongRow } from "../util";
 import { CollectionSong } from "../class/collectionSong";
 import { Song } from "../class/song";
 import { SONG_SHEET, SONG_SHEET_DATA } from "../const";
@@ -22,36 +22,36 @@ export function updateData(difficulty: string) {
 
 function updateSongData(collectedSong: CollectionSong) {
     // 登録済みかどうか
-    const registedSong = fetchRegistedSong(collectedSong.difficulty, collectedSong.songTitle);
-    if (registedSong === null) return;
+    const registeredSong = fetchRegisteredSong(collectedSong.difficulty, collectedSong.songTitle);
+    if (registeredSong === null) return;
 
     // 整合性確認
-    const equalSongData = checkSongDataConsistency(registedSong, collectedSong.toSongData());
+    const equalSongData = checkSongDataConsistency(registeredSong, collectedSong.toSongData());
     if (equalSongData) return;
 
     // 更新
-    console.log("update data of %s(%s)", registedSong.nameJp, registedSong.difficulty);
-    const newSongData = updateSongDataWithDelta(registedSong, collectedSong.toSongData());
+    console.log("update data of %s(%s)", registeredSong.nameJp, registeredSong.difficulty);
+    const newSongData = updateSongDataWithDelta(registeredSong, collectedSong.toSongData());
     overwriteSongData(newSongData);
 }
 
-function fetchRegistedSong(difficulty: string, songTitle: string) {
-    const registedRow = registedSongRow(difficulty, songTitle);
-    const registedSong = fetchRegistedSongByRowNum(registedRow);
-    return registedSong;
+function fetchRegisteredSong(difficulty: string, songTitle: string) {
+    const registeredRow = registeredSongRow(difficulty, songTitle);
+    const registeredSong = fetchRegisteredSongByRowNum(registeredRow);
+    return registeredSong;
 }
 
-function fetchRegistedSongByRowNum(rowNum: number) {
+function fetchRegisteredSongByRowNum(rowNum: number) {
     if (rowNum < 0) return null;
 
     const songData = SONG_SHEET_DATA[rowNum].slice(0, 12);
     return new Song(songData);
 }
 
-function checkSongDataConsistency(registedSong: Song, collectedSong: Song) {
-    const equalLevel = registedSong.level === collectedSong.level;
-    const equalConstant = registedSong.constant === collectedSong.constant;
-    const equalNotes = registedSong.notes === collectedSong.notes;
+function checkSongDataConsistency(registeredSong: Song, collectedSong: Song) {
+    const equalLevel = registeredSong.level === collectedSong.level;
+    const equalConstant = registeredSong.constant === collectedSong.constant;
+    const equalNotes = registeredSong.notes === collectedSong.notes;
 
     return equalLevel && equalConstant && equalNotes;
 }
@@ -66,8 +66,10 @@ function updateSongDataWithDelta(songData: Song, newSongData: Song) {
 }
 
 function overwriteSongData(songData: Song) {
-    const registedRow = registedSongRow(songData.difficulty, songData.songTitle);
+    const registeredRow = registeredSongRow(songData.difficulty, songData.songTitle);
     const updateInfo = [songData.getSongDataList()];
 
-    SONG_SHEET.getRange("A" + (registedRow + 1) + ":L" + (registedRow + 1)).setValues(updateInfo);
+    SONG_SHEET.getRange("A" + (registeredRow + 1) + ":L" + (registeredRow + 1)).setValues(
+        updateInfo
+    );
 }

@@ -27,7 +27,7 @@ function findRow(dat: unknown[][], val: unknown, col: number, sRow = 0) {
 /**
  * 指定の楽曲が何行目にあるか (存在しない場合、-1)
  */
-export function registedSongRow(difficulty: string, songTitle: string) {
+export function registeredSongRow(difficulty: string, songTitle: string) {
     let row = -1;
 
     //指定の楽曲の難易度が一致するまで検索
@@ -46,8 +46,8 @@ export function registedSongRow(difficulty: string, songTitle: string) {
 /**
  * 指定の楽曲とレベルが登録されているかどうか
  */
-export function isRegistedSong(difficulty: string, songTitle: string) {
-    const row = registedSongRow(difficulty, songTitle);
+export function isRegisteredSong(difficulty: string, songTitle: string) {
+    const row = registeredSongRow(difficulty, songTitle);
     return row > 0;
 }
 

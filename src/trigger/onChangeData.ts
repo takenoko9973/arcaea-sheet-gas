@@ -1,8 +1,8 @@
 import { checkCollectedSong } from "../app/checkCollectedSong";
-import { manualRegist } from "../app/manualRegist";
+import { manualRegister } from "../app/manualRegist";
 import { SheetCellPair, equalSheetCellPair } from "../class/sheet-cell-pair";
 import {
-    MANUAL_REGIST_SHEET_NAME,
+    MANUAL_REGISTER_SHEET_NAME,
     SHEET_BOOK,
     SONG_SHEET,
     SONG_SHEET_DATA,
@@ -36,8 +36,8 @@ export function runTrigger(changedPair: SheetCellPair) {
             func: checkCollectedSong,
         },
         {
-            pair: new SheetCellPair(MANUAL_REGIST_SHEET_NAME, "G2"),
-            func: manualRegist,
+            pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"),
+            func: manualRegister,
         },
     ];
     const pairIndex = triggerList.findIndex(pair => equalSheetCellPair(pair["pair"], changedPair));

@@ -15,18 +15,8 @@ export const MANUAL_REGISTER_SHEET = SHEET_BOOK.getSheetByName(MANUAL_REGISTER_S
 export const SCORE_STATISTICS_SHEET = SHEET_BOOK.getSheetByName(SCORE_STATISTICS_SHEET_NAME)!;
 export const SUM_SCORE_DATE_SHEET = SHEET_BOOK.getSheetByName(SUM_SCORE_DATE_SHEET_NAME)!;
 
-export const SONG_SHEET_DATA = SONG_SHEET.getRange(
-    1,
-    1,
-    SONG_SHEET.getLastRow(),
-    SONG_SHEET.getLastColumn()
-).getValues();
-export const COLLECT_SHEET_DATA = COLLECT_SHEET.getRange(
-    1,
-    1,
-    COLLECT_SHEET.getLastRow(),
-    COLLECT_SHEET.getLastColumn()
-).getValues();
+export const SONG_SHEET_DATA = SONG_SHEET.getDataRange().getValues();
+export const COLLECT_SHEET_DATA = COLLECT_SHEET.getDataRange().getValues();
 
 export const BEST_POTENTIAL_CELL = "O4";
 export const SUM_SCORE_INFO_CELL = "J33:K34";

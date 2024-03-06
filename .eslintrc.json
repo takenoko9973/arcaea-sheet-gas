@@ -2,6 +2,7 @@
   "env": {
     "browser": true,
     "node": true,
+    "googleappsscript/googleappsscript": true,
     "es2020": true
   },
   "extends": [
@@ -15,7 +16,9 @@
     "project": "./tsconfig.json"
   },
   "plugins": [
-    "prettier"
+    "prettier",
+    "@typescript-eslint",
+    "googleappsscript"
   ],
   "rules": {
     "prettier/prettier": "error"

@@ -26,6 +26,8 @@ export class Song {
             this.notes,
             this.score,
         ] = record;
+
+        this.version = this.version.match(/(\d+\.\d+)/)?.at(1) ?? ""; // アポストロフィが付くので排除
     }
 
     getSongDataList() {

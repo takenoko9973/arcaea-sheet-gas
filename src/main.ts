@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SheetCellPair } from "./class/sheetCellPair";
 import {
-    SUM_SCORE_DATE_SHEET,
+    DAILY_REPOSITORY_SHEET,
     POTENTIAL_SHEET,
     BEST_POTENTIAL_CELL,
     SCORE_STATISTICS_SHEET,
@@ -27,7 +27,7 @@ function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
 }
 
 function setDataByDate() {
-    const lastRow = SUM_SCORE_DATE_SHEET.getLastRow();
+    const lastRow = DAILY_REPOSITORY_SHEET.getLastRow();
 
     const today = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy/MM/dd");
     const bestPotential = POTENTIAL_SHEET.getRange(BEST_POTENTIAL_CELL).getValue();
@@ -39,8 +39,8 @@ function setDataByDate() {
     inputData.push(...grade);
     inputData.push(...score);
 
-    SUM_SCORE_DATE_SHEET.insertRowAfter(lastRow);
+    DAILY_REPOSITORY_SHEET.insertRowAfter(lastRow);
 
-    const inputCell = SUM_SCORE_DATE_SHEET.getRange(lastRow + 1, 1, 1, inputData.length);
+    const inputCell = DAILY_REPOSITORY_SHEET.getRange(lastRow + 1, 1, 1, inputData.length);
     inputCell.setValues([inputData]);
 }

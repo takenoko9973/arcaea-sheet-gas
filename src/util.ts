@@ -10,6 +10,22 @@ export function toHalfWidth(str: string) {
 }
 
 /**
+ * ある要素のインデックスをすべて返す
+ * 存在しない場合は空配列を返す
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function allIndexesOf(array: any[], val: any): number[] {
+    const indexes = [];
+
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === val) {
+            indexes.push(i);
+        }
+    }
+    return indexes;
+}
+
+/**
  * 行検索
  */
 function findRow(dat: unknown[][], val: unknown, col: number, sRow = 0) {

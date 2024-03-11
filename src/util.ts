@@ -109,3 +109,16 @@ export function changeCodeToString(s: string) {
     }
     return s;
 }
+
+/**
+ * 配列をチャンク数ごとに分ける
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function splitArrayIntoChunks(array: any[], chunkSize: number) {
+    const result = [];
+
+    for (let i = 0; i < array.length; i += chunkSize) {
+        result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+}

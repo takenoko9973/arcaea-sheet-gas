@@ -1,3 +1,4 @@
+import { DAILY_REPOSITORY_SHEET_NAME, SHEET_BOOK } from "../../const";
 import { splitArrayIntoChunks } from "../../util";
 import { ScoreData } from "../scoreData";
 
@@ -8,6 +9,10 @@ export class DailyRepositorySheet {
 
     constructor(sheet: Sheet) {
         this.sheet = sheet;
+    }
+
+    static get instance() {
+        return new DailyRepositorySheet(SHEET_BOOK.getSheetByName(DAILY_REPOSITORY_SHEET_NAME)!);
     }
 
     addData(data: DailyArcaeaData) {
@@ -25,7 +30,7 @@ export class DailyRepositorySheet {
     }
 }
 
-class DailyArcaeaData {
+export class DailyArcaeaData {
     date: Date;
     potential: number;
     grade: number[];
@@ -47,11 +52,7 @@ class DailyArcaeaData {
         dataArray.push(Utilities.formatDate(this.date, "JST", "yyyy/MM/dd"));
         dataArray.push(this.potential);
         dataArray.push(...this.grade);
-        dataArray.push(
-            ...this.scoreData.flatMap(value => {
-                [value.sumScore, value.lostScore];
-            })
-        );
+        dataArray.push(...this.scoreData.flatMap(value => [value.sumScore, value.lostScore]));
 
         return dataArray;
     }

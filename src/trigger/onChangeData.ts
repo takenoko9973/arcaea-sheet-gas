@@ -6,20 +6,20 @@ import {
     SHEET_BOOK,
     SONG_SHEET,
     SONG_SHEET_DATA,
-    SONG_SHEET_NAME,
+    SONG_SCORE_SHEET_NAME,
 } from "../const";
 
 const triggerList = [
     {
-        pair: new SheetCellPair(SONG_SHEET_NAME, "AA5"),
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "AA5"),
         func: songDifficultySort,
     },
     {
-        pair: new SheetCellPair(SONG_SHEET_NAME, "AA6"),
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "AA6"),
         func: songNameSort,
     },
     {
-        pair: new SheetCellPair(SONG_SHEET_NAME, "AA8"),
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "AA8"),
         func: checkCollectedSong,
     },
     {

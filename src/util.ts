@@ -1,4 +1,4 @@
-import { COLLECT_SHEET_DATA, SONG_SHEET_DATA } from "./const";
+import { COLLECT_SHEET_DATA } from "./const";
 
 /**
  * カタカナ以外を全角から半角へ変換
@@ -23,48 +23,6 @@ export function allIndexesOf(array: any[], val: any): number[] {
         }
     }
     return indexes;
-}
-
-/**
- * 行検索
- */
-function findRow(dat: unknown[][], val: unknown, col: number, sRow = 0) {
-    let row = -1;
-
-    if (col >= 0) {
-        //指定の行だけ抜き出し
-        const colList = dat.map((row: unknown[]) => row[col]);
-        //リスト検索
-        row = colList.indexOf(val, sRow);
-    }
-    return row;
-}
-
-/**
- * 指定の楽曲が何行目にあるか (存在しない場合、-1)
- */
-export function registeredSongRow(difficulty: string, songTitle: string) {
-    let row = -1;
-
-    //指定の楽曲の難易度が一致するまで検索
-    do {
-        row = findRow(SONG_SHEET_DATA, songTitle, 0, row + 1);
-        if (row < 0) {
-            return -1;
-        } else {
-            //指定の難易度か確認
-            const isExist = SONG_SHEET_DATA[row].includes(difficulty);
-            if (isExist) return row;
-        }
-    } while (true);
-}
-
-/**
- * 指定の楽曲とレベルが登録されているかどうか
- */
-export function isRegisteredSong(difficulty: string, songTitle: string) {
-    const row = registeredSongRow(difficulty, songTitle);
-    return row > 0;
 }
 
 /**

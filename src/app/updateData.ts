@@ -1,10 +1,12 @@
-import { fetchDifficultyCollectData, registeredSongRow as registeredSongRow } from "../util";
+import { fetchDifficultyCollectData } from "../util";
 import { CollectionSong } from "../class/collectionSong";
 import { Song } from "../class/song";
-import { SONG_SHEET, SONG_SHEET_DATA } from "../const";
+import { SongScoreSheet } from "../class/sheet/songScoreSheet";
 
 export function updateData(difficulty: string) {
     console.log("Start updating(%s)", difficulty);
+
+    const songScoreSheet = SongScoreSheet.instance;
 
     // 指定の難易度のみのデータを取り出し
     const diffData = fetchDifficultyCollectData(difficulty);
@@ -14,15 +16,19 @@ export function updateData(difficulty: string) {
         const collectedSong = new CollectionSong(difficulty, diffData[i]);
         if (collectedSong.nameJp === "") continue;
 
-        updateSongData(collectedSong);
+        updateSongData(songScoreSheet, collectedSong);
     }
 
+    songScoreSheet.updateSheet();
     console.log("End updating(%s)", difficulty);
 }
 
-function updateSongData(collectedSong: CollectionSong) {
+function updateSongData(songScoreSheet: SongScoreSheet, collectedSong: CollectionSong) {
     // 登録済みかどうか
-    const registeredSong = fetchRegisteredSong(collectedSong.difficulty, collectedSong.songTitle);
+    const registeredSong = songScoreSheet.searchRegisteredSong(
+        collectedSong.difficulty,
+        collectedSong.songTitle
+    );
     if (registeredSong === null) return;
 
     // 整合性確認
@@ -32,20 +38,7 @@ function updateSongData(collectedSong: CollectionSong) {
     // 更新
     console.log("update data of %s(%s)", registeredSong.nameJp, registeredSong.difficulty);
     const newSongData = updateSongDataWithDelta(registeredSong, collectedSong.toSongData());
-    overwriteSongData(newSongData);
-}
-
-function fetchRegisteredSong(difficulty: string, songTitle: string) {
-    const registeredRow = registeredSongRow(difficulty, songTitle);
-    const registeredSong = fetchRegisteredSongByRowNum(registeredRow);
-    return registeredSong;
-}
-
-function fetchRegisteredSongByRowNum(rowNum: number) {
-    if (rowNum < 0) return null;
-
-    const songData = SONG_SHEET_DATA[rowNum].slice(0, 12);
-    return new Song(songData);
+    songScoreSheet.overwriteSong(newSongData);
 }
 
 function checkSongDataConsistency(registeredSong: Song, collectedSong: Song) {
@@ -63,13 +56,4 @@ function updateSongDataWithDelta(songData: Song, newSongData: Song) {
     updateSongData.constant = newSongData.constant;
     updateSongData.notes = newSongData.notes;
     return updateSongData;
-}
-
-function overwriteSongData(songData: Song) {
-    const registeredRow = registeredSongRow(songData.difficulty, songData.songTitle);
-    const updateInfo = [songData.getSongDataList()];
-
-    SONG_SHEET.getRange("A" + (registeredRow + 1) + ":L" + (registeredRow + 1)).setValues(
-        updateInfo
-    );
 }

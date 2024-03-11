@@ -1,19 +1,15 @@
+import { SongScoreSheet } from "../class/sheet/songScoreSheet";
 import { Song } from "../class/song";
 import { MANUAL_REGISTER_SHEET as MANUAL_REGISTER_SHEET } from "../const";
-import {
-    changeCodeToString,
-    extractionJaName,
-    extractionUrlName,
-    isRegisteredSong,
-    toHalfWidth,
-} from "../util";
-import { addSong } from "./registerSong";
+import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "../util";
 
 /**
  * 手動登録ルーチン
  */
 export function manualRegister() {
     console.log("start manual register");
+
+    const songScoreSheet = SongScoreSheet.instance;
 
     const col = 0;
     const dat = MANUAL_REGISTER_SHEET.getDataRange().getValues()[1];
@@ -25,8 +21,8 @@ export function manualRegister() {
     const difficulty = dat[col + 2];
 
     //存在確認
-    const isUnregistered = isRegisteredSong(songTitle, difficulty);
-    if (!isUnregistered) return;
+    const isRegistered = songScoreSheet.isRegistered(songTitle, difficulty);
+    if (isRegistered) return;
 
     const urlName = extractionUrlName(toHalfWidth(dat[col]));
     const level = dat[col + 3];
@@ -50,7 +46,7 @@ export function manualRegister() {
 
     //すべてのデータが取得できているか確認
     if (song.isLuckData()) {
-        addSong(song);
+        songScoreSheet.addSong(song);
     } else {
         console.log("No wiki data (%s)", name);
     }

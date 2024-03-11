@@ -1,10 +1,11 @@
 import { CollectionSong, fetchSongDataFromWiki } from "../class/collectionSong";
-import { Song } from "../class/song";
-import { SONG_SHEET } from "../const";
-import { fetchDifficultyCollectData, isRegisteredSong } from "../util";
+import { SongScoreSheet } from "../class/sheet/songScoreSheet";
+import { fetchDifficultyCollectData } from "../util";
 
 export function registerSongData(difficulty: string) {
     console.log("Start registering(%s)", difficulty);
+
+    const songScoreSheet = SongScoreSheet.instance;
 
     // 指定の難易度のみのデータを取り出し
     const diffData = fetchDifficultyCollectData(difficulty);
@@ -16,7 +17,10 @@ export function registerSongData(difficulty: string) {
         if (collectSong.nameJp === null) continue;
 
         //存在確認
-        const isRegistered = isRegisteredSong(collectSong.difficulty, collectSong.songTitle);
+        const isRegistered = songScoreSheet.isRegistered(
+            collectSong.difficulty,
+            collectSong.songTitle
+        );
         if (isRegistered) continue;
 
         // まだ定数が判明していなければ、無視
@@ -32,21 +36,8 @@ export function registerSongData(difficulty: string) {
             console.warn("Exist luck data (%s)", song.nameJp);
             continue;
         }
-        addSong(song);
+        songScoreSheet.addSong(song);
+        songScoreSheet.updateSheet();
     }
     console.log("End registering(%s)", difficulty);
-}
-
-/**
- * songをリストの一番後ろに追加する
- */
-export function addSong(song: Song) {
-    const addInfo = [song.getSongDataList()];
-
-    const aCol = SONG_SHEET.getRange("A:A").getValues();
-    const lastRow = aCol.filter(String).length + 1; //空白の要素を除いた最後の行を取得
-
-    //行追加
-    SONG_SHEET.insertRowAfter(lastRow);
-    SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
 }

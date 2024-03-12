@@ -21,5 +21,5 @@ function update() {
     updateData("FTR");
     updateData("BYD");
     updateData("ETR");
-    console.log("Start update");
+    console.log("End update");
 }

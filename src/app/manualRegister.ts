@@ -1,6 +1,6 @@
 import { SongScoreSheet } from "../class/sheet/songScoreSheet";
 import { Song } from "../class/song";
-import { MANUAL_REGISTER_SHEET as MANUAL_REGISTER_SHEET } from "../const";
+import { MANUAL_REGISTER_SHEET } from "../const";
 import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "../util";
 
 /**

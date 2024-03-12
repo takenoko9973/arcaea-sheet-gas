@@ -2,10 +2,10 @@
 import { SheetCellPair } from "./class/sheetCellPair";
 import {
     POTENTIAL_SHEET,
-    BEST_POTENTIAL_CELL,
     SCORE_STATISTICS_SHEET,
-    SUM_SCORE_INFO_CELL,
+    BEST_POTENTIAL_CELL,
     GRADE_CELL,
+    SUM_SCORE_INFO_CELL,
 } from "./const";
 import { runTrigger } from "./trigger/onChangeData";
 import { splitArrayIntoChunks } from "./util";

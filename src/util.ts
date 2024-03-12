@@ -1,5 +1,3 @@
-import { COLLECT_SHEET_DATA } from "./const";
-
 /**
  * カタカナ以外を全角から半角へ変換
  **/
@@ -23,18 +21,6 @@ export function allIndexesOf(array: any[], val: any): number[] {
         }
     }
     return indexes;
-}
-
-/**
- * 指定の難易度のデータのみを取り出し
- */
-export function fetchDifficultyCollectData(difficulty: string) {
-    //指定の難易度の曲データの行番号を取得
-    const col = COLLECT_SHEET_DATA[0].indexOf(difficulty) + 1;
-    // 指定の難易度のみのデータを取り出し
-    const fetchedDiffData = COLLECT_SHEET_DATA.map((item: unknown[]) => item.slice(col, col + 9));
-
-    return fetchedDiffData;
 }
 
 /**

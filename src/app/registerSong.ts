@@ -1,36 +1,36 @@
-import { CollectionSong, fetchSongDataFromWiki } from "../class/collectionSong";
-import { SongScoreSheet } from "../class/sheet/songScoreSheet";
-import { fetchDifficultyCollectData } from "../util";
+import { fetchSongDataFromWiki } from "../class/collectionSong";
+import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
+import { Difficulty } from "../const";
 
-export function registerSongData(difficulty: string) {
+export function registerSongData(difficulty: Difficulty) {
     console.log("Start registering(%s)", difficulty);
 
     const songScoreSheet = SongScoreSheet.instance;
+    const songCollectionSheet = SongCollectionSheet.instance;
 
     // 指定の難易度のみのデータを取り出し
-    const diffData = fetchDifficultyCollectData(difficulty);
+    const diffData = songCollectionSheet.getCollectionData(difficulty);
 
     //全データチェック
-    for (let i = 1; i < diffData.length; i++) {
-        const collectSong = new CollectionSong(difficulty, diffData[i]);
-        if (collectSong.nameJp === "") continue;
-        if (collectSong.nameJp === null) continue;
+    for (const collectedSong of diffData) {
+        if (collectedSong.nameJp === "") continue;
+        if (collectedSong.nameJp === null) continue;
 
         //存在確認
         const isRegistered = songScoreSheet.isRegistered(
-            collectSong.difficulty,
-            collectSong.songTitle
+            collectedSong.difficulty,
+            collectedSong.songTitle
         );
         if (isRegistered) continue;
 
         // まだ定数が判明していなければ、無視
-        if (collectSong.constant === "") continue;
+        if (collectedSong.constant === "") continue;
 
-        console.log("getting data of %s(%s)", collectSong.nameJp, collectSong.difficulty);
-        fetchSongDataFromWiki(collectSong);
+        console.log("getting data of %s(%s)", collectedSong.nameJp, collectedSong.difficulty);
+        fetchSongDataFromWiki(collectedSong);
 
         // 欠けがあるか確認
-        const song = collectSong.toSongData();
+        const song = collectedSong.toSongData();
         if (song.isLuckData()) {
             // データが足りなければ飛ばす
             console.warn("Exist luck data (%s)", song.nameJp);

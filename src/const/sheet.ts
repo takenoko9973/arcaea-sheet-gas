@@ -8,11 +8,9 @@ export const MANUAL_REGISTER_SHEET_NAME = "ManualRegister";
 export const SCORE_STATISTICS_SHEET_NAME = "ScoreStatistics";
 export const DAILY_REPOSITORY_SHEET_NAME = "DailyRepository";
 
-export const COLLECT_SHEET = SHEET_BOOK.getSheetByName(COLLECT_SHEET_NAME)!;
 export const SONG_SHEET = SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!;
 export const POTENTIAL_SHEET = SHEET_BOOK.getSheetByName(POTENTIAL_SHEET_NAME)!;
 export const MANUAL_REGISTER_SHEET = SHEET_BOOK.getSheetByName(MANUAL_REGISTER_SHEET_NAME)!;
 export const SCORE_STATISTICS_SHEET = SHEET_BOOK.getSheetByName(SCORE_STATISTICS_SHEET_NAME)!;
 
 export const SONG_SHEET_DATA = SONG_SHEET.getDataRange().getValues();
-export const COLLECT_SHEET_DATA = COLLECT_SHEET.getDataRange().getValues();

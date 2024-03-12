@@ -1,44 +1,39 @@
-import { fetchDifficultyCollectData } from "../util";
-import { CollectionSong } from "../class/collectionSong";
 import { Song } from "../class/song";
-import { SongScoreSheet } from "../class/sheet/songScoreSheet";
+import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
+import { Difficulty } from "../const";
 
-export function updateData(difficulty: string) {
+export function updateData(difficulty: Difficulty) {
     console.log("Start updating(%s)", difficulty);
 
     const songScoreSheet = SongScoreSheet.instance;
+    const songCollectionSheet = SongCollectionSheet.instance;
 
     // 指定の難易度のみのデータを取り出し
-    const diffData = fetchDifficultyCollectData(difficulty);
+    const diffData = songCollectionSheet.getCollectionData(difficulty);
 
     //全データチェック
-    for (let i = 1; i < diffData.length; i++) {
-        const collectedSong = new CollectionSong(difficulty, diffData[i]);
+    for (const collectedSong of diffData) {
         if (collectedSong.nameJp === "") continue;
 
-        updateSongData(songScoreSheet, collectedSong);
+        // 登録済みかどうか
+        const registeredSong = songScoreSheet.searchRegisteredSong(
+            collectedSong.difficulty,
+            collectedSong.songTitle
+        );
+        if (registeredSong === null) return;
+
+        // 整合性確認
+        const equalSongData = checkSongDataConsistency(registeredSong, collectedSong.toSongData());
+        if (equalSongData) return;
+
+        // 更新
+        console.log("update data of %s(%s)", registeredSong.nameJp, registeredSong.difficulty);
+        const newSongData = updateSongDataWithDelta(registeredSong, collectedSong.toSongData());
+        songScoreSheet.overwriteSong(newSongData);
     }
 
     songScoreSheet.updateSheet();
     console.log("End updating(%s)", difficulty);
-}
-
-function updateSongData(songScoreSheet: SongScoreSheet, collectedSong: CollectionSong) {
-    // 登録済みかどうか
-    const registeredSong = songScoreSheet.searchRegisteredSong(
-        collectedSong.difficulty,
-        collectedSong.songTitle
-    );
-    if (registeredSong === null) return;
-
-    // 整合性確認
-    const equalSongData = checkSongDataConsistency(registeredSong, collectedSong.toSongData());
-    if (equalSongData) return;
-
-    // 更新
-    console.log("update data of %s(%s)", registeredSong.nameJp, registeredSong.difficulty);
-    const newSongData = updateSongDataWithDelta(registeredSong, collectedSong.toSongData());
-    songScoreSheet.overwriteSong(newSongData);
 }
 
 function checkSongDataConsistency(registeredSong: Song, collectedSong: Song) {

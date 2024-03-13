@@ -59,4 +59,15 @@ export class Song {
     getMaximumScore() {
         return 10000000 + this.notes;
     }
+
+    getSongPotential() {
+        if (this.score >= 10000000) {
+            return this.constant + 2.0;
+        } else if (this.score >= 9800000) {
+            return this.constant + 1.0 + (this.score - 98000000) / 200000;
+        } else {
+            const potential = this.constant + (this.score - 95000000) / 300000;
+            return potential >= 0 ? potential : 0; // 0を下回らない
+        }
+    }
 }

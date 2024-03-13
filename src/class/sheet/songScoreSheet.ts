@@ -1,6 +1,6 @@
-import { SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { Difficulty, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
-import { allIndexesOf } from "../../util";
+import { allIndexesOf, average, sum } from "../../util";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
@@ -110,4 +110,13 @@ export class SongScoreSheet {
         return sum(scores);
     }
 
+    getBestPotential() {
+        const bestPotentials = this.songData
+            .filter(song => song.level !== "?")
+            .map(song => song.getSongPotential())
+            .sort()
+            .slice(0, 30);
+
+        return average(bestPotentials);
+    }
 }

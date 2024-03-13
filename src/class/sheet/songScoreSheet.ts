@@ -141,7 +141,8 @@ export class SongScoreSheet {
         const bestPotentials = this.songData
             .filter(song => song.level !== "?")
             .map(song => song.getSongPotential())
-            .sort()
+            .sort((a, b) => a - b)
+            .reverse()
             .slice(0, 30);
 
         return average(bestPotentials);

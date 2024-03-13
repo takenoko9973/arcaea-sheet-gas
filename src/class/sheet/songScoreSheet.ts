@@ -1,6 +1,6 @@
-import { SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { Difficulty, Grade, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
-import { allIndexesOf } from "../../util";
+import { allIndexesOf, average, sum } from "../../util";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
@@ -84,5 +84,67 @@ export class SongScoreSheet {
         if (index >= 0) {
             this.songData[index] = song;
         }
+    }
+
+    /**
+     * 指定難易度の最大合計スコアを取得
+     */
+    getMaximumSumScore(difficulty: Difficulty) {
+        const maximumScores = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.getMaximumScore());
+
+        return sum(maximumScores);
+    }
+
+    /**
+     * 指定難易度の合計スコアを取得
+     */
+    getSumScore(difficulty: Difficulty) {
+        const scores = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.score);
+
+        return sum(scores);
+    }
+
+    /**
+     * 指定難易度の各グレード数を取得
+     */
+    getGrades(difficulty: Difficulty) {
+        const grades = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.getGrade());
+
+        const gradeCounts: { [key in Grade]: number } = {
+            "PM+": 0,
+            "PM": 0,
+            "EX+": 0,
+            "EX": 0,
+            "AA": 0,
+            "A": 0,
+            "B": 0,
+            "C": 0,
+            "D": 0,
+            "NP": 0,
+        };
+        for (const grade of grades) {
+            gradeCounts[grade] = gradeCounts[grade] + 1;
+        }
+        return gradeCounts;
+    }
+
+    getBestPotential() {
+        const bestPotentials = this.songData
+            .filter(song => song.level !== "?")
+            .map(song => song.getSongPotential())
+            .sort((a, b) => a - b)
+            .reverse()
+            .slice(0, 30);
+
+        return average(bestPotentials);
     }
 }

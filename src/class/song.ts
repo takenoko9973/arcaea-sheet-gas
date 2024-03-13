@@ -55,4 +55,8 @@ export class Song {
         const existNegative = this.getSongDataList().includes(-1);
         return existBlank || existNegative;
     }
+
+    getMaximumScore() {
+        return 10000000 + this.notes;
+    }
 }

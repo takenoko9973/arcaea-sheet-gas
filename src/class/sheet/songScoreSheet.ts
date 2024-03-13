@@ -85,4 +85,29 @@ export class SongScoreSheet {
             this.songData[index] = song;
         }
     }
+
+    /**
+     * 指定難易度の最大合計スコアを取得
+     */
+    getMaximumSumScore(difficulty: Difficulty) {
+        const maximumScores = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.getMaximumScore());
+
+        return sum(maximumScores);
+    }
+
+    /**
+     * 指定難易度の合計スコアを取得
+     */
+    getSumScore(difficulty: Difficulty) {
+        const scores = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.score);
+
+        return sum(scores);
+    }
+
 }

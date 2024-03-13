@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SheetCellPair } from "./class/sheetCellPair";
 import {
-    SUM_SCORE_DATE_SHEET,
     POTENTIAL_SHEET,
-    BEST_POTENTIAL_CELL,
     SCORE_STATISTICS_SHEET,
-    SUM_SCORE_INFO_CELL,
+    BEST_POTENTIAL_CELL,
     GRADE_CELL,
+    SUM_SCORE_INFO_CELL,
 } from "./const";
 import { runTrigger } from "./trigger/onChangeData";
+import { splitArrayIntoChunks } from "./util";
+import { ScoreData } from "./class/scoreData";
+import { DailyArcaeaData, DailyRepositorySheet } from "./class/sheet/dailyRepositorySheet";
 
 function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const sheet = e.source.getActiveSheet();
@@ -27,20 +29,17 @@ function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
 }
 
 function setDataByDate() {
-    const lastRow = SUM_SCORE_DATE_SHEET.getLastRow();
+    const dailySheet = DailyRepositorySheet.instance;
 
-    const today = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy/MM/dd");
+    const today = new Date();
     const bestPotential = POTENTIAL_SHEET.getRange(BEST_POTENTIAL_CELL).getValue();
-    const score = SCORE_STATISTICS_SHEET.getRange(SUM_SCORE_INFO_CELL).getValues().flat();
     const grade = SCORE_STATISTICS_SHEET.getRange(GRADE_CELL).getValues().flat();
+    const score = SCORE_STATISTICS_SHEET.getRange(SUM_SCORE_INFO_CELL).getValues().flat();
 
-    const inputData = [today];
-    inputData.push(bestPotential);
-    inputData.push(...grade);
-    inputData.push(...score);
+    const scoreData = splitArrayIntoChunks(score, 2).map(
+        array => new ScoreData(array[0], array[1])
+    );
 
-    SUM_SCORE_DATE_SHEET.insertRowAfter(lastRow);
-
-    const inputCell = SUM_SCORE_DATE_SHEET.getRange(lastRow + 1, 1, 1, inputData.length);
-    inputCell.setValues([inputData]);
+    const dailyData = new DailyArcaeaData(today, bestPotential, grade, scoreData);
+    dailySheet.addData(dailyData);
 }

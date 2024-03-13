@@ -1,10 +1,11 @@
+import { Difficulty } from "../const";
 import { extractionJaName, extractionUrlName } from "../util";
 import { Song } from "./song";
 
 export class CollectionSong {
     composer: string;
     constant: string;
-    difficulty: string;
+    difficulty: Difficulty;
     level: string;
     nameEn: string;
     nameJp: string;
@@ -15,7 +16,7 @@ export class CollectionSong {
     urlName: string;
     version: string;
 
-    constructor(difficulty: string, data: any[]) {
+    constructor(difficulty: Difficulty, data: any[]) {
         let constantOld, constantNow;
 
         this.difficulty = difficulty;

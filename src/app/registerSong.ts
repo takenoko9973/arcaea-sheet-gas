@@ -1,52 +1,43 @@
-import { CollectionSong, fetchSongDataFromWiki } from "../class/collectionSong";
-import { Song } from "../class/song";
-import { SONG_SHEET } from "../const";
-import { fetchDifficultyCollectData, isRegisteredSong } from "../util";
+import { fetchSongDataFromWiki } from "../class/collectionSong";
+import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
+import { Difficulty } from "../const";
 
-export function registerSongData(difficulty: string) {
+export function registerSongData(difficulty: Difficulty) {
     console.log("Start registering(%s)", difficulty);
 
+    const songScoreSheet = SongScoreSheet.instance;
+    const songCollectionSheet = SongCollectionSheet.instance;
+
     // 指定の難易度のみのデータを取り出し
-    const diffData = fetchDifficultyCollectData(difficulty);
+    const diffData = songCollectionSheet.getCollectionData(difficulty);
 
     //全データチェック
-    for (let i = 1; i < diffData.length; i++) {
-        const collectSong = new CollectionSong(difficulty, diffData[i]);
-        if (collectSong.nameJp === "") continue;
-        if (collectSong.nameJp === null) continue;
+    for (const collectedSong of diffData) {
+        if (collectedSong.nameJp === "") continue;
+        if (collectedSong.nameJp === null) continue;
 
         //存在確認
-        const isRegistered = isRegisteredSong(collectSong.difficulty, collectSong.songTitle);
+        const isRegistered = songScoreSheet.isRegistered(
+            collectedSong.difficulty,
+            collectedSong.songTitle
+        );
         if (isRegistered) continue;
 
         // まだ定数が判明していなければ、無視
-        if (collectSong.constant === "") continue;
+        if (collectedSong.constant === "") continue;
 
-        console.log("getting data of %s(%s)", collectSong.nameJp, collectSong.difficulty);
-        fetchSongDataFromWiki(collectSong);
+        console.log("getting data of %s(%s)", collectedSong.nameJp, collectedSong.difficulty);
+        fetchSongDataFromWiki(collectedSong);
 
         // 欠けがあるか確認
-        const song = collectSong.toSongData();
+        const song = collectedSong.toSongData();
         if (song.isLuckData()) {
             // データが足りなければ飛ばす
             console.warn("Exist luck data (%s)", song.nameJp);
             continue;
         }
-        addSong(song);
+        songScoreSheet.addSong(song);
+        songScoreSheet.updateSheet();
     }
     console.log("End registering(%s)", difficulty);
-}
-
-/**
- * songをリストの一番後ろに追加する
- */
-export function addSong(song: Song) {
-    const addInfo = [song.getSongDataList()];
-
-    const aCol = SONG_SHEET.getRange("A:A").getValues();
-    const lastRow = aCol.filter(String).length + 1; //空白の要素を除いた最後の行を取得
-
-    //行追加
-    SONG_SHEET.insertRowAfter(lastRow);
-    SONG_SHEET.getRange("A" + lastRow + ":L" + lastRow).setValues(addInfo);
 }

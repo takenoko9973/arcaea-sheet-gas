@@ -1,0 +1,88 @@
+import { SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { Song } from "../song";
+import { allIndexesOf } from "../../util";
+
+type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
+
+export class SongScoreSheet {
+    private readonly songData: Song[];
+
+    static get instance() {
+        return new SongScoreSheet(SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!);
+    }
+
+    constructor(private readonly sheet: Sheet) {
+        const values = this.sheet.getDataRange().getValues();
+        this.songData = values
+            .slice(1) // 目次無視
+            .map(row => new Song(row.slice(0, 12)))
+            .filter(song => song.songTitle !== "");
+    }
+
+    /**
+     * 楽曲情報をシートに更新
+     */
+    updateSheet() {
+        // 不足分の行を追加
+        const sheetRowNum = this.sheet.getLastRow();
+        const songNum = this.registeredSongNum();
+        if (sheetRowNum < songNum + 5) {
+            this.sheet.insertRowsAfter(sheetRowNum, songNum + 5 - sheetRowNum);
+        }
+
+        const values = this.songData.map(song => song.getSongDataList());
+        this.sheet.getRange(2, 1, songNum, values[0].length).setValues(values);
+    }
+
+    registeredSongNum() {
+        const songNum = this.songData.length;
+        return songNum;
+    }
+
+    searchRegisteredSongIndex(difficulty: string, songTitle: string): number {
+        const registeredSongTitles = this.songData.map(song => song.songTitle);
+        const indexes = allIndexesOf(registeredSongTitles, songTitle);
+
+        for (const index of indexes) {
+            const song = this.songData[index];
+            if (song.difficulty === difficulty) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    searchRegisteredSong(difficulty: string, songTitle: string): Song | null {
+        const index = this.searchRegisteredSongIndex(difficulty, songTitle);
+        return this.songData[index];
+    }
+
+    isRegistered(difficulty: string, songTitle: string): boolean {
+        const index = this.searchRegisteredSongIndex(difficulty, songTitle);
+        return index >= 0;
+    }
+
+    /**
+     * 楽曲データを追加する
+     * 既に楽曲データが存在する場合は、追加しない
+     */
+    addSong(song: Song) {
+        const isRegistered = this.isRegistered(song.difficulty, song.songTitle);
+
+        if (!isRegistered) {
+            this.songData.push(song);
+        }
+    }
+
+    /**
+     * 指定した楽曲データの入れ替え
+     * 該当する楽曲が無い場合は更新しない
+     */
+    overwriteSong(song: Song) {
+        const index = this.searchRegisteredSongIndex(song.difficulty, song.songTitle);
+
+        if (index >= 0) {
+            this.songData[index] = song;
+        }
+    }
+}

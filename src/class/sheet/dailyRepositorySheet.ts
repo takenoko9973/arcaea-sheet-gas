@@ -16,11 +16,8 @@ export class DailyRepositorySheet {
     }
 
     addData(data: DailyArcaeaData) {
-        this.insertNewRow(data.getRowData());
-    }
+        const dataArray = data.getRowData();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    insertNewRow(dataArray: any[]) {
         // 最終行の後に新しい行を挿入
         const lastRow = this.sheet.getLastRow();
         this.sheet.insertRowAfter(lastRow);

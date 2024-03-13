@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SheetCellPair } from "./class/sheetCellPair";
-import {
-    POTENTIAL_SHEET,
-    SCORE_STATISTICS_SHEET,
-    BEST_POTENTIAL_CELL,
-    GRADE_CELL,
-    SUM_SCORE_INFO_CELL,
-} from "./const";
+import { Difficulty } from "./const";
 import { runTrigger } from "./trigger/onChangeData";
-import { splitArrayIntoChunks } from "./util";
 import { ScoreData } from "./class/scoreData";
 import { DailyArcaeaData, DailyRepositorySheet } from "./class/sheet/dailyRepositorySheet";
+import { SongScoreSheet } from "./class/sheet/songScoreSheet";
+import { GradeData } from "./class/gradeData";
 
 function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const sheet = e.source.getActiveSheet();
@@ -29,17 +24,29 @@ function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
 }
 
 function setDataByDate() {
+    const statisticsDifficulties: Difficulty[] = [
+        Difficulty.Future,
+        Difficulty.Beyond,
+        Difficulty.Eternal,
+    ];
+
     const dailySheet = DailyRepositorySheet.instance;
+    const songScoreSheet = SongScoreSheet.instance;
 
     const today = new Date();
-    const bestPotential = POTENTIAL_SHEET.getRange(BEST_POTENTIAL_CELL).getValue();
-    const grade = SCORE_STATISTICS_SHEET.getRange(GRADE_CELL).getValues().flat();
-    const score = SCORE_STATISTICS_SHEET.getRange(SUM_SCORE_INFO_CELL).getValues().flat();
+    const bestPotential = songScoreSheet.getBestPotential();
 
-    const scoreData = splitArrayIntoChunks(score, 2).map(
-        array => new ScoreData(array[0], array[1])
-    );
+    let gradeData = new GradeData();
+    const scoreData = [];
+    for (const difficulty of statisticsDifficulties) {
+        const grade = songScoreSheet.getGrades(difficulty);
+        gradeData = gradeData.plus(grade);
 
-    const dailyData = new DailyArcaeaData(today, bestPotential, grade, scoreData);
+        const maximumScore = songScoreSheet.getMaximumSumScore(difficulty);
+        const score = songScoreSheet.getSumScore(difficulty);
+        scoreData.push(new ScoreData(score, maximumScore - score));
+    }
+
+    const dailyData = new DailyArcaeaData(today, bestPotential, gradeData, scoreData);
     dailySheet.addData(dailyData);
 }

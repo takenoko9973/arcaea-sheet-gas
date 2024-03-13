@@ -1,6 +1,7 @@
-import { Difficulty, Grade, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { Difficulty, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
 import { allIndexesOf, average, sum } from "../../util";
+import { GradeData } from "../gradeData";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
@@ -119,22 +120,11 @@ export class SongScoreSheet {
             .filter(song => song.difficulty === difficulty)
             .map(song => song.getGrade());
 
-        const gradeCounts: { [key in Grade]: number } = {
-            "PM+": 0,
-            "PM": 0,
-            "EX+": 0,
-            "EX": 0,
-            "AA": 0,
-            "A": 0,
-            "B": 0,
-            "C": 0,
-            "D": 0,
-            "NP": 0,
-        };
+        const gradeData = new GradeData();
         for (const grade of grades) {
-            gradeCounts[grade] = gradeCounts[grade] + 1;
+            gradeData.gradeCounts[grade] = gradeData.gradeCounts[grade] + 1;
         }
-        return gradeCounts;
+        return gradeData;
     }
 
     getBestPotential() {

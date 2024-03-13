@@ -1,3 +1,5 @@
+import { Grade } from "../const";
+
 export class Song {
     composer: string;
     constant: number;
@@ -54,5 +56,44 @@ export class Song {
         const existBlank = this.getSongDataList().includes("");
         const existNegative = this.getSongDataList().includes(-1);
         return existBlank || existNegative;
+    }
+
+    getMaximumScore() {
+        return 10000000 + this.notes;
+    }
+
+    getGrade(): Grade {
+        if (this.score === this.getMaximumScore()) {
+            return Grade.PMPlus;
+        } else if (this.score >= 10000000) {
+            return Grade.PM;
+        } else if (this.score >= 9900000) {
+            return Grade.EXPlus;
+        } else if (this.score >= 9800000) {
+            return Grade.EX;
+        } else if (this.score >= 9500000) {
+            return Grade.AA;
+        } else if (this.score >= 9200000) {
+            return Grade.A;
+        } else if (this.score >= 8900000) {
+            return Grade.B;
+        } else if (this.score >= 8600000) {
+            return Grade.C;
+        } else if (this.score > 0) {
+            return Grade.D;
+        } else {
+            return Grade.NotPlayed;
+        }
+    }
+
+    getSongPotential() {
+        if (this.score >= 10000000) {
+            return this.constant + 2.0;
+        } else if (this.score >= 9800000) {
+            return this.constant + 1.0 + (this.score - 9800000) / 200000;
+        } else {
+            const potential = this.constant + (this.score - 9500000) / 300000;
+            return potential >= 0 ? potential : 0; // 0を下回らない
+        }
     }
 }

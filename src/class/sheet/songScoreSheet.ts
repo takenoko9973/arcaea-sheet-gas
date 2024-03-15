@@ -7,13 +7,17 @@ import { Difficulty } from "../../types";
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class SongScoreSheet {
+    private static singleton = new SongScoreSheet(
+        SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!
+    );
+
     private readonly songData: Song[];
 
     static get instance() {
-        return new SongScoreSheet(SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!);
+        return this.singleton;
     }
 
-    constructor(private readonly sheet: Sheet) {
+    private constructor(private readonly sheet: Sheet) {
         const values = this.sheet.getDataRange().getValues();
         this.songData = values
             .slice(1) // 目次無視

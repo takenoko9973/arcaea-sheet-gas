@@ -5,6 +5,10 @@ import { CollectionSong } from "../collectionSong";
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class SongCollectionSheet {
+    private static singleton = new SongCollectionSheet(
+        SHEET_BOOK.getSheetByName(COLLECT_SHEET_NAME)!
+    );
+
     private collectedSongData: {
         [index in Difficulty]: CollectionSong[];
     } = {
@@ -16,10 +20,10 @@ export class SongCollectionSheet {
     };
 
     static get instance() {
-        return new SongCollectionSheet(SHEET_BOOK.getSheetByName(COLLECT_SHEET_NAME)!);
+        return this.singleton;
     }
 
-    constructor(private readonly sheet: Sheet) {
+    private constructor(private readonly sheet: Sheet) {
         const values = this.sheet.getDataRange().getValues();
 
         for (const difficulty of Object.values(Difficulty)) {

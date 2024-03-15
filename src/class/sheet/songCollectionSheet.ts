@@ -1,5 +1,5 @@
-import { COLLECT_SHEET_NAME, SHEET_BOOK } from "../../const/sheet";
-import { Difficulty } from "../../const";
+import { COLLECT_SHEET_NAME, SHEET_BOOK } from "../../const";
+import { Difficulty } from "../../types";
 import { CollectionSong } from "../collectionSong";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;

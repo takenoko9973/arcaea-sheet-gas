@@ -1,7 +1,8 @@
-import { Difficulty, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
 import { allIndexesOf, average, sum } from "../../util";
 import { GradeData } from "../gradeData";
+import { Difficulty } from "../../types";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

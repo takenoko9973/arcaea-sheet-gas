@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SheetCellPair } from "./class/sheetCellPair";
-import { Difficulty } from "./const";
+import { Difficulty } from "./types";
 import { runTrigger } from "./trigger/onChangeData";
 import { ScoreData } from "./class/scoreData";
 import { DailyArcaeaData, DailyRepositorySheet } from "./class/sheet/dailyRepositorySheet";

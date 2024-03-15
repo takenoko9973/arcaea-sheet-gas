@@ -1,4 +1,5 @@
-import { DAILY_REPOSITORY_SHEET_NAME, Grade, SHEET_BOOK } from "../../const";
+import { DAILY_REPOSITORY_SHEET_NAME, SHEET_BOOK } from "../../const";
+import { Grade } from "../../types";
 import { splitArrayIntoChunks } from "../../util";
 import { GradeData } from "../gradeData";
 import { ScoreData } from "../scoreData";

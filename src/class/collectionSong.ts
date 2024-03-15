@@ -1,4 +1,4 @@
-import { Difficulty } from "../const";
+import { Difficulty } from "../types";
 import { extractionJaName, extractionUrlName } from "../util";
 import { Song } from "./song";
 

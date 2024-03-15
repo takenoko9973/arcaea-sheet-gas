@@ -1,6 +1,6 @@
 import { Song } from "../class/song";
 import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
-import { Difficulty } from "../const";
+import { Difficulty } from "../types";
 
 export function updateData(difficulty: Difficulty) {
     console.log("Start updating(%s)", difficulty);

@@ -73,3 +73,5 @@ export function fetchSongDataFromWiki(collectSong: CollectionSong) {
     collectSong.pack = songData.pack;
     collectSong.version = songData.version.match(/^(\d+\.\d+)/)?.at(1) ?? collectSong.version;
 }
+
+declare const FetchArcaeaWiki: FetchArcaeaWiki;

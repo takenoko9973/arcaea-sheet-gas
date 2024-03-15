@@ -2,8 +2,8 @@ import { SongScoreSheet } from "../class/sheet";
 import { Song } from "../class/song";
 import { MANUAL_REGISTER_SHEET } from "../const";
 import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "../util";
-import { FetchArcaeaWiki } from "../libs/fetch-arcaea-wiki";
 import { Difficulty } from "../types";
+import { FetchArcaeaWiki } from "../libs/fetch-arcaea-wiki";
 
 /**
  * 手動登録ルーチン
@@ -55,3 +55,5 @@ export function manualRegister() {
 
     console.log("end manual register");
 }
+
+declare const FetchArcaeaWiki: FetchArcaeaWiki;

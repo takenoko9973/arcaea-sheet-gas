@@ -1,19 +1,20 @@
 {
-    "name": "ArcaeaPotential",
+    "name": "arcaea-potential",
     "dockerComposeFile": [
         "../docker-compose.yml"
     ],
-    "service": "myservice",
+    "service": "arcaea-potential",
     "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
             "settings": {
-                "editor.formatOnPaste": true,
-                "editor.formatOnSave": false,
-                "editor.formatOnType": true,
-                "prettier.tabWidth": 4,
+                "files.watcherExclude": {
+                    "**/node_modules/**": true
+                },
                 "[typescript][javascript]": {
-                    "editor.tabSize": 4,
+                    "editor.formatOnPaste": true,
+                    "editor.formatOnSave": false,
+                    "editor.formatOnType": true,
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
                 },
                 "javascript.updateImportsOnFileMove.enabled": "always",
@@ -28,16 +29,11 @@
                 "ionutvmi.path-autocomplete",
                 "stylelint.vscode-stylelint",
                 "pmneo.tsimporter",
-                "bierner.comment-tagged-templates",
                 "streetsidesoftware.code-spell-checker",
-                "dsznajder.es7-react-js-snippets"
+                "dsznajder.es7-react-js-snippets",
+                "jasonnutter.search-node-modules",
+                "gamunu.vscode-yarn"
             ]
-        }
-    },
-    "features": {
-        "ghcr.io/devcontainers/features/git:latest": {
-            "version": "latest",
-            "ppa": true
         }
     }
 }

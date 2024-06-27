@@ -1,10 +1,8 @@
-FROM node:18.17.1
+FROM node:18.20-bullseye-slim
 
-SHELL ["/bin/bash", "-c"]
-
-RUN apt update && apt install -y \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/*
-
-ARG USERNAME=vscode
-WORKDIR /home/$USERNAME/
+RUN apt-get update; \
+    apt-get install -y \
+        git \
+        ; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*;

@@ -13,6 +13,8 @@ export class Song {
     side: string;
     songTitle: string;
     version: string;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(record: any[]) {
         [
             this.songTitle,
@@ -95,5 +97,26 @@ export class Song {
             const potential = this.constant + (this.score - 9500000) / 300000;
             return potential >= 0 ? potential : 0; // 0を下回らない
         }
+    }
+
+    /**
+     * 1ノーツ当たりのスコアを取得
+     */
+    private getScoreParNote(): number {
+        return 10000000 / (this.notes * 2);
+    }
+
+    /**
+     * Pure数を計算 (Farは0.5として計算)
+     */
+    getPureNotes(): number {
+        return Math.floor(this.score / this.getScoreParNote()) / 2;
+    }
+
+    /**
+     * 内部数計算
+     */
+    getHitShinyPureNotes(): number {
+        return this.score - Math.floor(this.getScoreParNote() * this.getPureNotes() * 2);
     }
 }

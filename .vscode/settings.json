@@ -2,5 +2,8 @@
     "cSpell.words": [
         "arcaea",
         "Löschen"
-    ]
+    ],
+    "[typescript][javascript]": {
+        "editor.formatOnSave": true,
+    },
 }

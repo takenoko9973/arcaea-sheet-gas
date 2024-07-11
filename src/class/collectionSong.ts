@@ -1,6 +1,7 @@
-import { Difficulty } from "../const";
+import { Difficulty } from "../types";
 import { extractionJaName, extractionUrlName } from "../util";
 import { Song } from "./song";
+import { FetchArcaeaWiki } from "../libs/fetch-arcaea-wiki";
 
 export class CollectionSong {
     composer: string;
@@ -68,13 +69,9 @@ export function fetchSongDataFromWiki(collectSong: CollectionSong) {
     collectSong.notes =
         collectSong.notes !== ""
             ? collectSong.notes
-            : songData.getNotesByDiff(collectSong.difficulty)[0];
+            : songData.getNotesByDiff(collectSong.difficulty)[0].toString();
     collectSong.pack = songData.pack;
-    collectSong.version = songData.version.match(/^(\d+\.\d+)/)[1];
+    collectSong.version = songData.version.match(/^(\d+\.\d+)/)?.at(1) ?? collectSong.version;
 }
 
 declare const FetchArcaeaWiki: FetchArcaeaWiki;
-
-interface FetchArcaeaWiki {
-    createSongData(urlName: string): any;
-}

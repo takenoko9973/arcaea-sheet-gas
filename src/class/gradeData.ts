@@ -1,4 +1,4 @@
-import { Grade } from "../const";
+import { Grade } from "../types";
 
 export class GradeData {
     gradeCounts: { [key in Grade]: number } = {

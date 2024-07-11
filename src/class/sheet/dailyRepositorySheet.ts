@@ -1,4 +1,5 @@
-import { DAILY_REPOSITORY_SHEET_NAME, Grade, SHEET_BOOK } from "../../const";
+import { DAILY_REPOSITORY_SHEET_NAME, SHEET_BOOK } from "../../const";
+import { Grade } from "../../types";
 import { splitArrayIntoChunks } from "../../util";
 import { GradeData } from "../gradeData";
 import { ScoreData } from "../scoreData";
@@ -6,14 +7,18 @@ import { ScoreData } from "../scoreData";
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class DailyRepositorySheet {
+    private static singleton = new DailyRepositorySheet(
+        SHEET_BOOK.getSheetByName(DAILY_REPOSITORY_SHEET_NAME)!
+    );
+
     sheet: Sheet;
 
-    constructor(sheet: Sheet) {
+    private constructor(sheet: Sheet) {
         this.sheet = sheet;
     }
 
     static get instance() {
-        return new DailyRepositorySheet(SHEET_BOOK.getSheetByName(DAILY_REPOSITORY_SHEET_NAME)!);
+        return this.singleton;
     }
 
     addData(data: DailyArcaeaData) {

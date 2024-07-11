@@ -1,6 +1,6 @@
 import { fetchSongDataFromWiki } from "../class/collectionSong";
 import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
-import { Difficulty } from "../const";
+import { Difficulty } from "../types";
 
 export function registerSongData(difficulty: Difficulty) {
     console.log("Start registering(%s)", difficulty);

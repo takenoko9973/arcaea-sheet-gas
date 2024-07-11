@@ -2,6 +2,8 @@ import { SongScoreSheet } from "../class/sheet";
 import { Song } from "../class/song";
 import { MANUAL_REGISTER_SHEET } from "../const";
 import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "../util";
+import { Difficulty } from "../types";
+import { FetchArcaeaWiki } from "../libs/fetch-arcaea-wiki";
 
 /**
  * 手動登録ルーチン
@@ -18,10 +20,10 @@ export function manualRegister() {
     let name = extractionJaName(dat[col]);
     name = changeCodeToString(name);
     const songTitle = dat[col + 1];
-    const difficulty = dat[col + 2];
+    const difficulty = dat[col + 2] as Difficulty;
 
     //存在確認
-    const isRegistered = songScoreSheet.isRegistered(songTitle, difficulty);
+    const isRegistered = songScoreSheet.isRegistered(difficulty, songTitle);
     if (isRegistered) return;
 
     const urlName = extractionUrlName(toHalfWidth(dat[col]));
@@ -30,7 +32,7 @@ export function manualRegister() {
 
     console.log("%s(%s)", name, difficulty);
     //wikiで残りデータを取得
-    const musicData = ArcaeaWikiAPI.getMusicFromWiki(urlName);
+    const musicData = FetchArcaeaWiki.createSongData(urlName);
     const song = new Song([
         name,
         songTitle,
@@ -40,7 +42,7 @@ export function manualRegister() {
         constant,
         musicData.pack,
         musicData.version,
-        musicData.notes[difficulty],
+        musicData.getNotesByDiff(difficulty)[0],
         0,
     ]);
 
@@ -54,8 +56,4 @@ export function manualRegister() {
     console.log("end manual register");
 }
 
-declare const ArcaeaWikiAPI: ArcaeaWikiAPI;
-
-declare interface ArcaeaWikiAPI {
-    getMusicFromWiki(urlName: string): any;
-}
+declare const FetchArcaeaWiki: FetchArcaeaWiki;

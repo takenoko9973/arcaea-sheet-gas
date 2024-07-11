@@ -132,6 +132,9 @@ export class SongScoreSheet {
         return gradeData;
     }
 
+    /**
+     * ベスト枠のみの平均ポテンシャルを取得
+     */
     getBestPotential() {
         const bestPotentials = this.songData
             .filter(song => song.level !== "?")
@@ -141,5 +144,29 @@ export class SongScoreSheet {
             .slice(0, 30);
 
         return average(bestPotentials);
+    }
+
+    /**
+     * 指定難易度のFar数を取得 (Lostは2)
+     */
+    getFarNotes(difficulty: Difficulty) {
+        const farCounts = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => (song.notes - song.getPureNotes()) * 2);
+
+        return sum(farCounts);
+    }
+
+    /**
+     * 指定難易度の残り内部数を計算
+     */
+    getLuckShinyPureNotes(difficulty: Difficulty) {
+        const farCounts = this.songData
+            .filter(song => song.level !== "?")
+            .filter(song => song.difficulty === difficulty)
+            .map(song => song.notes - song.getHitShinyPureNotes());
+
+        return sum(farCounts);
     }
 }

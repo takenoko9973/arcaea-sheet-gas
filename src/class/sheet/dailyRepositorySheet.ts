@@ -55,7 +55,14 @@ export class DailyArcaeaData {
         dataArray.push(Utilities.formatDate(this.date, "JST", "yyyy/MM/dd"));
         dataArray.push(this.potential);
         dataArray.push(...grade2List(this.grade));
-        dataArray.push(...this.scoreData.flatMap(value => [value.sumScore, value.lostScore]));
+        dataArray.push(
+            ...this.scoreData.flatMap(value => [
+                value.sumScore,
+                value.lostScore,
+                value.farNotes,
+                value.luckShinyPureNotes,
+            ])
+        );
 
         return dataArray;
     }
@@ -67,10 +74,10 @@ export class DailyArcaeaData {
         const grade = list2Grade(rowData.slice(2, 2 + this.gradeNum_));
         const scoreDataArray = rowData.slice(
             2 + this.gradeNum_,
-            2 + this.gradeNum_ + this.diffNum_ * 2
+            2 + this.gradeNum_ + this.diffNum_ * 4
         );
-        const scoreData = splitArrayIntoChunks(scoreDataArray, 2).map(
-            array => new ScoreData(array[0], array[1])
+        const scoreData = splitArrayIntoChunks(scoreDataArray, 4).map(
+            array => new ScoreData(array[0], array[1], array[2], array[3])
         );
 
         return new this(date, potential, grade, scoreData);

@@ -117,6 +117,9 @@ export class Song {
      * 内部数計算
      */
     getHitShinyPureNotes(): number {
-        return this.score - Math.floor(this.getScoreParNote() * this.getPureNotes() * 2);
+        // 誤差修正用に微小数を足す (PMしてる曲で、おかしくなるらしい)
+        return (
+            this.score - Math.floor(this.getScoreParNote() * this.getPureNotes() * 2 + 0.0000001)
+        );
     }
 }

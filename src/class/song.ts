@@ -100,26 +100,16 @@ export class Song {
     }
 
     /**
-     * 1ノーツ当たりのスコアを取得
-     */
-    private getScoreParNote(): number {
-        return 10000000 / (this.notes * 2);
-    }
-
-    /**
      * Pure数を計算 (Farは0.5として計算)
      */
     getPureNotes(): number {
-        return Math.floor(this.score / this.getScoreParNote()) / 2;
+        return Math.floor((this.score * this.notes * 2) / 10000000) / 2;
     }
 
     /**
      * 内部数計算
      */
     getHitShinyPureNotes(): number {
-        // 誤差修正用に微小数を足す (PMしてる曲で、おかしくなるらしい)
-        return (
-            this.score - Math.floor(this.getScoreParNote() * this.getPureNotes() * 2 + 0.0000001)
-        );
+        return this.score - Math.floor(10000000 * (this.getPureNotes() / this.notes));
     }
 }

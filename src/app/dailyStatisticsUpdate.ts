@@ -27,7 +27,9 @@ export function updateDailyStatistics() {
 
         const maximumScore = songScoreSheet.getMaximumSumScore(difficulty);
         const score = songScoreSheet.getSumScore(difficulty);
-        scoreData.push(new ScoreData(score, maximumScore - score));
+        const farNotes = songScoreSheet.getFarNotes(difficulty);
+        const luckShinyPure = songScoreSheet.getLuckShinyPureNotes(difficulty);
+        scoreData.push(new ScoreData(score, maximumScore - score, farNotes, luckShinyPure));
     }
 
     const dailyData = new DailyArcaeaData(today, bestPotential, gradeData, scoreData);

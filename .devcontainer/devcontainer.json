@@ -32,7 +32,8 @@
                 "streetsidesoftware.code-spell-checker",
                 "dsznajder.es7-react-js-snippets",
                 "jasonnutter.search-node-modules",
-                "gamunu.vscode-yarn"
+                "gamunu.vscode-yarn",
+                "mhutchie.git-graph"
             ]
         }
     }

@@ -40,11 +40,17 @@ export class SongScoreSheet {
         this.sheet.getRange(2, 1, songNum, values[0].length).setValues(values);
     }
 
+    /**
+     * 登録楽曲数
+     */
     registeredSongNum() {
         const songNum = this.songData.length;
         return songNum;
     }
 
+    /**
+     * 登録されている指定の楽曲のデータ行番号 (存在しない場合は-1)
+     */
     searchRegisteredSongIndex(difficulty: string, songTitle: string): number {
         const registeredSongTitles = this.songData.map(song => song.songTitle);
         const indexes = allIndexesOf(registeredSongTitles, songTitle);
@@ -58,11 +64,17 @@ export class SongScoreSheet {
         return -1;
     }
 
+    /**
+     * 登録されている指定の楽曲のデータを取得 (存在しない場合はnull)
+     */
     searchRegisteredSong(difficulty: string, songTitle: string): Song | null {
         const index = this.searchRegisteredSongIndex(difficulty, songTitle);
         return this.songData[index];
     }
 
+    /**
+     * 楽曲データが登録されてるか否か
+     */
     isRegistered(difficulty: string, songTitle: string): boolean {
         const index = this.searchRegisteredSongIndex(difficulty, songTitle);
         return index >= 0;

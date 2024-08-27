@@ -11,6 +11,7 @@ export class SongScoreSheet {
         SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!
     );
 
+    private readonly columns: string[]; // 目次
     private readonly songData: Song[];
 
     static get instance() {
@@ -19,6 +20,7 @@ export class SongScoreSheet {
 
     private constructor(private readonly sheet: Sheet) {
         const values = this.sheet.getDataRange().getValues();
+        this.columns = values.slice(0, 1)[0]; // 1行目のみを取得
         this.songData = values
             .slice(1) // 目次無視
             .map(row => new Song(row.slice(0, 12)))
@@ -38,6 +40,15 @@ export class SongScoreSheet {
 
         const values = this.songData.map(song => song.getSongDataList());
         this.sheet.getRange(2, 1, songNum, values[0].length).setValues(values);
+    }
+
+    /**
+     * 目次指定でソートする
+     */
+    sort(colName: string, ascending: boolean = false) {
+        const colNum = this.columns.indexOf(colName) + 1;
+        this.sheet.getRange("A1").activate();
+        this.sheet.getActiveCell().getFilter()?.sort(colNum, ascending);
     }
 
     /**

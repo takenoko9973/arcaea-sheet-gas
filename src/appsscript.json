@@ -11,13 +11,5 @@
         "developmentMode": true
       }
     ]
-  },
-  "sheets": {
-    "macros": [
-      {
-        "menuName": "musicDataSort",
-        "functionName": "musicDataSort"
-      }
-    ]
   }
 }

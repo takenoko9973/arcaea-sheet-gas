@@ -1,13 +1,10 @@
 {
     "compilerOptions": {
-        "target": "es2020",
-        "module": "es2020",
+        "target": "ES2019",
         "lib": [
-            "es2020"
+            "esnext"
         ],
         "moduleResolution": "node",
-        "outDir": "dist",
-        "rootDir": ".",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
@@ -17,8 +14,6 @@
         "strict": true
     },
     "include": [
-        "src/**/*",
-        "test/**/*",
-        "rollup.config.mjs"
+        "src/"
     ]
 }

@@ -1,10 +1,10 @@
 import { Difficulty } from "src/types";
 
-interface FetchArcaeaWiki {
-    createSongData(urlName: string): ArcaeaWikiSong;
+interface IFetchArcaeaWiki {
+    createSongData(urlName: string): IArcaeaWikiSong;
 }
 
-interface ArcaeaWikiSong {
+interface IArcaeaWikiSong {
     songName: string;
     composer: string;
     illustrator: string;
@@ -17,15 +17,15 @@ interface ArcaeaWikiSong {
     side: string;
     version: string;
 
-    difficultyInfoList(): DifficultyInfo[];
+    difficultyInfoList(): IDifficultyInfo[];
     difficulties(): Difficulty[];
-    getDifficultyInfoByName(name: Difficulty): DifficultyInfo[];
+    getDifficultyInfoByName(name: Difficulty): IDifficultyInfo[];
     getLevelByDiff(name: Difficulty): string[];
     getNotesByDiff(name: Difficulty): number[];
     getConstantByDiff(name: Difficulty): number[];
 }
 
-interface DifficultyInfo {
+interface IDifficultyInfo {
     difficulty: Difficulty;
     level: string;
     notes: number;

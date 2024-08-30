@@ -13,9 +13,17 @@
                 },
                 "[typescript][javascript]": {
                     "editor.formatOnPaste": true,
-                    "editor.formatOnSave": false,
+                    "editor.formatOnSave": true,
                     "editor.formatOnType": true,
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.codeActionsOnSave": {
+                        "source.fixAll.eslint": "never"
+                    },
+                    "eslint.useESLintClass": true,
+                    "eslint.useFlatConfig": true,
+                    "eslint.options": {
+                        "overrideConfigFile": "eslint.config.mjs"
+                    }
                 },
                 "javascript.updateImportsOnFileMove.enabled": "always",
                 "typescript.updateImportsOnFileMove.enabled": "always"

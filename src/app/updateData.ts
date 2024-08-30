@@ -20,11 +20,11 @@ export function updateData(difficulty: Difficulty) {
             collectedSong.difficulty,
             collectedSong.songTitle
         );
-        if (registeredSong === null) return;
+        if (registeredSong === null) continue;
 
         // 整合性確認
         const equalSongData = checkSongDataConsistency(registeredSong, collectedSong.toSongData());
-        if (equalSongData) return;
+        if (equalSongData) continue;
 
         // 更新
         console.log("update data of %s(%s)", registeredSong.nameJp, registeredSong.difficulty);

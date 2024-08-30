@@ -1,7 +1,7 @@
 import { checkCollectedSong } from "../app/checkCollectedSong";
 import { manualRegister } from "../app/manualRegister";
 import { SongScoreSheet } from "../class/sheet";
-import { SheetCellPair, equalSheetCellPair } from "../class/sheetCellPair";
+import { SheetCellPair } from "../class/sheetCellPair";
 import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../const";
 
 const triggerList = [
@@ -56,18 +56,17 @@ function songLevelSort() {
 }
 
 export function runTrigger(changedPair: SheetCellPair) {
-    const pairIndex = triggerList.findIndex(pair => equalSheetCellPair(pair["pair"], changedPair));
+    const pairIndex = triggerList.findIndex(pair => pair["pair"].equal(changedPair));
     if (pairIndex === -1) return;
 
-    if (triggerList[pairIndex]["pair"].cell_location === "") {
-        triggerList[pairIndex]["func"]();
-    } else {
-        const changeSheet = SHEET_BOOK.getSheetByName(triggerList[pairIndex]["pair"].sheet_name)!;
-        const cell = changeSheet.getRange(triggerList[pairIndex]["pair"].cell_location);
+    // チェックボックスの場合、falseに変更 (チェックされてない場合は終了)
+    if (changedPair.cell_location !== "") {
+        const changeSheet = SHEET_BOOK.getSheetByName(changedPair.sheet_name)!;
+        const cell = changeSheet.getRange(changedPair.cell_location);
 
-        if (cell.getValue() === true) {
-            cell.setValue(false);
-            triggerList[pairIndex]["func"]();
-        }
+        if (cell.getValue() === false) return;
+        cell.setValue(false);
     }
+
+    triggerList[pairIndex]["func"]();
 }

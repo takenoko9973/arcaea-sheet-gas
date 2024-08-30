@@ -1,5 +1,6 @@
 import { babel } from "@rollup/plugin-babel";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
+import typescript from "@rollup/plugin-typescript";
 
 const extensions = [".ts", ".js"];
 
@@ -29,5 +30,6 @@ export default {
             mainFields: ["jsnext:main", "module", "main"],
         }),
         babel({ extensions, babelHelpers: "runtime" }),
+        typescript(),
     ],
 };

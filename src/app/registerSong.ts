@@ -11,6 +11,9 @@ export function registerSongData(difficulty: Difficulty) {
     // 指定の難易度のみのデータを取り出し
     const diffData = songCollectionSheet.getCollectionData(difficulty);
 
+    // 定数情報が未登録でも強制登録
+    const isIgnoreConstant = songScoreSheet.isIgnoreConstant();
+
     //全データチェック
     for (const collectedSong of diffData) {
         if (collectedSong.nameJp === "") continue;
@@ -24,7 +27,7 @@ export function registerSongData(difficulty: Difficulty) {
         if (isRegistered) continue;
 
         // まだ定数が判明していなければ、無視
-        if (collectedSong.constant === "") continue;
+        if (collectedSong.constant === "" && !isIgnoreConstant) continue;
 
         console.log("getting data of %s(%s)", collectedSong.nameJp, collectedSong.difficulty);
         fetchSongDataFromWiki(collectedSong);

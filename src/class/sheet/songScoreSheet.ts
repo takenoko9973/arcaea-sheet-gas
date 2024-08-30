@@ -1,4 +1,4 @@
-import { SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
+import { IGNORE_CONSTANT_CONFIG_CELL, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
 import { allIndexesOf, average, sum } from "../../util";
 import { GradeData } from "../gradeData";
@@ -25,6 +25,10 @@ export class SongScoreSheet {
             .slice(1) // 目次無視
             .map(row => new Song(row.slice(0, 12)))
             .filter(song => song.songTitle !== "");
+    }
+
+    isIgnoreConstant() {
+        return this.sheet.getRange(IGNORE_CONSTANT_CONFIG_CELL);
     }
 
     /**

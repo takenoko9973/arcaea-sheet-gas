@@ -7,7 +7,6 @@ export const POTENTIAL_SHEET_NAME = "Potential";
 export const MANUAL_REGISTER_SHEET_NAME = "ManualRegister";
 export const DAILY_REPOSITORY_SHEET_NAME = "DailyRepository";
 
-export const SONG_SHEET = SHEET_BOOK.getSheetByName(SONG_SCORE_SHEET_NAME)!;
-export const MANUAL_REGISTER_SHEET = SHEET_BOOK.getSheetByName(MANUAL_REGISTER_SHEET_NAME)!;
+export const IGNORE_CONSTANT_CONFIG_CELL = "Y10";
 
-export const SONG_SHEET_DATA = SONG_SHEET.getDataRange().getValues();
+export const MANUAL_REGISTER_SHEET = SHEET_BOOK.getSheetByName(MANUAL_REGISTER_SHEET_NAME)!;

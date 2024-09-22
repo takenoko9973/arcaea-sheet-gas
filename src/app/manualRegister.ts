@@ -1,5 +1,5 @@
 import { SongScoreSheet } from "../class/sheet";
-import { Song } from "../class/song";
+import { Song } from "../domain/song";
 import { MANUAL_REGISTER_SHEET } from "../const";
 import {
     changeCodeToString,

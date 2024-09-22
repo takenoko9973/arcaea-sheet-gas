@@ -1,7 +1,7 @@
 import { checkCollectedSong } from "../app/checkCollectedSong";
 import { manualRegister } from "../app/manualRegister";
 import { SongScoreSheet } from "../class/sheet";
-import { SheetCellPair } from "../class/sheetCellPair";
+import { SheetCellPair } from "../domain/sheetCellPair";
 import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../const";
 
 const triggerList = [

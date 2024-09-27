@@ -36,9 +36,7 @@
     "typescript-eslint": "^8.3.0"
   },
   "dependencies": {},
-  "directories": {
-    "test": "test"
-  },
+  "directories": {},
   "repository": "git+https://github.com/takenoko9973/arcaea-sheet-gas.git",
   "bugs": {
     "url": "https://github.com/takenoko9973/arcaea-sheet-gas/issues"

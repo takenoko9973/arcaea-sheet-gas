@@ -1,0 +1,9 @@
+@startuml SongData
+
+class "SongData(楽曲情報)" as SongData {
+    + nameJp: string
+    + nameEn: string
+    + composer: string
+}
+
+@enduml

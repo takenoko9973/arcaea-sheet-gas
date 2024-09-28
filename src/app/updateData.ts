@@ -1,5 +1,5 @@
-import { Song } from "../domain/song";
 import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
+import { Song } from "../class/song";
 import { Difficulty } from "../types";
 
 export function updateData(difficulty: Difficulty) {

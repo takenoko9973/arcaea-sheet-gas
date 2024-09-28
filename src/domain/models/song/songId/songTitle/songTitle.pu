@@ -1,0 +1,7 @@
+@startuml SongTitle
+
+class "SongTitle(楽曲名)" as SongTitle {
+    + value: string
+}
+
+@enduml

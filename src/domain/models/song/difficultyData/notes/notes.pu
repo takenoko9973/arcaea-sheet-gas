@@ -1,0 +1,7 @@
+@startuml Notes
+
+class "Notes(ノーツ数)" as Notes {
+    + value: integer
+}
+
+@enduml

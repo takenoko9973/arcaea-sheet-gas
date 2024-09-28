@@ -1,0 +1,17 @@
+@startuml Difficulty
+
+
+class "Difficulty(難易度)" as Difficulty {
+    + value: DifficultyEnum
+}
+
+enum "DifficultyEnum" as DifficultyEnum {
+    PAST: PST
+    PRESENT: PRS
+    FUTURE: FTR
+    BEYOND: BYD
+    ETERNAL: ETR
+}
+
+Difficulty *-down- DifficultyEnum
+@enduml

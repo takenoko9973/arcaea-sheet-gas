@@ -1,0 +1,7 @@
+@startuml Level
+
+class "Level(レベル)" as Level {
+    + value: string
+}
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml DifficultyData
+
+!include ../difficulty/difficulty.pu
+!include ./level/level.pu
+!include ./notes/notes.pu
+!include ./constant/constant.pu
+
+class "DifficultyData(難易度情報)" as DifficultyData {
+    + Difficulty: 難易度
+    + Level: レベル
+    + Notes: ノーツ数
+    + Constant: 譜面定数
+}
+
+DifficultyData *-down- Difficulty
+DifficultyData *-down- Level
+DifficultyData *-down- Notes
+DifficultyData *-down- Constant
+
+@enduml

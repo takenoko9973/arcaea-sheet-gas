@@ -1,0 +1,12 @@
+@startuml Score
+
+class "Score(スコア)" as Score {
+    + value: number
+}
+
+note bottom of Score {
+    MIN = 0
+    MAX = 10010000 (余裕をもって、PMスコア + 10000)
+}
+
+@enduml

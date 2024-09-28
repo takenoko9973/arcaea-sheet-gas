@@ -1,0 +1,14 @@
+@startuml Version
+
+class "Version(バージョン)" as Version {
+    + major: integer
+    + minor: integer
+}
+
+
+note bottom of Version
+    string型 ("1.5"等) も変換できるようにする。
+    出来なければ、エラーを投げる。
+end note
+
+@enduml

@@ -1,0 +1,15 @@
+@startuml Side
+
+class "Side(属性)" as Side {
+    + value: SideEnum
+}
+
+enum "SideEnum" as SideEnum {
+    LIGHT: 光
+    CONFLICT: 対立
+    COLORLESS: 無
+}
+
+Side *-down- SideEnum
+
+@enduml

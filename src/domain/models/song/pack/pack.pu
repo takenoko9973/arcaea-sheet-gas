@@ -1,0 +1,7 @@
+@startuml Pack
+
+class "Pack(パック)" as Pack {
+    + value: string
+}
+
+@enduml

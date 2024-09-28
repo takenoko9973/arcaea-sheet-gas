@@ -60,6 +60,10 @@ export class Song {
         return existBlank || existNegative;
     }
 
+    isDeleted() {
+        return this.pack === "Deleted";
+    }
+
     getMaximumScore() {
         return 10000000 + this.notes;
     }

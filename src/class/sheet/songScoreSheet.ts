@@ -121,11 +121,19 @@ export class SongScoreSheet {
     }
 
     /**
+     * 通常利用可能な楽曲群
+     */
+    private getAvailableSongData() {
+        return this.songData
+            .filter(song => song.level !== "?") // エイプリルフール
+            .filter(song => !song.isDeleted()); // 削除曲
+    }
+
+    /**
      * 指定難易度の最大合計スコアを取得
      */
     getMaximumSumScore(difficulty: Difficulty) {
-        const maximumScores = this.songData
-            .filter(song => song.level !== "?")
+        const maximumScores = this.getAvailableSongData()
             .filter(song => song.difficulty === difficulty)
             .map(song => song.getMaximumScore());
 
@@ -136,8 +144,7 @@ export class SongScoreSheet {
      * 指定難易度の合計スコアを取得
      */
     getSumScore(difficulty: Difficulty) {
-        const scores = this.songData
-            .filter(song => song.level !== "?")
+        const scores = this.getAvailableSongData()
             .filter(song => song.difficulty === difficulty)
             .map(song => song.score);
 
@@ -148,8 +155,7 @@ export class SongScoreSheet {
      * 指定難易度の各グレード数を取得
      */
     getGrades(difficulty: Difficulty) {
-        const grades = this.songData
-            .filter(song => song.level !== "?")
+        const grades = this.getAvailableSongData()
             .filter(song => song.difficulty === difficulty)
             .map(song => song.getGrade());
 
@@ -164,8 +170,7 @@ export class SongScoreSheet {
      * ベスト枠のみの平均ポテンシャルを取得
      */
     getBestPotential() {
-        const bestPotentials = this.songData
-            .filter(song => song.level !== "?")
+        const bestPotentials = this.getAvailableSongData()
             .map(song => song.getSongPotential())
             .sort((a, b) => a - b)
             .reverse()
@@ -178,8 +183,7 @@ export class SongScoreSheet {
      * 指定難易度のFar数を取得 (Lostは2)
      */
     getFarNotes(difficulty: Difficulty) {
-        const farCounts = this.songData
-            .filter(song => song.level !== "?")
+        const farCounts = this.getAvailableSongData()
             .filter(song => song.difficulty === difficulty)
             .map(song => (song.notes - song.getPureNotes()) * 2);
 
@@ -190,8 +194,7 @@ export class SongScoreSheet {
      * 指定難易度の残り内部数を計算
      */
     getLuckShinyPureNotes(difficulty: Difficulty) {
-        const farCounts = this.songData
-            .filter(song => song.level !== "?")
+        const farCounts = this.getAvailableSongData()
             .filter(song => song.difficulty === difficulty)
             .map(song => song.notes - song.getHitShinyPureNotes());
 

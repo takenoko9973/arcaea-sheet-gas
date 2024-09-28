@@ -3,7 +3,8 @@
     "dockerComposeFile": [
         "../docker-compose.yml"
     ],
-    "service": "arcaea-potential",
+    "init": true,
+    "service": "myservice",
     "workspaceFolder": "/workspace",
     "customizations": {
         "vscode": {
@@ -26,7 +27,9 @@
                     }
                 },
                 "javascript.updateImportsOnFileMove.enabled": "always",
-                "typescript.updateImportsOnFileMove.enabled": "always"
+                "typescript.updateImportsOnFileMove.enabled": "always",
+                "plantuml.render": "PlantUMLServer",
+                "plantuml.server": "http://172.22.0.3:8080/"
             },
             "extensions": [
                 "VisualStudioExptTeam.vscodeintellicode",
@@ -41,8 +44,10 @@
                 "dsznajder.es7-react-js-snippets",
                 "jasonnutter.search-node-modules",
                 "gamunu.vscode-yarn",
-                "mhutchie.git-graph"
+                "mhutchie.git-graph",
+                "jebbs.plantuml"
             ]
         }
-    }
+    },
+    "initializeCommand": "docker network inspect arcaea-potential-group || docker network create arcaea-potential-group"
 }

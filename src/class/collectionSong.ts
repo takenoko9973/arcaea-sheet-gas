@@ -1,6 +1,6 @@
 import { Difficulty } from "../types";
-import { extractionJaName, extractionUrlName } from "../util";
-import { Song } from "./song";
+import { extractionJaName, extractionUrlName } from "../utils/util";
+import { Song } from "../class/song";
 import { IFetchArcaeaWiki } from "../@types/fetch-arcaea-wiki";
 
 export class CollectionSong {
@@ -17,6 +17,7 @@ export class CollectionSong {
     urlName: string;
     version: string;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(difficulty: Difficulty, data: any[]) {
         let constantOld, constantNow;
 

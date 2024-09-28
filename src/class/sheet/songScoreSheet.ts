@@ -1,6 +1,7 @@
 import { IGNORE_CONSTANT_CONFIG_CELL, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
 import { Song } from "../song";
-import { allIndexesOf, average, sum } from "../../util";
+import { allIndexesOf } from "../../utils/util";
+import * as math from "../../utils/math";
 import { GradeData } from "../gradeData";
 import { Difficulty } from "../../types";
 
@@ -128,7 +129,7 @@ export class SongScoreSheet {
             .filter(song => song.difficulty === difficulty)
             .map(song => song.getMaximumScore());
 
-        return sum(maximumScores);
+        return math.sum(maximumScores);
     }
 
     /**
@@ -140,7 +141,7 @@ export class SongScoreSheet {
             .filter(song => song.difficulty === difficulty)
             .map(song => song.score);
 
-        return sum(scores);
+        return math.sum(scores);
     }
 
     /**
@@ -170,7 +171,7 @@ export class SongScoreSheet {
             .reverse()
             .slice(0, 30);
 
-        return average(bestPotentials);
+        return math.average(bestPotentials);
     }
 
     /**
@@ -182,7 +183,7 @@ export class SongScoreSheet {
             .filter(song => song.difficulty === difficulty)
             .map(song => (song.notes - song.getPureNotes()) * 2);
 
-        return sum(farCounts);
+        return math.sum(farCounts);
     }
 
     /**
@@ -194,6 +195,6 @@ export class SongScoreSheet {
             .filter(song => song.difficulty === difficulty)
             .map(song => song.notes - song.getHitShinyPureNotes());
 
-        return sum(farCounts);
+        return math.sum(farCounts);
     }
 }

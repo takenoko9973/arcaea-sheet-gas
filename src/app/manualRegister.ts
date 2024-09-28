@@ -1,7 +1,12 @@
 import { SongScoreSheet } from "../class/sheet";
 import { Song } from "../class/song";
 import { MANUAL_REGISTER_SHEET } from "../const";
-import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "../util";
+import {
+    changeCodeToString,
+    extractionJaName,
+    extractionUrlName,
+    toHalfWidth,
+} from "../utils/util";
 import { Difficulty } from "../types";
 import { IFetchArcaeaWiki } from "../@types/fetch-arcaea-wiki";
 

@@ -1,15 +1,38 @@
 services:
-    arcaea-potential:
+    myservice:
         build:
             context: .
             dockerfile: .devcontainer/Dockerfile
         init: true
-        container_name: arcaea-potential
+        container_name: arcaea-potential_gas
         working_dir: /workspace
         volumes:
             - ./:/workspace
             - node-modules:/workspace/node_modules
+        networks:
+            # ネットワーク arcaea-potential-group に登録
+            arcaea-potential-group:
         tty: true
+
+    # plantumlサーバー
+    plantuml-server:
+        image: plantuml/plantuml-server
+        container_name: plantuml-server
+        ports:
+            - 8080:8080
+        networks:
+            # ネットワーク arcaea-potential-group に登録
+            arcaea-potential-group:
+                # ipを固定
+                ipv4_address: 172.22.0.3
 
 volumes:
     node-modules:
+
+networks:
+    # ネットワーク arcaea-potential-group の設定
+    arcaea-potential-group:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.22.0.0/16

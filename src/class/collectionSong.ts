@@ -1,6 +1,6 @@
 import { Difficulty } from "../types";
 import { extractionJaName, extractionUrlName } from "../utils/util";
-import { Song } from "../domain/song";
+import { Song } from "../class/song";
 import { IFetchArcaeaWiki } from "../@types/fetch-arcaea-wiki";
 
 export class CollectionSong {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SheetCellPair } from "./domain/sheetCellPair";
+import { SheetCellPair } from "./class/sheetCellPair";
 import { runTrigger } from "./trigger/onChangeData";
 import { updateDailyStatistics } from "./app/dailyStatisticsUpdate";
 

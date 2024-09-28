@@ -1,4 +1,4 @@
-import { Song } from "../domain/song";
+import { Song } from "../class/song";
 import { SongCollectionSheet, SongScoreSheet } from "../class/sheet";
 import { Difficulty } from "../types";
 

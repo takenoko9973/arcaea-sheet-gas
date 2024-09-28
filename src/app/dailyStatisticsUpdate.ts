@@ -2,7 +2,7 @@ import { Difficulty } from "../types/difficulty";
 import { DailyArcaeaData, DailyRepositorySheet } from "../class/sheet/dailyRepositorySheet";
 import { SongScoreSheet } from "../class/sheet/songScoreSheet";
 import { GradeData } from "../class/gradeData";
-import { ScoreData } from "../domain/scoreData";
+import { ScoreData } from "../class/scoreData";
 
 export function updateDailyStatistics() {
     console.log("Update daily statistics");

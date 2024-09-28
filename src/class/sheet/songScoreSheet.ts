@@ -1,5 +1,5 @@
 import { IGNORE_CONSTANT_CONFIG_CELL, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../../const";
-import { Song } from "../../domain/song";
+import { Song } from "../song";
 import { allIndexesOf } from "../../utils/util";
 import * as math from "../../utils/math";
 import { GradeData } from "../gradeData";

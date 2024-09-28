@@ -2,7 +2,7 @@ import { DAILY_REPOSITORY_SHEET_NAME, SHEET_BOOK } from "../../const";
 import { Grade } from "../../types";
 import { splitArrayIntoChunks } from "../../utils/util";
 import { GradeData } from "../gradeData";
-import { ScoreData } from "../../domain/scoreData";
+import { ScoreData } from "../scoreData";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

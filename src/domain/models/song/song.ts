@@ -46,6 +46,10 @@ export class Song {
         return new Song(songId, songData, pack, side, version, difficultyData, score);
     }
 
+    equals(other: Song) {
+        return this.songId.equals(other.songId);
+    }
+
     // 削除曲か否か
     isDeleted() {
         return this._pack.value === "Deleted";

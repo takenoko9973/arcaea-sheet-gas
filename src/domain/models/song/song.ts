@@ -11,6 +11,7 @@ import { Constant } from "./difficultyData/constant/constant";
 import { SongNotes } from "./difficultyData/notes/songNotes";
 import { PureNotes } from "./difficultyData/notes/pureNotes";
 import { ShinyPureNotes } from "./difficultyData/notes/shinyPureNotes";
+import { Grade, GradeEnum } from "./score/grade/grade";
 
 export class Song {
     private constructor(
@@ -61,7 +62,7 @@ export class Song {
      * Pure数を計算 (Farは0.5として計算)
      */
     hitPureNotes(): PureNotes {
-        const pureNotes = Math.floor((this.score.value * this.notes.value * 2) / 10000000) / 2;
+        const pureNotes = Math.floor((this.score.value * this.songNotes.value * 2) / 10000000) / 2;
         return new PureNotes(pureNotes);
     }
 
@@ -71,13 +72,26 @@ export class Song {
     hitShinyPureNotes(): ShinyPureNotes {
         const shinyPureNotes =
             this.score.value -
-            Math.floor(10000000 * (this.hitPureNotes().value / this.notes.value));
+            Math.floor(10000000 * (this.hitPureNotes().value / this.songNotes.value));
         return new ShinyPureNotes(shinyPureNotes);
     }
+
+    scoreGrade(): Grade {
+        if (this.hitShinyPureNotes().equals(this.songNotes)) {
+            return new Grade(GradeEnum.PM_PLUS);
+        } else if (this.hitPureNotes().equals(this.songNotes)) {
+            return new Grade(GradeEnum.PM);
+        } else {
+            return this.score.scoreGrade();
+        }
     }
 
     changeDifficultyData(newDifficultyData: DifficultyData) {
         this._difficultyData = newDifficultyData;
+    }
+
+    changeScore(newScore: Score) {
+        this._score = newScore;
     }
 
     get songId(): SongId {
@@ -101,15 +115,15 @@ export class Song {
     }
 
     get difficulty(): Difficulty {
-        return this._difficultyData.difficulty;
+        return this._songId.difficulty;
     }
 
     get level(): Level {
         return this._difficultyData.level;
     }
 
-    get notes(): SongNotes {
-        return this._difficultyData.notes;
+    get songNotes(): SongNotes {
+        return this._difficultyData.songNotes;
     }
 
     get constant(): Constant {

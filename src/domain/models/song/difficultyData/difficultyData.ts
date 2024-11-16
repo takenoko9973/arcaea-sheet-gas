@@ -7,7 +7,7 @@ import { SongNotes } from "./notes/songNotes";
 type DifficultyDataValue = {
     difficulty: Difficulty;
     level: Level;
-    notes: SongNotes;
+    songNotes: SongNotes;
     constant: Constant;
 };
 export class DifficultyData extends ValueObject<DifficultyDataValue, "DifficultyData"> {
@@ -22,7 +22,7 @@ export class DifficultyData extends ValueObject<DifficultyDataValue, "Difficulty
         return (
             this.difficulty.equals(other.difficulty) &&
             this.level.equals(other.level) &&
-            this.notes.equals(other.notes) &&
+            this.songNotes.equals(other.songNotes) &&
             this.constant.equals(other.constant)
         );
     }
@@ -35,8 +35,8 @@ export class DifficultyData extends ValueObject<DifficultyDataValue, "Difficulty
         return this.value.level;
     }
 
-    get notes(): DifficultyDataValue["notes"] {
-        return this.value.notes;
+    get songNotes(): DifficultyDataValue["songNotes"] {
+        return this.value.songNotes;
     }
 
     get constant(): DifficultyDataValue["constant"] {

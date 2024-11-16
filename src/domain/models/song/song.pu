@@ -21,9 +21,10 @@ package "楽曲(Song)" {
         DifficultyData: 難易度情報
         Score: スコア
         ---
-        isDeleted()
-        hitPureNotes()
-        hitShinyPureNotes()
+        isDeleted(): boolean
+        hitPureNotes(): PureNotes
+        hitShinyPureNotes(): ShinyPureNotes
+        scoreGrade(): Grade
     }
 
     Song *-down- SongId
@@ -33,7 +34,10 @@ package "楽曲(Song)" {
     Song *-down- Version
     Song *-down- DifficultyData
     Song *-down- Score
-    Song *-down- PureNotes
+
+    Song -down-- PureNotes
+    Song -down-- ShinyPureNotes
+    Song --down-- Grade
 }
 
 @enduml

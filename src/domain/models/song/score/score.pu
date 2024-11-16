@@ -11,8 +11,10 @@ class "Score(スコア)" as Score {
 note bottom of Score {
     MIN = 0
     MAX = 10010000 (余裕をもって、PMスコア + 10000)
+
+    songGradeはEX+までを返す
 }
 
-Score *-down- Grade
+Score -down- Grade
 
 @enduml

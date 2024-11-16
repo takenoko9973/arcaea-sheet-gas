@@ -9,12 +9,12 @@ describe("SongId", () => {
         const difficultyData = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("10"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.3),
         });
         expect(difficultyData.difficulty.value).toBe(DifficultyEnum.FUTURE);
         expect(difficultyData.level.value).toBe("10");
-        expect(difficultyData.notes.value).toBe(1000);
+        expect(difficultyData.songNotes.value).toBe(1000);
         expect(difficultyData.constant.value).toBe(10.3);
     });
 
@@ -22,41 +22,41 @@ describe("SongId", () => {
         const difficultyData1 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("10"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.3),
         });
         const difficultyData2 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("10"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.3),
         });
         // 難易度違い
         const difficultyData3 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.BEYOND),
             level: new Level("10"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.3),
         });
         // レベル違い
         const difficultyData4 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("11"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.3),
         });
         // ノーツ数違い
         const difficultyData5 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("10"),
-            notes: new SongNotes(2000),
+            songNotes: new SongNotes(2000),
             constant: new Constant(10.3),
         });
         // 譜面定数違い
         const difficultyData6 = new DifficultyData({
             difficulty: new Difficulty(DifficultyEnum.FUTURE),
             level: new Level("10"),
-            notes: new SongNotes(1000),
+            songNotes: new SongNotes(1000),
             constant: new Constant(10.6),
         });
 

@@ -20,6 +20,10 @@ package "楽曲(Song)" {
         Version: バージョン
         DifficultyData: 難易度情報
         Score: スコア
+        ---
+        isDeleted()
+        hitPureNotes()
+        hitShinyPureNotes()
     }
 
     Song *-down- SongId

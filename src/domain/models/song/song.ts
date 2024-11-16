@@ -55,6 +55,20 @@ export class Song {
         return this._pack.value === "Deleted";
     }
 
+    /**
+     * Pure数を計算 (Farは0.5として計算)
+     */
+    hitPureNotes(): number {
+        return Math.floor((this.score.value * this.notes.value * 2) / 10000000) / 2;
+    }
+
+    /**
+     * 内部数計算
+     */
+    hitShinyPureNotes(): number {
+        return this.score.value - Math.floor(10000000 * (this.hitPureNotes() / this.notes.value));
+    }
+
     changeDifficultyData(newDifficultyData: DifficultyData) {
         this._difficultyData = newDifficultyData;
     }

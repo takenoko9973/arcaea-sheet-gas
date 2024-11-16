@@ -7,8 +7,10 @@ import { SongId } from "./songId/songId";
 import { Version } from "./version/version";
 import { Difficulty } from "./difficulty/difficulty";
 import { Level } from "./difficultyData/level/level";
-import { Notes } from "./difficultyData/notes/notes";
 import { Constant } from "./difficultyData/constant/constant";
+import { SongNotes } from "./difficultyData/notes/songNotes";
+import { PureNotes } from "./difficultyData/notes/pureNotes";
+import { ShinyPureNotes } from "./difficultyData/notes/shinyPureNotes";
 
 export class Song {
     private constructor(
@@ -58,15 +60,20 @@ export class Song {
     /**
      * Pure数を計算 (Farは0.5として計算)
      */
-    hitPureNotes(): number {
-        return Math.floor((this.score.value * this.notes.value * 2) / 10000000) / 2;
+    hitPureNotes(): PureNotes {
+        const pureNotes = Math.floor((this.score.value * this.notes.value * 2) / 10000000) / 2;
+        return new PureNotes(pureNotes);
     }
 
     /**
      * 内部数計算
      */
-    hitShinyPureNotes(): number {
-        return this.score.value - Math.floor(10000000 * (this.hitPureNotes() / this.notes.value));
+    hitShinyPureNotes(): ShinyPureNotes {
+        const shinyPureNotes =
+            this.score.value -
+            Math.floor(10000000 * (this.hitPureNotes().value / this.notes.value));
+        return new ShinyPureNotes(shinyPureNotes);
+    }
     }
 
     changeDifficultyData(newDifficultyData: DifficultyData) {
@@ -101,7 +108,7 @@ export class Song {
         return this._difficultyData.level;
     }
 
-    get notes(): Notes {
+    get notes(): SongNotes {
         return this._difficultyData.notes;
     }
 

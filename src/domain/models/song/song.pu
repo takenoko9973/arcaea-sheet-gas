@@ -33,6 +33,7 @@ package "楽曲(Song)" {
     Song *-down- Version
     Song *-down- DifficultyData
     Song *-down- Score
+    Song *-down- PureNotes
 }
 
 @enduml

@@ -9,7 +9,6 @@ import { Difficulty } from "./difficulty/difficulty";
 import { Level } from "./difficultyData/level/level";
 import { Notes } from "./difficultyData/notes/notes";
 import { Constant } from "./difficultyData/constant/constant";
-import { Grade } from "../../../types";
 
 export class Song {
     private constructor(
@@ -47,27 +46,9 @@ export class Song {
         return new Song(songId, songData, pack, side, version, difficultyData, score);
     }
 
-    equals(other: Song) {
-        return this.songId.equals(other.songId);
-    }
-
     // 削除曲か否か
     isDeleted() {
         return this._pack.value === "Deleted";
-    }
-
-    /**
-     * Pure数を計算 (Farは0.5として計算)
-     */
-    hitPureNotes(): number {
-        return Math.floor((this.score.value * this.notes.value * 2) / 10000000) / 2;
-    }
-
-    /**
-     * 内部数計算
-     */
-    hitShinyPureNotes(): number {
-        return this.score.value - Math.floor(10000000 * (this.hitPureNotes() / this.notes.value));
     }
 
     changeDifficultyData(newDifficultyData: DifficultyData) {

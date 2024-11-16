@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf build dist",
-    "lint": "ESLINT_USE_FLAT_CONFIG=true eslint -c eslint.config.mjs 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint": "ESLINT_USE_FLAT_CONFIG=true eslint -c eslint.config.mjs --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "bundle": "rollup -c",
     "build": "yarn clean && yarn bundle && cpx src/appsscript.json dist/",
     "deploy": "yarn build && clasp push",

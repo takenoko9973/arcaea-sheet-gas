@@ -1,13 +1,13 @@
 import { Difficulty } from "../difficulty/difficulty";
 import { Level } from "./level/level";
-import { Notes } from "./notes/notes";
 import { Constant } from "./constant/constant";
 import { ValueObject } from "../../shared/valueObject";
+import { SongNotes } from "./notes/songNotes";
 
 type DifficultyDataValue = {
     difficulty: Difficulty;
     level: Level;
-    notes: Notes;
+    notes: SongNotes;
     constant: Constant;
 };
 export class DifficultyData extends ValueObject<DifficultyDataValue, "DifficultyData"> {

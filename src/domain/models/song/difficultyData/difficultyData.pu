@@ -8,13 +8,13 @@
 class "DifficultyData(難易度情報)" as DifficultyData {
     + Difficulty: 難易度
     + Level: レベル
-    + Notes: ノーツ数
+    + SongNotes: ノーツ数
     + Constant: 譜面定数
 }
 
 DifficultyData *-down- Difficulty
 DifficultyData *-down- Level
-DifficultyData *-down- Notes
+DifficultyData *-down- SongNotes
 DifficultyData *-down- Constant
 
 @enduml

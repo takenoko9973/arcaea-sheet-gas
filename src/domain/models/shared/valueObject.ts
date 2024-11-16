@@ -14,5 +14,5 @@ export abstract class ValueObject<T, U> {
         return this._value;
     }
 
-    abstract equals(others: ValueObject<T, U>): boolean;
+    abstract equals(other: ValueObject<T, U>): boolean;
 }

@@ -18,7 +18,7 @@ export class Side extends ValueObject<SideValue, "Pack"> {
         }
     }
 
-    equals(others: Side): boolean {
-        return this.value === others.value;
+    equals(other: Side): boolean {
+        return this.value === other.value;
     }
 }

@@ -19,7 +19,7 @@ export class Level extends ValueObject<LevelValue, "SongTitle"> {
         }
     }
 
-    equals(others: Level): boolean {
-        return this.value === others.value;
+    equals(other: Level): boolean {
+        return this.value === other.value;
     }
 }

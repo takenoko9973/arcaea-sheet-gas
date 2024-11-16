@@ -10,7 +10,7 @@ export class SongTitle extends ValueObject<SongTitleValue, "SongTitle"> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validate(value: string): void {}
 
-    equals(others: SongTitle): boolean {
-        return this.value === others.value;
+    equals(other: SongTitle): boolean {
+        return this.value === other.value;
     }
 }

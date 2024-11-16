@@ -9,7 +9,7 @@ export class Pack extends ValueObject<PackValue, "Pack"> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validate(value: string): void {}
 
-    equals(others: Pack): boolean {
-        return this.value === others.value;
+    equals(other: Pack): boolean {
+        return this.value === other.value;
     }
 }

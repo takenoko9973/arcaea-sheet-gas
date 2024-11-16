@@ -12,7 +12,7 @@ export class Constant extends ValueObject<ConstantValue, "Constant"> {
         }
     }
 
-    equals(others: ValueObject<number, "Constant">): boolean {
-        return this.value === others.value;
+    equals(other: ValueObject<number, "Constant">): boolean {
+        return this.value === other.value;
     }
 }

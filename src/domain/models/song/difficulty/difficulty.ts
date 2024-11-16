@@ -20,7 +20,7 @@ export class Difficulty extends ValueObject<DifficultyValue, "Difficulty"> {
         }
     }
 
-    equals(others: Difficulty): boolean {
-        return this.value === others.value;
+    equals(other: Difficulty): boolean {
+        return this.value === other.value;
     }
 }

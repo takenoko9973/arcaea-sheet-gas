@@ -18,12 +18,12 @@ export class DifficultyData extends ValueObject<DifficultyDataValue, "Difficulty
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validate(value: DifficultyDataValue): void {}
 
-    equals(others: DifficultyData): boolean {
+    equals(other: DifficultyData): boolean {
         return (
-            this.difficulty.equals(others.difficulty) &&
-            this.level.equals(others.level) &&
-            this.notes.equals(others.notes) &&
-            this.constant.equals(others.constant)
+            this.difficulty.equals(other.difficulty) &&
+            this.level.equals(other.level) &&
+            this.notes.equals(other.notes) &&
+            this.constant.equals(other.constant)
         );
     }
 

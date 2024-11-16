@@ -15,7 +15,7 @@ export class Notes extends ValueObject<NotesValue, "SongTitle"> {
         }
     }
 
-    equals(others: Notes): boolean {
-        return this.value === others.value;
+    equals(other: Notes): boolean {
+        return this.value === other.value;
     }
 }

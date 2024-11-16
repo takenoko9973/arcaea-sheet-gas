@@ -25,7 +25,7 @@ export class Grade extends ValueObject<GradeValue, "Grade"> {
         }
     }
 
-    equals(others: Grade): boolean {
-        return this.value === others.value;
+    equals(other: Grade): boolean {
+        return this.value === other.value;
     }
 }

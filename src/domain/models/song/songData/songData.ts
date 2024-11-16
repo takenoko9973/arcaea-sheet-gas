@@ -14,11 +14,11 @@ export class SongData extends ValueObject<SongDataValue, "SongData"> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected validate(value: SongDataValue): void {}
 
-    equals(others: SongData): boolean {
+    equals(other: SongData): boolean {
         return (
-            this.nameJp === others.nameJp &&
-            this.nameEn === others.nameEn &&
-            this.composer === others.composer
+            this.nameJp === other.nameJp &&
+            this.nameEn === other.nameEn &&
+            this.composer === other.composer
         );
     }
 

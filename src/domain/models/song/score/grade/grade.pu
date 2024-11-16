@@ -1,0 +1,16 @@
+@startuml Grade
+
+enum "Grade(グレード)" as Grade {
+    PM_PLUS: PM+
+    PM: PM
+    EX_PLUS: EX+
+    EX: EX
+    AA: AA
+    A: A
+    B: B
+    C: C
+    D: D
+    NOT_PLAYED: NP
+}
+
+@enduml

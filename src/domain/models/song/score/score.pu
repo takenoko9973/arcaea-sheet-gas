@@ -1,12 +1,18 @@
 @startuml Score
 
+!include ./grade/grade.pu
+
 class "Score(スコア)" as Score {
     + value: number
+    ---
+    + scoreGrade(): Grade
 }
 
 note bottom of Score {
     MIN = 0
     MAX = 10010000 (余裕をもって、PMスコア + 10000)
 }
+
+Score *-down- Grade
 
 @enduml

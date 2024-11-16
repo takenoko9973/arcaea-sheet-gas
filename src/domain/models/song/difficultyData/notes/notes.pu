@@ -4,4 +4,10 @@ class "Notes(ノーツ数)" as Notes {
     + value: integer
 }
 
+
+note bottom of Notes
+    MAX = 1
+    MIN = 2236 (PMを取らずに10,000,000を超えない最大ノーツ数)
+end note
+
 @enduml

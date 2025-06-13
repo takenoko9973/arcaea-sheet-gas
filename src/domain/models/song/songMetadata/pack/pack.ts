@@ -1,4 +1,4 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "../../../shared/valueObject";
 
 type PackValue = string;
 export class Pack extends ValueObject<PackValue, "Pack"> {

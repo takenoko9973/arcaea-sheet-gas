@@ -1,4 +1,4 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "../../../shared/valueObject";
 
 export enum SideEnum {
     LIGHT = "光",

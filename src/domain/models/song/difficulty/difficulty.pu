@@ -1,17 +1,14 @@
 @startuml Difficulty
 
+!include ./difficultyName/difficultyName.pu
+!include ./level/level.pu
 
 class "Difficulty(難易度)" as Difficulty {
-    + value: DifficultyEnum
+    + name: DifficultyName
+    + level: Level
 }
 
-enum "DifficultyEnum" as DifficultyEnum {
-    PAST: PST
-    PRESENT: PRS
-    FUTURE: FTR
-    BEYOND: BYD
-    ETERNAL: ETR
-}
+Difficulty *-down- DifficultyName
+Difficulty *-down- Level
 
-Difficulty *-down- DifficultyEnum
 @enduml

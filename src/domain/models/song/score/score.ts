@@ -4,7 +4,8 @@ import { Grade, GradeEnum } from "./grade/grade";
 type ScoreValue = number;
 export class Score extends ValueObject<ScoreValue, "Score"> {
     static readonly MIN = 0;
-    static readonly MAX = 10000000 + 10000; // 余裕を持って、PM + 10000ノーツ分取る
+    static readonly SEMI_MAX = 10000000;
+    static readonly MAX = this.SEMI_MAX + 10000; // 余裕を持って、PM + 10000ノーツ分取る
 
     constructor(value: ScoreValue) {
         super(value);
@@ -37,9 +38,9 @@ export class Score extends ValueObject<ScoreValue, "Score"> {
     }
 }
 
-const SCORE_GRADE_BORDERS: { [key in GradeEnum]: number } = {
-    [GradeEnum.PM_PLUS]: Score.MAX, // 仮 (実装はSong.tsで)
-    [GradeEnum.PM]: Score.MAX, // 仮
+export const SCORE_GRADE_BORDERS: { [key in GradeEnum]: number } = {
+    [GradeEnum.PM_PLUS]: Score.MAX, // 仮 (実装はchartData.tsで)
+    [GradeEnum.PM]: Score.MAX, // 仮 (Pureの数で判定)
     [GradeEnum.EX_PLUS]: 9900000,
     [GradeEnum.EX]: 9800000,
     [GradeEnum.AA]: 9500000,

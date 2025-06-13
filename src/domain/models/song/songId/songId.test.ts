@@ -1,12 +1,12 @@
 import { SongId } from "./songId";
 import { SongTitle } from "./songTitle/songTitle";
-import { Difficulty, DifficultyEnum } from "../difficulty/difficulty";
+import { DifficultyName, DifficultyEnum } from "../difficulty/difficultyName/difficultyName";
 
 describe("SongId", () => {
     it("正しい値とバージョン表記を返すSongIdを作る", () => {
         const songId = new SongId({
             songTitle: new SongTitle("hoge"),
-            difficulty: new Difficulty(DifficultyEnum.FUTURE),
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
         });
         expect(songId.id).toBe(`hoge_FTR`);
     });
@@ -14,21 +14,21 @@ describe("SongId", () => {
     it("equals", () => {
         const songId1 = new SongId({
             songTitle: new SongTitle("hoge"),
-            difficulty: new Difficulty(DifficultyEnum.FUTURE),
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
         });
         const songId2 = new SongId({
             songTitle: new SongTitle("hoge"),
-            difficulty: new Difficulty(DifficultyEnum.FUTURE),
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
         });
         // 名前違い
         const songId3 = new SongId({
             songTitle: new SongTitle("foo"),
-            difficulty: new Difficulty(DifficultyEnum.FUTURE),
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
         });
         // 難易度違い
         const songId4 = new SongId({
             songTitle: new SongTitle("hoge"),
-            difficulty: new Difficulty(DifficultyEnum.BEYOND),
+            difficultyName: new DifficultyName(DifficultyEnum.BEYOND),
         });
 
         expect(songId1.equals(songId2)).toBeTruthy();

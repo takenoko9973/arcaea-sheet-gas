@@ -1,48 +1,55 @@
+import { Song } from "./song";
 import { SongId } from "./songId/songId";
-import { Difficulty, DifficultyEnum } from "./difficulty/difficulty";
+import { DifficultyName, DifficultyEnum } from "./difficulty/difficultyName/difficultyName";
 import { SongTitle } from "./songId/songTitle/songTitle";
 import { SongData } from "./songData/songData";
-import { Pack } from "./pack/pack";
-import { Side, SideEnum } from "./side/side";
-import { Version } from "./version/version";
-import { Level } from "./difficultyData/level/level";
-import { SongNotes } from "./difficultyData/notes/songNotes";
-import { Constant } from "./difficultyData/constant/constant";
-import { DifficultyData } from "./difficultyData/difficultyData";
-import { Song } from "./song";
-import { Score } from "./score/score";
-import { PureNotes } from "./difficultyData/notes/pureNotes";
-import { ShinyPureNotes } from "./difficultyData/notes/shinyPureNotes";
+import { Pack } from "./songMetadata/pack/pack";
+import { Side, SideEnum } from "./songMetadata/side/side";
+import { Version } from "./songMetadata/version/version";
+import { Level } from "./difficulty/level/level";
+import { SongNotes } from "./chartData/notes/songNotes";
+import { Constant } from "./chartData/constant/constant";
+import { ChartData } from "./chartData/chartData";
+import { PureNotes } from "./chartData/notes/pureNotes";
+import { ShinyPureNotes } from "./chartData/notes/shinyPureNotes";
 import { Grade, GradeEnum } from "./score/grade/grade";
+import { SongMetadata } from "./songMetadata/songMetadata";
+import { Difficulty } from "./difficulty/difficulty";
+import { Score } from "./score/score";
 
 describe("Song", () => {
-    const difficulty = new Difficulty(DifficultyEnum.FUTURE);
     const songTitle = new SongTitle("abc");
 
-    const songId = new SongId({
-        difficulty,
-        songTitle,
-    });
     const songData = new SongData({ nameJp: "abc", nameEn: "abc", composer: "hoge" });
+
     const pack = new Pack("foo");
     const side = new Side(SideEnum.LIGHT);
     const version = Version.fromString("1.0");
+    const songMetadata = new SongMetadata({ pack: pack, side: side, version: version });
 
+    const difficultyName = new DifficultyName(DifficultyEnum.FUTURE);
     const level = new Level("10+");
+    const difficulty = new Difficulty({ difficultyName, level });
+
     const songNotes = new SongNotes(1000);
     const constant = new Constant(1.0);
+    const chartData = new ChartData({ songNotes, constant });
+
+    const songId = new SongId({
+        songTitle: songTitle,
+        difficultyName: difficultyName,
+    });
 
     describe("create", () => {
         it("デフォルト値で作成する", () => {
-            const difficultyData = new DifficultyData({ difficulty, level, songNotes, constant });
-            const song = Song.create(songId, songData, pack, side, version, difficultyData);
+            const song = Song.create(songTitle, songData, songMetadata, difficulty, chartData);
 
             expect(song.songId.equals(songId)).toBeTruthy();
             expect(song.songData.equals(songData)).toBeTruthy();
             expect(song.pack.equals(pack)).toBeTruthy();
             expect(song.side.equals(side)).toBeTruthy();
             expect(song.version.equals(version)).toBeTruthy();
-            expect(song.difficulty.equals(difficulty)).toBeTruthy();
+            expect(song.difficultyName.equals(difficultyName)).toBeTruthy();
             expect(song.level.equals(level)).toBeTruthy();
             expect(song.songNotes.equals(songNotes)).toBeTruthy();
             expect(song.constant.equals(constant)).toBeTruthy();
@@ -50,62 +57,36 @@ describe("Song", () => {
     });
 
     describe("Notes関連", () => {
-        it("PureNotes", () => {
-            const difficultyData = new DifficultyData({
-                difficulty,
-                level,
-                songNotes: new SongNotes(1212),
-                constant,
-            });
-            const song = Song.reconstruct(
-                songId,
-                songData,
-                pack,
-                side,
-                version,
-                difficultyData,
-                new Score(9964050)
-            );
+        const chartData2 = new ChartData({
+            songNotes: new SongNotes(1212),
+            constant,
+        });
+        const song = Song.reconstruct(
+            songId,
+            songData,
+            songMetadata,
+            difficulty,
+            chartData2,
+            new Score(9964050)
+        );
 
+        it("PureNotes", () => {
             expect(song.hitPureNotes().equals(new PureNotes(1207.5))).toBeTruthy();
         });
 
         it("ShinyPureNotes", () => {
-            const difficultyData = new DifficultyData({
-                difficulty,
-                level,
-                songNotes: new SongNotes(1212),
-                constant,
-            });
-            const song = Song.reconstruct(
-                songId,
-                songData,
-                pack,
-                side,
-                version,
-                difficultyData,
-                new Score(9964050)
-            );
-
             expect(song.hitShinyPureNotes().equals(new ShinyPureNotes(1179))).toBeTruthy();
         });
     });
 
     describe("grade", () => {
         it("スコアに対して、適切なグレードが表示されるかどうか", () => {
-            const difficultyData = new DifficultyData({
-                difficulty,
-                level,
-                songNotes,
-                constant,
-            });
             const song = Song.reconstruct(
                 songId,
                 songData,
-                pack,
-                side,
-                version,
-                difficultyData,
+                songMetadata,
+                difficulty,
+                chartData,
                 new Score(10000000)
             );
 

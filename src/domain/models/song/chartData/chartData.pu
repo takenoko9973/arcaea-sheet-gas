@@ -1,0 +1,16 @@
+@startuml ChartData
+
+!include ./notes/notes.pu
+!include ./constant/constant.pu
+
+class "ChartData(スコア情報)" as ChartData {
+    + SongNotes: ノーツ数
+    + Constant: 譜面定数
+    + Score: スコア
+}
+
+ChartData *-- SongNotes
+ChartData *-- Constant
+ChartData *-- Score
+
+@enduml

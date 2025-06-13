@@ -1,18 +1,12 @@
 @startuml SongId
 
-!include ./songTitle/songTitle.pu
-!include ../difficulty/difficulty.pu
-
 class "SongId" as SongId {
-    + SongTitle: 楽曲名
-    + Difficulty: 難易度
+    + value: string
 }
-
-SongId *-down- SongTitle
-SongId *-down- Difficulty
 
 note bottom of SongId {
     idの書式は、"<SongTitle>_<Difficulty>"
+    新規作成時はクラス内で自動生成
 }
 
 @enduml

@@ -14,13 +14,14 @@ class "ShinyPureNotes(内部ノーツ数)" as ShinyPureNotes {
 }
 
 
-Notes <-up- SongNotes
 Notes <-up- ShinyPureNotes
+Notes <-up- SongNotes
 Notes <-up- PureNotes
 
 note bottom of SongNotes
     MAX = 1
-    MIN = 2236 (PMを取らずに10,000,000を超えない最大ノーツ数)
+    MIN = 2236
+    (PMを取らずに10,000,000を超えない最大ノーツ数)
 end note
 
 note bottom of PureNotes

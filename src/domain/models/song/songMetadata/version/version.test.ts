@@ -6,7 +6,7 @@ describe("Version", () => {
         const minor = 10;
 
         const version = new Version({ major, minor });
-        expect(version.versionString()).toBe("1.10");
+        expect(version.toString()).toBe("1.10");
         expect(version.major).toBe(major);
         expect(version.minor).toBe(minor);
     });
@@ -21,7 +21,7 @@ describe("Version", () => {
 
     describe("fromString", () => {
         it("正しい文字列", () => {
-            expect(Version.fromString("1.5").versionString()).toBe("1.5");
+            expect(Version.fromString("1.5").toString()).toBe("1.5");
 
             const version = Version.fromString("4.10");
             expect(version.major).toBe(4);

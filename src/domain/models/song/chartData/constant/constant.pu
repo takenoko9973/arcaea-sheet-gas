@@ -1,7 +1,7 @@
 @startuml Constant
 
 class "Constant(譜面定数)" as Constant {
-    + value: integer
+    + value: number
 }
 
 @enduml

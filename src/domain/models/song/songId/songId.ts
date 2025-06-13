@@ -1,10 +1,10 @@
 import { SongTitle } from "./songTitle/songTitle";
-import { Difficulty, DifficultyEnum } from "../difficulty/difficulty";
+import { DifficultyName, DifficultyEnum } from "../difficulty/difficultyName/difficultyName";
 import { ValueObject } from "../../shared/valueObject";
 
 type SongIdValue = {
     songTitle: SongTitle;
-    difficulty: Difficulty;
+    difficultyName: DifficultyName;
 };
 export class SongId extends ValueObject<SongIdValue, "SongId"> {
     constructor(value: SongIdValue) {
@@ -17,7 +17,7 @@ export class SongId extends ValueObject<SongIdValue, "SongId"> {
     equals(other: SongId): boolean {
         return (
             this.value.songTitle.equals(other.value.songTitle) &&
-            this.value.difficulty.equals(other.value.difficulty)
+            this.value.difficultyName.equals(other.value.difficultyName)
         );
     }
 
@@ -42,7 +42,7 @@ export class SongId extends ValueObject<SongIdValue, "SongId"> {
 
         return new SongId({
             songTitle: new SongTitle(songTitle),
-            difficulty: new Difficulty(difficulty as DifficultyEnum),
+            difficultyName: new DifficultyName(difficulty as DifficultyEnum),
         });
     }
 
@@ -54,7 +54,7 @@ export class SongId extends ValueObject<SongIdValue, "SongId"> {
         return this.value.songTitle;
     }
 
-    get difficulty(): Difficulty {
-        return this.value.difficulty;
+    get difficulty(): DifficultyName {
+        return this.value.difficultyName;
     }
 }

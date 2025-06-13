@@ -1,4 +1,4 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "../../../shared/valueObject";
 
 type VersionValue = {
     major: number;
@@ -30,7 +30,7 @@ export class Version extends ValueObject<VersionValue, "Version"> {
         return this.value.major === other.value.major && this.value.minor === other.value.minor;
     }
 
-    versionString(): string {
+    toString(): string {
         return `${this.value.major}.${this.value.minor}`;
     }
 

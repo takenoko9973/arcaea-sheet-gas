@@ -16,7 +16,7 @@ export class DifficultyName extends ValueObject<DifficultyNameValue, "Difficulty
 
     protected validate(value: DifficultyNameValue): void {
         if (!Object.values(DifficultyEnum).includes(value)) {
-            throw new Error("無効な難易度です。");
+            throw new Error(`無効な難易度です (${value})`);
         }
     }
 

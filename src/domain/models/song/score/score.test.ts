@@ -16,10 +16,10 @@ describe("Score", () => {
 
     it("不正な入力", () => {
         expect(() => new Score(-1)).toThrow(
-            `スコアは${Score.MIN}から${Score.MAX}の間でなければなりません。`
+            `スコアは${Score.MIN}から${Score.MAX}の間でなければなりません (-1)`
         );
         expect(() => new Score(10010001)).toThrow(
-            `スコアは${Score.MIN}から${Score.MAX}の間でなければなりません。`
+            `スコアは${Score.MIN}から${Score.MAX}の間でなければなりません (10010001)`
         );
     });
 

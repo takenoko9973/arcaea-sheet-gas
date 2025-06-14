@@ -8,7 +8,7 @@ export class Constant extends ValueObject<ConstantValue, "Constant"> {
 
     protected validate(value: ConstantValue): void {
         if (value < 0) {
-            throw new Error("定数は0以上の数値です。");
+            throw new Error(`定数は0以上の数値である必要があります (${value})`);
         }
     }
 

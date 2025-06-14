@@ -3,6 +3,7 @@ import { Side, SideEnum } from "./side";
 describe("Side", () => {
     it("正しい値を返すSideを作る", () => {
         expect(new Side(SideEnum.LIGHT).value).toBe(SideEnum.LIGHT);
+        expect(new Side(SideEnum.LEPHON).value).toBe(SideEnum.LEPHON);
     });
 
     it("equals", () => {
@@ -17,6 +18,6 @@ describe("Side", () => {
         expect(() => {
             const side = "Arcaea" as SideEnum;
             new Side(side);
-        }).toThrow("無効な属性です。");
+        }).toThrow("無効な属性です (Arcaea)");
     });
 });

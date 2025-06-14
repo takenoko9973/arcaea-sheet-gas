@@ -15,7 +15,7 @@ export class Side extends ValueObject<SideValue, "Pack"> {
 
     protected validate(value: SideValue): void {
         if (!Object.values(SideEnum).includes(value)) {
-            throw new Error("無効な属性です。");
+            throw new Error(`無効な属性です (${value})`);
         }
     }
 

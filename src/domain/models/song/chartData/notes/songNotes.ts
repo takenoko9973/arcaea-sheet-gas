@@ -8,7 +8,7 @@ export class SongNotes extends Notes<"SongNotes"> {
     protected validate(value: NotesValue): void {
         if (value < SongNotes.MIN || value > SongNotes.MAX) {
             throw new Error(
-                `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません。`
+                `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません (${value})`
             );
         }
     }

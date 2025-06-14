@@ -14,6 +14,8 @@ describe("Constant", () => {
     });
 
     it("不正な定数", () => {
-        expect(() => new Potential(-1)).toThrow("定数は0以上の数値です。");
+        expect(() => new Potential(-1)).toThrow(
+            "ポテンシャルは0以上の数値である必要があります (-1)"
+        );
     });
 });

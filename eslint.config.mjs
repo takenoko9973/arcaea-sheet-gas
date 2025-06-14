@@ -7,12 +7,13 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default tseslint.config(
     {
-        files: ["src/**/*.{js,jsx,ts,tsx}"],
+        files: ["src/**/*.{js,jsx,ts,tsx}", "jest.setup.js"],
         languageOptions: {
             globals: {
                 ...globals.browser,
                 ...globals.node,
                 ...globals.es2019,
+                ...globals.jest,
                 ...googleappsscript.environments.googleappsscript.globals,
             },
             parserOptions: { ecmaVersion: "latest", project: "./tsconfig.json" },

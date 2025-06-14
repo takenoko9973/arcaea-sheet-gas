@@ -5,4 +5,5 @@ module.exports = {
     testEnvironment: "node",
     moduleNameMapper: { "(.+)\\.js": "$1" },
     modulePaths: ["<rootDir>/src"],
+    setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };

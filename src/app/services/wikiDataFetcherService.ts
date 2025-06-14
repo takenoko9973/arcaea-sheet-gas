@@ -25,13 +25,10 @@ export class WikiDataFetcherService {
                 ? dto.notes
                 : songDataFromWiki.getNotesByDiff(dto.difficulty)[0].toString();
 
-        const versionMatch = songDataFromWiki.version.match(/^(\d+\.\d+)/);
-        const version = versionMatch ? versionMatch[1] : "";
-
         return {
             composer: songDataFromWiki.composer,
             pack: songDataFromWiki.pack,
-            version: version,
+            version: songDataFromWiki.version,
             notes: Number(notesStr),
         };
     }

@@ -19,7 +19,7 @@ export class Level extends ValueObject<LevelValue, "SongTitle"> {
             !isUnknown &&
             value !== "" // 削除曲用
         ) {
-            throw new Error("無効なレベルです。");
+            throw new Error(`無効なレベルです (${value})`);
         }
     }
 

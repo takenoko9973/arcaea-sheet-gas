@@ -17,6 +17,13 @@ import { Side } from "./songMetadata/side/side";
 import { SongMetadata } from "./songMetadata/songMetadata";
 import { Version } from "./songMetadata/version/version";
 
+const POTENTIAL_BONUS_PM = 2.0;
+const POTENTIAL_BONUS_EX = 1.0;
+const SCORE_FACTOR_EX = 200000;
+const SCORE_FACTOR_AA = 300000;
+
+const DELETED_PACK = new Pack("Deleted");
+
 export class Song {
     private constructor(
         private readonly _songId: SongId,
@@ -80,7 +87,7 @@ export class Song {
 
     // 削除曲か否か
     isDeleted() {
-        return this.pack.value === "Deleted";
+        return this.pack.equals(DELETED_PACK);
     }
 
     /**
@@ -124,11 +131,12 @@ export class Song {
             this.scoreGrade().equals(new Grade(GradeEnum.PM)) ||
             this.scoreGrade().equals(new Grade(GradeEnum.PM_PLUS))
         ) {
-            scorePotential = 2.0;
+            scorePotential = POTENTIAL_BONUS_PM;
         } else if (this.score.value >= SCORE_GRADE_BORDERS.EX) {
-            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.EX) / 200000 + 1.0;
+            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.EX) / SCORE_FACTOR_EX;
+            scorePotential += POTENTIAL_BONUS_EX;
         } else {
-            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.AA) / 300000;
+            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.AA) / SCORE_FACTOR_AA;
         }
 
         return new Potential(Math.max(this.constant.value + scorePotential, 0));

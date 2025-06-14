@@ -1,20 +1,9 @@
-import { ChartData } from "domain/models/song/chartData/chartData";
-import { Constant } from "domain/models/song/chartData/constant/constant";
-import { SongNotes } from "domain/models/song/chartData/notes/songNotes";
-import { Difficulty } from "domain/models/song/difficulty/difficulty";
 import {
     DifficultyEnum,
     DifficultyName,
 } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Level } from "domain/models/song/difficulty/level/level";
-import { Song } from "domain/models/song/song";
-import { SongData } from "domain/models/song/songData/songData";
+import { SongFactory } from "domain/models/song/songFactory";
 import { SongId } from "domain/models/song/songId/songId";
-import { SongTitle } from "domain/models/song/songId/songTitle/songTitle";
-import { Pack } from "domain/models/song/songMetadata/pack/pack";
-import { Side, SideEnum } from "domain/models/song/songMetadata/side/side";
-import { SongMetadata } from "domain/models/song/songMetadata/songMetadata";
-import { Version } from "domain/models/song/songMetadata/version/version";
 import { SongCollectionRepository } from "infrastructure/repositories/songCollectionRepository";
 import { SongRepository } from "infrastructure/repositories/songRepository";
 
@@ -46,26 +35,10 @@ export function registerSongData(difficulty: DifficultyEnum) {
         console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
         // Wikiからデータを取得
-        const details = WikiDataFetcherService.fetchDetails(dto);
+        const wikiDetails = WikiDataFetcherService.fetchDetails(dto);
 
         // ドメインエンティティを生成
-        const newSong = Song.create(
-            new SongTitle(dto.songTitle),
-            new SongData({ nameJp: dto.nameJp, nameEn: dto.nameEn, composer: dto.composer }),
-            new SongMetadata({
-                pack: new Pack(details.pack),
-                version: Version.fromString(details.version),
-                side: new Side(dto.side as SideEnum),
-            }),
-            new Difficulty({
-                difficultyName: new DifficultyName(difficulty as DifficultyEnum),
-                level: new Level(dto.level),
-            }),
-            new ChartData({
-                constant: new Constant(Number(dto.constant)),
-                songNotes: new SongNotes(dto.notes !== "" ? Number(dto.notes) : details.notes),
-            })
-        );
+        const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);
 
         // リポジトリに保存
         songRepo.save(newSong);

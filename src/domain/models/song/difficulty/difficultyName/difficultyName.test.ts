@@ -1,4 +1,4 @@
-import { DifficultyEnum,DifficultyName } from "./difficultyName";
+import { DifficultyEnum, DifficultyName } from "./difficultyName";
 
 describe("Difficulty", () => {
     it("正しい値とバージョン表記を返すDifficultyを作る", () => {
@@ -17,6 +17,6 @@ describe("Difficulty", () => {
         expect(() => {
             const difficulty = "ARC" as DifficultyEnum;
             new DifficultyName(difficulty);
-        }).toThrow("無効な難易度です。");
+        }).toThrow("無効な難易度です (ARC)");
     });
 });

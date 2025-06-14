@@ -1,6 +1,4 @@
-import { DifficultyEnum, DifficultyName } from "../difficulty/difficultyName/difficultyName";
 import { SongId } from "./songId";
-import { SongTitle } from "./songTitle/songTitle";
 
 describe("SongId", () => {
     it("正しい値とバージョン表記を返すSongIdを作る", () => {

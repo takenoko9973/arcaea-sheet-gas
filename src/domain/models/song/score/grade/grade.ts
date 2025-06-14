@@ -21,7 +21,7 @@ export class Grade extends ValueObject<GradeValue, "Grade"> {
 
     protected validate(value: GradeValue): void {
         if (!Object.values(GradeEnum).includes(value)) {
-            throw new Error("無効なグレードです。");
+            throw new Error(`無効なグレードです (${value})`);
         }
     }
 

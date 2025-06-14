@@ -8,7 +8,7 @@ export class ShinyPureNotes extends Notes<"PureNotes"> {
     protected validate(value: NotesValue): void {
         if (value < ShinyPureNotes.MIN || value > ShinyPureNotes.MAX) {
             throw new Error(
-                `ノーツ数は${ShinyPureNotes.MIN}から${ShinyPureNotes.MAX}の間でなければなりません。`
+                `ノーツ数は${ShinyPureNotes.MIN}から${ShinyPureNotes.MAX}の間でなければなりません (${value})`
             );
         }
     }

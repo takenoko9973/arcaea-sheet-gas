@@ -11,7 +11,7 @@ export class ChartData extends ValueObject<ChartDataValue, "DifficultyData"> {
 
     protected validate(value: ChartDataValue): void {
         if (value.songNotes.value <= 0) {
-            throw new Error(`不正な入力値です。ノーツ数は0以下で入力しないでください。`);
+            throw new Error(`ノーツ数は0以下で入力しないでください (${value})`);
         }
     }
 

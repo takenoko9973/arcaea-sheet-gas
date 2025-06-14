@@ -1,25 +1,10 @@
-// ... ドメインモデルのインポート ...
-import {
-    DifficultyEnum,
-    DifficultyName,
-} from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "domain/models/song/song";
+import { DifficultyName } from "domain/models/song/difficulty/difficultyName/difficultyName";
+import { SongFactory } from "domain/models/song/songFactory";
 import { SongId } from "domain/models/song/songId/songId";
-import { SongTitle } from "domain/models/song/songId/songTitle/songTitle";
 import { ManualRegisterRepository } from "infrastructure/repositories/manualRegisterRepository";
 import { SongRepository } from "infrastructure/repositories/songRepository";
+
 import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
-import { SongData } from "domain/models/song/songData/songData";
-import { SongMetadata } from "domain/models/song/songMetadata/songMetadata";
-import { Version } from "domain/models/song/songMetadata/version/version";
-import { Side, SideEnum } from "domain/models/song/songMetadata/side/side";
-import { Difficulty } from "domain/models/song/difficulty/difficulty";
-import { Level } from "domain/models/song/difficulty/level/level";
-import { ChartData } from "domain/models/song/chartData/chartData";
-import { Constant } from "domain/models/song/chartData/constant/constant";
-import { SongNotes } from "domain/models/song/chartData/notes/songNotes";
-import { Pack } from "domain/models/song/songMetadata/pack/pack";
-// ...
 
 /**
  * 手動登録ルーチン
@@ -67,27 +52,7 @@ export function manualRegister() {
     });
 
     // 5. ドメインエンティティを生成
-    const newSong = Song.create(
-        new SongTitle(dto.songTitle),
-        new SongData({
-            nameJp: dto.nameJp,
-            nameEn: "", // 手動登録シートにないので空
-            composer: wikiDetails.composer,
-        }),
-        new SongMetadata({
-            pack: new Pack(wikiDetails.pack),
-            version: Version.fromString(wikiDetails.version),
-            side: new Side(SideEnum.COLORLESS), // 手動登録シートにないので仮の値
-        }),
-        new Difficulty({
-            difficultyName: new DifficultyName(dto.difficulty as DifficultyEnum),
-            level: new Level(dto.level),
-        }),
-        new ChartData({
-            constant: new Constant(dto.constant),
-            songNotes: new SongNotes(wikiDetails.notes),
-        })
-    );
+    const newSong = SongFactory.createFromManualRegisterDto(dto, wikiDetails);
 
     // 6. リポジトリに保存し、すぐにシートに書き出す
     songRepo.save(newSong);

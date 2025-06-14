@@ -29,7 +29,16 @@ describe("Version", () => {
         });
 
         it("不正な文字列", () => {
-            expect(() => Version.fromString("foo")).toThrow("Versionの入力が不正です");
+            expect(() => Version.fromString("foo")).toThrow("Versionの入力が不正です (foo)");
+        });
+
+        it("不正なバージョン", () => {
+            expect(() => new Version({ major: -1, minor: 0 })).toThrow(
+                "メジャーバージョンが負です (-1)"
+            );
+            expect(() => new Version({ major: 1, minor: -2 })).toThrow(
+                "マイナーバージョンが負です (-2)"
+            );
         });
     });
 });

@@ -1,7 +1,7 @@
+import { PROCESSING_TARGET_DIFFICULTIES } from "const";
 import { DailyData } from "domain/models/daily/dailyData";
 import { GradeData } from "domain/models/daily/greadeData/gradeData";
 import { ScoreData } from "domain/models/daily/scoreData/scoreData";
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
 import { DailyStatisticsRepository } from "infrastructure/repositories/dailyStatisticsRepository";
 import { SongRepository } from "infrastructure/repositories/songRepository";
 
@@ -9,13 +9,6 @@ import { StatisticsService } from "./services/statisticsService";
 
 export function updateDailyStatistics() {
     console.log("Start update daily statistics");
-
-    // 集計対象
-    const statisticsDifficulties: DifficultyEnum[] = [
-        DifficultyEnum.FUTURE,
-        DifficultyEnum.BEYOND,
-        DifficultyEnum.ETERNAL,
-    ];
 
     const today = new Date();
 
@@ -29,7 +22,7 @@ export function updateDailyStatistics() {
 
     let totalGradeData = GradeData.createEmpty();
     const scoreDataList: ScoreData[] = [];
-    for (const difficulty of statisticsDifficulties) {
+    for (const difficulty of PROCESSING_TARGET_DIFFICULTIES) {
         const grade = StatisticsService.calculateGrades(allSongs, difficulty);
         totalGradeData = totalGradeData.plus(grade);
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SheetCellPair } from "./domain/sheetCellPair";
-import { runTrigger } from "./trigger/onChangeData";
-import { updateDailyStatistics } from "./app/dailyStatisticsUpdate";
+import { updateDailyStatistics } from "app/dailyStatisticsUpdate";
+import { SheetCellPair } from "domain/sheetCellPair";
+import { runTrigger } from "trigger/onChangeData";
 
 function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const sheet = e.source.getActiveSheet();

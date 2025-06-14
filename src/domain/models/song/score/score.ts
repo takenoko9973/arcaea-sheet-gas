@@ -1,4 +1,5 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
+
 import { Grade, GradeEnum } from "./grade/grade";
 
 type ScoreValue = number;

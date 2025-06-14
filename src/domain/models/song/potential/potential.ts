@@ -1,4 +1,4 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
 type PotentialValue = number;
 export class Potential extends ValueObject<PotentialValue, "Potential"> {

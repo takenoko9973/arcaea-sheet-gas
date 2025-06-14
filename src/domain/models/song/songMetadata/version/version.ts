@@ -1,9 +1,6 @@
-import { ValueObject } from "../../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
-type VersionValue = {
-    major: number;
-    minor: number;
-};
+type VersionValue = { major: number; minor: number };
 
 export class Version extends ValueObject<VersionValue, "Version"> {
     constructor(value: VersionValue) {

@@ -1,21 +1,21 @@
 import { ChartData as ChartData } from "./chartData/chartData";
-import { Pack } from "./songMetadata/pack/pack";
-import { Score, SCORE_GRADE_BORDERS } from "./score/score";
-import { Side } from "./songMetadata/side/side";
-import { SongData } from "./songData/songData";
-import { SongId } from "./songId/songId";
-import { Version } from "./songMetadata/version/version";
-import { DifficultyName } from "./difficulty/difficultyName/difficultyName";
-import { Level } from "./difficulty/level/level";
 import { Constant } from "./chartData/constant/constant";
-import { SongNotes } from "./chartData/notes/songNotes";
 import { PureNotes } from "./chartData/notes/pureNotes";
 import { ShinyPureNotes } from "./chartData/notes/shinyPureNotes";
-import { Grade, GradeEnum } from "./score/grade/grade";
-import { SongMetadata } from "./songMetadata/songMetadata";
-import { SongTitle } from "./songId/songTitle/songTitle";
+import { SongNotes } from "./chartData/notes/songNotes";
 import { Difficulty } from "./difficulty/difficulty";
+import { DifficultyName } from "./difficulty/difficultyName/difficultyName";
+import { Level } from "./difficulty/level/level";
 import { Potential } from "./potential/potential";
+import { Grade, GradeEnum } from "./score/grade/grade";
+import { Score, SCORE_GRADE_BORDERS } from "./score/score";
+import { SongData } from "./songData/songData";
+import { SongId } from "./songId/songId";
+import { SongTitle } from "./songId/songTitle/songTitle";
+import { Pack } from "./songMetadata/pack/pack";
+import { Side } from "./songMetadata/side/side";
+import { SongMetadata } from "./songMetadata/songMetadata";
+import { Version } from "./songMetadata/version/version";
 
 export class Song {
     private constructor(
@@ -36,10 +36,7 @@ export class Song {
         difficulty: Difficulty,
         chartData: ChartData
     ) {
-        const songId = new SongId({
-            songTitle: songTitle,
-            difficultyName: difficulty.difficultyName,
-        });
+        const songId = new SongId(songTitle.value);
         const song = new Song(songId, songData, songMetadata, difficulty, chartData, new Score(0));
 
         return song;
@@ -77,8 +74,8 @@ export class Song {
         }
     }
 
-    equals(other: Song) {
-        return this.songId.equals(other.songId);
+    equals(other: Song): boolean {
+        return this.uniqueChartId === other.uniqueChartId;
     }
 
     // 削除曲か否か
@@ -137,12 +134,26 @@ export class Song {
         return new Potential(Math.max(this.constant.value + scorePotential, 0));
     }
 
-    changeDifficultyData(newDifficultyData: ChartData) {
-        this._chartData = newDifficultyData;
+    changeDifficulty(newDifficulty: Difficulty): Song {
+        return new Song(
+            this._songId,
+            this._songData,
+            this._songMetadata,
+            newDifficulty,
+            this._chartData,
+            this._score
+        );
     }
 
-    changeScore(newScore: Score) {
-        this._score = newScore;
+    changeChartData(newChartData: ChartData): Song {
+        return new Song(
+            this._songId,
+            this._songData,
+            this._songMetadata,
+            this._difficulty,
+            newChartData,
+            this._score
+        );
     }
 
     get songId(): SongId {
@@ -183,5 +194,9 @@ export class Song {
 
     get score(): Score {
         return this._score;
+    }
+
+    get uniqueChartId(): string {
+        return `${this._songId.value}_${this.difficultyName.value}`;
     }
 }

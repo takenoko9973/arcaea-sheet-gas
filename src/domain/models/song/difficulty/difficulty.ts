@@ -1,11 +1,9 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
+
 import { DifficultyName } from "./difficultyName/difficultyName";
 import { Level } from "./level/level";
 
-type DifficultyValue = {
-    difficultyName: DifficultyName;
-    level: Level;
-};
+type DifficultyValue = { difficultyName: DifficultyName; level: Level };
 export class Difficulty extends ValueObject<DifficultyValue, "Difficulty"> {
     constructor(value: DifficultyValue) {
         super(value);

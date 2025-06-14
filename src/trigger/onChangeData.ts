@@ -1,58 +1,63 @@
-import { checkCollectedSong } from "../app/checkCollectedSong";
-import { manualRegister } from "../app/manualRegister";
-import { SongScoreSheet } from "../class/sheet";
-import { SheetCellPair } from "../domain/sheetCellPair";
-import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "../const";
+import { checkCollectedSong } from "app/checkCollectedSong";
+import { manualRegister } from "app/manualRegister";
+import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "const";
+import { SheetCellPair } from "domain/sheetCellPair";
+import { getColumnIndexByName, getSheet } from "utils/sheetHelper";
 
 const triggerList = [
-    {
-        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y5"),
-        func: songDifficultySort,
-    },
-    {
-        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y6"),
-        func: songNameSort,
-    },
-    {
-        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y7"),
-        func: songLevelSort,
-    },
-    {
-        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y9"),
-        func: checkCollectedSong,
-    },
-    {
-        pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"),
-        func: manualRegister,
-    },
+    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y5"), func: songDifficultySort },
+    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y6"), func: songNameSort },
+    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y7"), func: songLevelSort },
+    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y9"), func: checkCollectedSong },
+    { pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"), func: manualRegister },
 ];
 
 /**
  * 難易度順に並び替え
  */
 function songDifficultySort() {
-    const songScoreSheet = SongScoreSheet.instance;
-    songScoreSheet.sort("Song Title (English)", true);
-    songScoreSheet.sort("レベル(ソート用)", true);
-    songScoreSheet.sort("難易度", true);
+    console.log("Sort by Difficulty");
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
+
+    const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
+    const levelCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "レベル(ソート用)");
+    const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
+
+    // 取得した列番号を使ってソート
+    filter.sort(titleCol, true);
+    filter.sort(levelCol, true);
+    filter.sort(diffCol, true);
 }
 
 /**
  * 曲名順に並び替え
  */
 function songNameSort() {
-    const songScoreSheet = SongScoreSheet.instance;
-    songScoreSheet.sort("Song Title (English)", true);
-    songScoreSheet.sort("難易度", true);
+    console.log("Sort by Song Title");
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
+
+    const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
+    const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
+
+    filter.sort(diffCol, true);
+    filter.sort(titleCol, true);
 }
 
 /**
  * レベル順に並び替え
  */
 function songLevelSort() {
-    const songScoreSheet = SongScoreSheet.instance;
-    songScoreSheet.sort("Song Title (English)", true);
-    songScoreSheet.sort("レベル(ソート用)", true);
+    console.log("Sort by Level");
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
+
+    const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
+    const levelCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "レベル(ソート用)");
+
+    filter.sort(titleCol, true);
+    filter.sort(levelCol, true);
 }
 
 export function runTrigger(changedPair: SheetCellPair) {

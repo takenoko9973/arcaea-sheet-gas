@@ -1,13 +1,10 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
+
 import { Pack } from "./pack/pack";
 import { Side } from "./side/side";
 import { Version } from "./version/version";
 
-type SongMetadataValue = {
-    pack: Pack;
-    version: Version;
-    side: Side;
-};
+type SongMetadataValue = { pack: Pack; version: Version; side: Side };
 export class SongMetadata extends ValueObject<SongMetadataValue, "Difficulty"> {
     constructor(value: SongMetadataValue) {
         super(value);

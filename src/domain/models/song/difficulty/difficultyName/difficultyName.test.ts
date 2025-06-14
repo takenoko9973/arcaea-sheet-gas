@@ -1,4 +1,4 @@
-import { DifficultyName, DifficultyEnum } from "./difficultyName";
+import { DifficultyEnum,DifficultyName } from "./difficultyName";
 
 describe("Difficulty", () => {
     it("正しい値とバージョン表記を返すDifficultyを作る", () => {

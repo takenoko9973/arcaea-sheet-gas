@@ -3,7 +3,6 @@
 module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
-    moduleNameMapper: {
-        "(.+)\\.js": "$1",
-    },
+    moduleNameMapper: { "(.+)\\.js": "$1" },
+    modulePaths: ["<rootDir>/src"],
 };

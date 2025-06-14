@@ -1,4 +1,4 @@
-import { ValueObject } from "../../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
 type SongTitleValue = string;
 export class SongTitle extends ValueObject<SongTitleValue, "SongTitle"> {

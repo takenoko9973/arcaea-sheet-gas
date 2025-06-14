@@ -1,11 +1,9 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
+
 import { Constant } from "./constant/constant";
 import { SongNotes } from "./notes/songNotes";
 
-type ChartDataValue = {
-    songNotes: SongNotes;
-    constant: Constant;
-};
+type ChartDataValue = { songNotes: SongNotes; constant: Constant };
 export class ChartData extends ValueObject<ChartDataValue, "DifficultyData"> {
     constructor(value: ChartDataValue) {
         super(value);

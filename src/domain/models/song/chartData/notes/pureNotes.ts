@@ -8,7 +8,7 @@ export class PureNotes extends Notes<"PureNotes"> {
     protected validate(value: NotesValue): void {
         if (value < PureNotes.MIN || value > PureNotes.MAX) {
             throw new Error(
-                `ノーツ数は${PureNotes.MIN}から${PureNotes.MAX}の間でなければなりません。`
+                `ノーツ数は${PureNotes.MIN}から${PureNotes.MAX}の間でなければなりません (${value})`
             );
         }
     }

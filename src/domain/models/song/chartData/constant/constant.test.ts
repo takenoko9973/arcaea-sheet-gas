@@ -14,6 +14,6 @@ describe("Constant", () => {
     });
 
     it("不正な定数", () => {
-        expect(() => new Constant(-1)).toThrow("定数は0以上の数値です。");
+        expect(() => new Constant(-1)).toThrow("定数は0以上の数値である必要があります (-1)");
     });
 });

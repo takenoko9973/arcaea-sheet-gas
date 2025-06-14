@@ -14,7 +14,9 @@ export class Score extends ValueObject<ScoreValue, "Score"> {
 
     protected validate(value: ScoreValue): void {
         if (value < Score.MIN || value > Score.MAX) {
-            throw new Error(`スコアは${Score.MIN}から${Score.MAX}の間でなければなりません。`);
+            throw new Error(
+                `スコアは${Score.MIN}から${Score.MAX}の間でなければなりません (${value})`
+            );
         }
     }
 

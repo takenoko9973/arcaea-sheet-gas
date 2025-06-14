@@ -5,6 +5,7 @@ describe("Level", () => {
         expect(new Level("6").value).toBe("6");
         expect(new Level("9+").value).toBe("9+");
         expect(new Level("10+").value).toBe("10+");
+        expect(new Level("?").value).toBe("?");
     });
 
     it("equals", () => {
@@ -16,9 +17,10 @@ describe("Level", () => {
     });
 
     it("不正な入力", () => {
-        expect(() => new Level("a")).toThrow("無効なレベルです。");
-        expect(() => new Level("10a")).toThrow("無効なレベルです。");
-        expect(() => new Level("100")).toThrow("無効なレベルです。");
-        expect(() => new Level("1++")).toThrow("無効なレベルです。");
+        expect(() => new Level("a")).toThrow("無効なレベルです (a)");
+        expect(() => new Level("10a")).toThrow("無効なレベルです (10a)");
+        expect(() => new Level("100")).toThrow("無効なレベルです (100)");
+        expect(() => new Level("1++")).toThrow("無効なレベルです (1++)");
+        expect(() => new Level("??")).toThrow("無効なレベルです (??)");
     });
 });

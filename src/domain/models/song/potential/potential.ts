@@ -8,7 +8,7 @@ export class Potential extends ValueObject<PotentialValue, "Potential"> {
 
     protected validate(value: PotentialValue): void {
         if (value < 0) {
-            throw new Error("定数は0以上の数値です。");
+            throw new Error(`ポテンシャルは0以上の数値である必要があります (${value})`);
         }
     }
 

@@ -13,9 +13,16 @@
         "resolveJsonModule": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
-        "strict": true
+        "strict": true,
+        "types": [
+            "jest",
+            "node",
+            "google-apps-script"
+        ],
+        "allowJs": true
     },
     "include": [
-        "src/"
+        "src/**/*.ts",
+        "jest.setup.js"
     ]
 }

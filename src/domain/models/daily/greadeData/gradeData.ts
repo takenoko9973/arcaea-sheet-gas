@@ -15,7 +15,9 @@ export class GradeData extends ValueObject<GradeDataValue, "GradeData"> {
     protected validate(value: GradeDataValue): void {
         for (const grade in value) {
             if (value[grade as GradeEnum] < 0) {
-                throw new Error("不正な入力値です。グレード数は負の数になってはいけません。");
+                throw new Error(
+                    `不正な入力値です。グレード数が負の数 (GradeData[${grade}] : ${value[grade as GradeEnum]}) になりました。`
+                );
             }
         }
     }

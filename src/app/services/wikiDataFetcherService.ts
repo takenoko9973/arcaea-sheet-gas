@@ -6,7 +6,7 @@ import { IFetchArcaeaWiki } from "../../@types/fetch-arcaea-wiki";
 declare const FetchArcaeaWiki: IFetchArcaeaWiki;
 
 // Wikiから取得するデータの型を定義
-type WikiSongDetails = { composer: string; pack: string; version: string; notes: number };
+export type WikiSongDetails = { composer: string; pack: string; version: string; notes: number };
 
 export class WikiDataFetcherService {
     /**
@@ -14,7 +14,7 @@ export class WikiDataFetcherService {
      * @param dto 楽曲情報DTO
      * @returns 取得した詳細データ
      */
-    public static fetchDetails(dto: SongCollectionDto): WikiSongDetails {
+    static fetchDetails(dto: SongCollectionDto): WikiSongDetails {
         // wikiから、追加のデータを取得
         const songDataFromWiki = FetchArcaeaWiki.createSongData(dto.urlName);
         Utilities.sleep(1500); // サーバーに負荷をかけないようにする
@@ -25,13 +25,10 @@ export class WikiDataFetcherService {
                 ? dto.notes
                 : songDataFromWiki.getNotesByDiff(dto.difficulty)[0].toString();
 
-        const versionMatch = songDataFromWiki.version.match(/^(\d+\.\d+)/);
-        const version = versionMatch ? versionMatch[1] : "";
-
         return {
             composer: songDataFromWiki.composer,
             pack: songDataFromWiki.pack,
-            version: version,
+            version: songDataFromWiki.version,
             notes: Number(notesStr),
         };
     }

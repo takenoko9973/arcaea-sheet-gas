@@ -23,19 +23,19 @@ describe("Notes", () => {
 
     it("不正な入力", () => {
         expect(() => new SongNotes(0)).toThrow(
-            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません。`
+            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません (0)`
         );
         expect(() => new SongNotes(-1)).toThrow(
-            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません。`
+            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません (-1)`
         );
         expect(() => new SongNotes(2237)).toThrow(
-            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません。`
+            `ノーツ数は${SongNotes.MIN}から${SongNotes.MAX}の間でなければなりません (2237)`
         );
         expect(() => new PureNotes(-1)).toThrow(
-            `ノーツ数は${PureNotes.MIN}から${PureNotes.MAX}の間でなければなりません。`
+            `ノーツ数は${PureNotes.MIN}から${PureNotes.MAX}の間でなければなりません (-1)`
         );
         expect(() => new ShinyPureNotes(-1)).toThrow(
-            `ノーツ数は${ShinyPureNotes.MIN}から${ShinyPureNotes.MAX}の間でなければなりません。`
+            `ノーツ数は${ShinyPureNotes.MIN}から${ShinyPureNotes.MAX}の間でなければなりません (-1)`
         );
     });
 });

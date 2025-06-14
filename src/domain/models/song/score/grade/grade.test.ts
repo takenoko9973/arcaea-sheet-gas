@@ -17,6 +17,6 @@ describe("Grade", () => {
         expect(() => {
             const difficulty = "ARC" as GradeEnum;
             new Grade(difficulty);
-        }).toThrow("無効なグレードです。");
+        }).toThrow("無効なグレードです (ARC)");
     });
 });

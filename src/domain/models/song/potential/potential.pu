@@ -1,0 +1,7 @@
+@startuml Potential
+
+class "Potential(譜面定数)" as Potential {
+    + value: number
+}
+
+@enduml

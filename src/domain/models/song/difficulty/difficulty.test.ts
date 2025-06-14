@@ -1,22 +1,36 @@
-import { Difficulty, DifficultyEnum } from "./difficulty";
+import { Difficulty } from "./difficulty";
+import { DifficultyEnum,DifficultyName } from "./difficultyName/difficultyName";
+import { Level } from "./level/level";
 
 describe("Difficulty", () => {
     it("正しい値とバージョン表記を返すDifficultyを作る", () => {
-        expect(new Difficulty(DifficultyEnum.FUTURE).value).toBe(DifficultyEnum.FUTURE);
+        const difficulty = new Difficulty({
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
+            level: new Level("10"),
+        });
+        expect(difficulty.difficultyName.value).toBe(DifficultyEnum.FUTURE);
+        expect(difficulty.level.value).toBe("10");
     });
 
     it("equals", () => {
-        const difficulty1 = new Difficulty(DifficultyEnum.FUTURE);
-        const difficulty2 = new Difficulty(DifficultyEnum.FUTURE);
-        const difficulty3 = new Difficulty(DifficultyEnum.BEYOND);
+        const difficulty1 = new Difficulty({
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
+            level: new Level("10"),
+        });
+        const difficulty2 = new Difficulty({
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
+            level: new Level("10"),
+        });
+        const difficulty3 = new Difficulty({
+            difficultyName: new DifficultyName(DifficultyEnum.BEYOND),
+            level: new Level("10"),
+        });
+        const difficulty4 = new Difficulty({
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
+            level: new Level("9+"),
+        });
         expect(difficulty1.equals(difficulty2)).toBeTruthy();
         expect(difficulty1.equals(difficulty3)).toBeFalsy();
-    });
-
-    it("不正な難易度名で、エラーを投げる", () => {
-        expect(() => {
-            const difficulty = "ARC" as DifficultyEnum;
-            new Difficulty(difficulty);
-        }).toThrow("無効な難易度です。");
+        expect(difficulty1.equals(difficulty4)).toBeFalsy();
     });
 });

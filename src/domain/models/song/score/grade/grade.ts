@@ -1,4 +1,4 @@
-import { ValueObject } from "../../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
 export enum GradeEnum {
     PM_PLUS = "PM+",

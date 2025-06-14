@@ -1,10 +1,6 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
-type SongDataValue = {
-    nameJp: string;
-    nameEn: string;
-    composer: string;
-};
+type SongDataValue = { nameJp: string; nameEn: string; composer: string };
 
 export class SongData extends ValueObject<SongDataValue, "SongData"> {
     constructor(value: SongDataValue) {

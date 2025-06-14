@@ -1,0 +1,17 @@
+@startuml SongMetadata
+
+!include ./pack/pack.pu
+!include ./side/side.pu
+!include ./version/version.pu
+
+class "SongMetadata(メタデータ)" as SongMetadata {
+    Pack: パック
+    Version: バージョン
+    Side: 属性
+}
+
+SongMetadata *-down- Pack
+SongMetadata *-down- Side
+SongMetadata *-down- Version
+
+@enduml

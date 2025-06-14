@@ -1,26 +1,26 @@
-import { ValueObject } from "../../shared/valueObject";
+import { ValueObject } from "domain/models/shared/valueObject";
 
-export enum DifficultyEnum {
-    PAST = "PST",
-    PRESENT = "PRS",
-    FUTURE = "FTR",
-    BEYOND = "BYD",
-    ETERNAL = "ETR",
-}
+import { DifficultyName } from "./difficultyName/difficultyName";
+import { Level } from "./level/level";
 
-type DifficultyValue = DifficultyEnum;
+type DifficultyValue = { difficultyName: DifficultyName; level: Level };
 export class Difficulty extends ValueObject<DifficultyValue, "Difficulty"> {
     constructor(value: DifficultyValue) {
         super(value);
     }
 
-    protected validate(value: DifficultyValue): void {
-        if (!Object.values(DifficultyEnum).includes(value)) {
-            throw new Error("無効な難易度です。");
-        }
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected validate(value: DifficultyValue): void {}
 
     equals(other: Difficulty): boolean {
-        return this.value === other.value;
+        return this.difficultyName.equals(other.difficultyName) && this.level.equals(other.level);
+    }
+
+    get difficultyName(): DifficultyValue["difficultyName"] {
+        return this.value.difficultyName;
+    }
+
+    get level(): DifficultyValue["level"] {
+        return this.value.level;
     }
 }

@@ -1,38 +1,43 @@
-import { DifficultyData } from "./difficultyData/difficultyData";
-import { Pack } from "./pack/pack";
-import { Score } from "./score/score";
-import { Side } from "./side/side";
+import { ChartData as ChartData } from "./chartData/chartData";
+import { Constant } from "./chartData/constant/constant";
+import { PureNotes } from "./chartData/notes/pureNotes";
+import { ShinyPureNotes } from "./chartData/notes/shinyPureNotes";
+import { SongNotes } from "./chartData/notes/songNotes";
+import { Difficulty } from "./difficulty/difficulty";
+import { DifficultyName } from "./difficulty/difficultyName/difficultyName";
+import { Level } from "./difficulty/level/level";
+import { Potential } from "./potential/potential";
+import { Grade, GradeEnum } from "./score/grade/grade";
+import { Score, SCORE_GRADE_BORDERS } from "./score/score";
 import { SongData } from "./songData/songData";
 import { SongId } from "./songId/songId";
-import { Version } from "./version/version";
-import { Difficulty } from "./difficulty/difficulty";
-import { Level } from "./difficultyData/level/level";
-import { Constant } from "./difficultyData/constant/constant";
-import { SongNotes } from "./difficultyData/notes/songNotes";
-import { PureNotes } from "./difficultyData/notes/pureNotes";
-import { ShinyPureNotes } from "./difficultyData/notes/shinyPureNotes";
-import { Grade, GradeEnum } from "./score/grade/grade";
+import { SongTitle } from "./songId/songTitle/songTitle";
+import { Pack } from "./songMetadata/pack/pack";
+import { Side } from "./songMetadata/side/side";
+import { SongMetadata } from "./songMetadata/songMetadata";
+import { Version } from "./songMetadata/version/version";
 
 export class Song {
     private constructor(
         private readonly _songId: SongId,
         private _songData: SongData,
-        private _pack: Pack,
-        private _side: Side,
-        private _version: Version,
-        private _difficultyData: DifficultyData,
+        private _songMetadata: SongMetadata,
+        private _difficulty: Difficulty,
+        private _chartData: ChartData,
         private _score: Score
-    ) {}
+    ) {
+        this.validate();
+    }
 
     static create(
-        songId: SongId,
+        songTitle: SongTitle,
         songData: SongData,
-        pack: Pack,
-        side: Side,
-        version: Version,
-        difficultyData: DifficultyData
+        songMetadata: SongMetadata,
+        difficulty: Difficulty,
+        chartData: ChartData
     ) {
-        const song = new Song(songId, songData, pack, side, version, difficultyData, new Score(0));
+        const songId = new SongId(songTitle.value);
+        const song = new Song(songId, songData, songMetadata, difficulty, chartData, new Score(0));
 
         return song;
     }
@@ -40,22 +45,42 @@ export class Song {
     static reconstruct(
         songId: SongId,
         songData: SongData,
-        pack: Pack,
-        side: Side,
-        version: Version,
-        difficultyData: DifficultyData,
+        songMetadata: SongMetadata,
+        difficulty: Difficulty,
+        chartData: ChartData,
         score: Score
     ) {
-        return new Song(songId, songData, pack, side, version, difficultyData, score);
+        return new Song(songId, songData, songMetadata, difficulty, chartData, score);
     }
 
-    equals(other: Song) {
-        return this.songId.equals(other.songId);
+    private validate() {
+        const pureNotes = this.hitPureNotes();
+        if (pureNotes.value < 0) {
+            throw new Error(
+                `不正な入力値です。計算されたPureNotesが負の値 (${pureNotes.value}) になりました。`
+            );
+        }
+
+        const shinyPureNotes = this.hitShinyPureNotes();
+        if (shinyPureNotes.value > this.songNotes.value) {
+            throw new Error(
+                `不正な入力値です。計算されたShinyPureNotes (${shinyPureNotes.value}) がsongNotesを超えました。`
+            );
+        }
+
+        // 内部はpure以上にはならない
+        if (pureNotes.value < shinyPureNotes.value) {
+            throw new Error(`不正な入力値です。PureNotesよりもShinyPureNotesが多くなりました。`);
+        }
+    }
+
+    equals(other: Song): boolean {
+        return this.uniqueChartId === other.uniqueChartId;
     }
 
     // 削除曲か否か
     isDeleted() {
-        return this._pack.value === "Deleted";
+        return this.pack.value === "Deleted";
     }
 
     /**
@@ -76,6 +101,9 @@ export class Song {
         return new ShinyPureNotes(shinyPureNotes);
     }
 
+    /**
+     * スコアグレード
+     */
     scoreGrade(): Grade {
         if (this.hitShinyPureNotes().equals(this.songNotes)) {
             return new Grade(GradeEnum.PM_PLUS);
@@ -86,12 +114,46 @@ export class Song {
         }
     }
 
-    changeDifficultyData(newDifficultyData: DifficultyData) {
-        this._difficultyData = newDifficultyData;
+    /**
+     * 楽曲ポテンシャル
+     */
+    obtainPotential(): Potential {
+        let scorePotential = 0;
+
+        if (
+            this.scoreGrade().equals(new Grade(GradeEnum.PM)) ||
+            this.scoreGrade().equals(new Grade(GradeEnum.PM_PLUS))
+        ) {
+            scorePotential = 2.0;
+        } else if (this.score.value >= SCORE_GRADE_BORDERS.EX) {
+            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.EX) / 200000 + 1.0;
+        } else {
+            scorePotential = (this.score.value - SCORE_GRADE_BORDERS.AA) / 300000;
+        }
+
+        return new Potential(Math.max(this.constant.value + scorePotential, 0));
     }
 
-    changeScore(newScore: Score) {
-        this._score = newScore;
+    changeDifficulty(newDifficulty: Difficulty): Song {
+        return new Song(
+            this._songId,
+            this._songData,
+            this._songMetadata,
+            newDifficulty,
+            this._chartData,
+            this._score
+        );
+    }
+
+    changeChartData(newChartData: ChartData): Song {
+        return new Song(
+            this._songId,
+            this._songData,
+            this._songMetadata,
+            this._difficulty,
+            newChartData,
+            this._score
+        );
     }
 
     get songId(): SongId {
@@ -103,34 +165,38 @@ export class Song {
     }
 
     get pack(): Pack {
-        return this._pack;
+        return this._songMetadata.pack;
     }
 
     get side(): Side {
-        return this._side;
+        return this._songMetadata.side;
     }
 
     get version(): Version {
-        return this._version;
+        return this._songMetadata.version;
     }
 
-    get difficulty(): Difficulty {
-        return this._songId.difficulty;
+    get difficultyName(): DifficultyName {
+        return this._difficulty.difficultyName;
     }
 
     get level(): Level {
-        return this._difficultyData.level;
+        return this._difficulty.level;
     }
 
     get songNotes(): SongNotes {
-        return this._difficultyData.songNotes;
+        return this._chartData.songNotes;
     }
 
     get constant(): Constant {
-        return this._difficultyData.constant;
+        return this._chartData.constant;
     }
 
     get score(): Score {
         return this._score;
+    }
+
+    get uniqueChartId(): string {
+        return `${this._songId.value}_${this.difficultyName.value}`;
     }
 }

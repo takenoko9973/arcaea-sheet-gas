@@ -1,4 +1,4 @@
-@startuml BookAggregation
+@startuml Song
 
 title 楽曲
 
@@ -6,38 +6,34 @@ package "楽曲(Song)" {
 
     !include ./songId/songId.pu
     !include ./songData/songData.pu
-    !include ./pack/pack.pu
-    !include ./side/side.pu
-    !include ./version/version.pu
-    !include ./difficultyData/difficultyData.pu
+    !include ./songMetadata/songMetadata.pu
+    !include ./difficulty/difficulty.pu
+    !include ./chartData/chartData.pu
     !include ./score/score.pu
+    !include ./potential/potential.pu
 
     class "Song(楽曲)" as Song << (R,red) RootEntity >> {
         SongId: SongId
         SongData: 楽曲情報
-        Pack: パック
-        Side: 属性
-        Version: バージョン
-        DifficultyData: 難易度情報
-        Score: スコア
+        SongMetadata: メタデータ
+        Difficulty: 難易度
+        ChartData: 難易度情報
         ---
+        + create(): Song
         isDeleted(): boolean
         hitPureNotes(): PureNotes
         hitShinyPureNotes(): ShinyPureNotes
         scoreGrade(): Grade
+        obtainPotential(): Potential
     }
 
     Song *-down- SongId
     Song *-down- SongData
-    Song *-down- Pack
-    Song *-down- Side
-    Song *-down- Version
-    Song *-down- DifficultyData
+    Song *-down- SongMetadata
+    Song *-down- Difficulty
+    Song *--down-- ChartData
     Song *-down- Score
-
-    Song -down-- PureNotes
-    Song -down-- ShinyPureNotes
-    Song --down-- Grade
+    Song -down- Potential
 }
 
 @enduml

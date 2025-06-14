@@ -6,6 +6,7 @@ class "Score(スコア)" as Score {
     + value: number
     ---
     + scoreGrade(): Grade
+    + scorePotential(): Potential
 }
 
 note bottom of Score {

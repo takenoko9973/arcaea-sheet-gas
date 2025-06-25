@@ -6,7 +6,13 @@ import { IFetchArcaeaWiki } from "../../@types/fetch-arcaea-wiki";
 declare const FetchArcaeaWiki: IFetchArcaeaWiki;
 
 // Wikiから取得するデータの型を定義
-export type WikiSongDetails = { composer: string; pack: string; version: string; notes: number };
+export type WikiSongDetails = {
+    composer: string;
+    pack: string;
+    version: string;
+    notes: number;
+    constant: number;
+};
 
 export class WikiDataFetcherService {
     /**
@@ -20,16 +26,21 @@ export class WikiDataFetcherService {
         Utilities.sleep(1500); // サーバーに負荷をかけないようにする
 
         // 取得したデータから必要な情報を取り出す
-        const notesStr =
+        const notes =
             dto.notes !== ""
-                ? dto.notes
-                : songDataFromWiki.getNotesByDiff(dto.difficulty)[0].toString();
+                ? Number(dto.notes)
+                : songDataFromWiki.getNotesByDiff(dto.difficulty)[0];
+        const constant =
+            dto.constant !== ""
+                ? Number(dto.constant)
+                : songDataFromWiki.getConstantByDiff(dto.difficulty)[0]; // Last(BYD) の場合はバグる
 
         return {
             composer: songDataFromWiki.composer,
             pack: songDataFromWiki.pack,
             version: songDataFromWiki.version,
-            notes: Number(notesStr),
+            notes: notes,
+            constant: constant,
         };
     }
 }

@@ -64,6 +64,7 @@ describe("registerSongData", () => {
             pack: "Test Pack",
             version: "2.0",
             notes: 1200,
+            constant: 11.0,
         };
 
         // 各リポジトリ・サービスが返す値を設定

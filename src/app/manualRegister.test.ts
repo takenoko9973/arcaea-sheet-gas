@@ -48,7 +48,9 @@ describe("manualRegister", () => {
             composer: "Test Composer",
             pack: "Test Pack",
             version: "1.0",
+            level: "10",
             notes: 1000,
+            constant: 10.5,
         };
 
         // パターン状況設定

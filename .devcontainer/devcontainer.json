@@ -49,5 +49,8 @@
             ]
         }
     },
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/.clasprc.json,target=/root/.clasprc.json,type=bind,consistency=cached"
+    ],
     "initializeCommand": "docker network inspect arcaea-potential-group || docker network create arcaea-potential-group"
 }

@@ -34,10 +34,12 @@ export class SongFactory {
             }),
             new Difficulty({
                 difficultyName: new DifficultyName(dto.difficulty as DifficultyEnum),
-                level: new Level(dto.level),
+                level: new Level(dto.level !== "" ? dto.level : details.level),
             }),
             new ChartData({
-                constant: new Constant(Number(dto.constant)),
+                constant: new Constant(
+                    dto.constant !== "" ? Number(dto.constant) : details.constant
+                ),
                 songNotes: new SongNotes(dto.notes !== "" ? Number(dto.notes) : details.notes),
             })
         );

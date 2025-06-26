@@ -37,19 +37,7 @@ export function manualRegister() {
     console.log("Manual registering %s(%s)", dto.nameJp, dto.difficulty);
 
     // 4. Wikiから補足データを取得 (DTOを元にした形に修正)
-    const wikiDetails = WikiDataFetcherService.fetchDetails({
-        urlName: dto.urlName,
-        difficulty: dto.difficulty,
-        // DTOにない他のプロパティは空で渡す
-        songTitle: "",
-        nameJp: "",
-        nameEn: "",
-        composer: "",
-        side: "",
-        level: "",
-        constant: "",
-        notes: "",
-    });
+    const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, dto.difficulty);
 
     // 5. ドメインエンティティを生成
     const newSong = SongFactory.createFromManualRegisterDto(dto, wikiDetails);

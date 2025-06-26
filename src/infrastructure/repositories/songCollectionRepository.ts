@@ -8,11 +8,14 @@ import { getSheet } from "utils/sheetHelper";
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class SongCollectionRepository implements ISongCollectionRepository {
-    private static singleton = new SongCollectionRepository(getSheet(COLLECT_SHEET_NAME));
+    private static singleton: SongCollectionRepository;
 
     private collectedSongData: { [index in DifficultyEnum]: SongCollectionDto[] };
 
     static get instance() {
+        if (!this.singleton)
+            this.singleton = new SongCollectionRepository(getSheet(COLLECT_SHEET_NAME));
+
         return this.singleton;
     }
 

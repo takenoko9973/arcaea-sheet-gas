@@ -9,11 +9,13 @@ import { getSheet } from "utils/sheetHelper";
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class SongRepository implements ISongRepository {
-    private static singleton = new SongRepository(getSheet(SONG_SCORE_SHEET_NAME));
+    private static singleton: SongRepository;
 
     private songs: Song[]; // songDataからsongsに変更
 
     static get instance() {
+        if (!this.singleton) this.singleton = new SongRepository(getSheet(SONG_SCORE_SHEET_NAME));
+
         return this.singleton;
     }
 

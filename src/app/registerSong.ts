@@ -35,7 +35,7 @@ export function registerSongData(difficulty: DifficultyEnum) {
         console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
         // Wikiからデータを取得
-        const wikiDetails = WikiDataFetcherService.fetchDetails(dto);
+        const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, difficulty);
 
         // ドメインエンティティを生成
         const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);

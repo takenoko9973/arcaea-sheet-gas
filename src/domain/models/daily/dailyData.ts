@@ -1,3 +1,4 @@
+import { Version } from "../song/songMetadata/version/version";
 import { GradeData } from "./greadeData/gradeData";
 import { ScoreData } from "./scoreData/scoreData";
 
@@ -7,7 +8,9 @@ import { ScoreData } from "./scoreData/scoreData";
 export class DailyData {
     constructor(
         public readonly date: Date,
+        public readonly version: Version,
         public readonly potential: number,
+        public readonly potentialMax: number,
         public readonly grade: GradeData,
         public readonly scoreData: ScoreData[]
     ) {}

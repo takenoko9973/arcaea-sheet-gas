@@ -82,3 +82,10 @@ export function splitArrayIntoChunks(array: any[], chunkSize: number) {
     }
     return result;
 }
+
+/**
+ * 配列からユニーク要素を抽出
+ */
+export function uniq(array: unknown[]) {
+    return [...new Set(array)];
+}

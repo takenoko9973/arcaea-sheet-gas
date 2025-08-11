@@ -18,7 +18,9 @@ export function updateDailyStatistics() {
 
     // 集計
     const allSongs = songRepo.fetchSongs();
+    const version = StatisticsService.latestVersion(allSongs);
     const bestPotential = StatisticsService.calculateBestPotential(allSongs);
+    const potentialMax = StatisticsService.calculateBestMaxPotential(allSongs);
 
     let totalGradeData = GradeData.createEmpty();
     const scoreDataList: ScoreData[] = [];
@@ -31,7 +33,14 @@ export function updateDailyStatistics() {
     }
 
     // 更新
-    const dailyData = new DailyData(today, bestPotential, totalGradeData, scoreDataList);
+    const dailyData = new DailyData(
+        today,
+        version,
+        bestPotential,
+        potentialMax,
+        totalGradeData,
+        scoreDataList
+    );
     dailyRepo.add(dailyData);
 
     console.log("Finished update daily statistics");

@@ -2,13 +2,32 @@ import { checkCollectedSong } from "app/checkCollectedSong";
 import { manualRegister } from "app/manualRegister";
 import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "const";
 import { SheetCellPair } from "domain/sheetCellPair";
+import { ConfigSheet } from "infrastructure/repositories/configSheet";
 import { getColumnIndexByName, getSheet } from "utils/sheetHelper";
 
+const configSheet = ConfigSheet.instance;
+
 const triggerList = [
-    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y5"), func: songDifficultySort },
-    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y6"), func: songNameSort },
-    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y7"), func: songLevelSort },
-    { pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, "Y9"), func: checkCollectedSong },
+    {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortDifficultyCell()),
+        func: songDifficultySort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortSongNameCell()),
+        func: songNameSort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortLevelCell()),
+        func: songLevelSort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortConstantCell()),
+        func: songConstantSort,
+    },
+    {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.updateRegisterButtonCell()),
+        func: checkCollectedSong,
+    },
     { pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"), func: manualRegister },
 ];
 
@@ -58,6 +77,21 @@ function songLevelSort() {
 
     filter.sort(titleCol, true);
     filter.sort(levelCol, true);
+}
+
+/**
+ * 定数順に並び替え
+ */
+function songConstantSort() {
+    console.log("Sort by Constant");
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
+
+    const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
+    const constantCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "譜面定数");
+
+    filter.sort(titleCol, true);
+    filter.sort(constantCol, true);
 }
 
 export function runTrigger(changedPair: SheetCellPair) {

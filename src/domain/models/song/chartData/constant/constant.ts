@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 type ConstantValue = number;
 export class Constant extends ValueObject<ConstantValue, "Constant"> {

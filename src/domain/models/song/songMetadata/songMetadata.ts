@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 import { Pack } from "./pack/pack";
 import { Side } from "./side/side";

@@ -6,9 +6,9 @@ import {
     SORT_LEVEL_CONFIG_CELL,
     SORT_SONG_NAME_CONFIG_CELL,
     UPDATE_REGISTER_BUTTON_CONFIG_CELL,
-} from "const";
-import { IConfigSheet } from "domain/repositories/configSheetImpl";
-import { getSheet } from "utils/sheetHelper";
+} from "@/const";
+import { IConfigSheet } from "@/domain/repositories/configSheetImpl";
+import { getSheet } from "@/utils/sheetHelper";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

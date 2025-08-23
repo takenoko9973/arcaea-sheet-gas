@@ -1,6 +1,6 @@
-import { DifficultyName } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "domain/models/song/song";
-import { SongId } from "domain/models/song/songId/songId";
+import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Song } from "@/domain/models/song/song";
+import { SongId } from "@/domain/models/song/songId/songId";
 
 // Songアグリゲートのためのリポジトリインターフェース
 export interface ISongRepository {

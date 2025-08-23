@@ -1,7 +1,7 @@
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "domain/models/song/song";
-import { ManualRegisterRepository } from "infrastructure/repositories/manualRegisterRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Song } from "@/domain/models/song/song";
+import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { manualRegister } from "./manualRegister";
 import { WikiDataFetcherService } from "./services/wikiDataFetcherService";

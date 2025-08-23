@@ -1,10 +1,10 @@
-import { IGNORE_CONSTANT_CONFIG_CELL, SONG_SCORE_SHEET_NAME } from "const";
-import { DifficultyName } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "domain/models/song/song";
-import { SongId } from "domain/models/song/songId/songId";
-import { ISongRepository } from "domain/repositories/songRepositoryImpl";
-import { SongMapper } from "infrastructure/mappers/songMapper";
-import { getSheet } from "utils/sheetHelper";
+import { IGNORE_CONSTANT_CONFIG_CELL, SONG_SCORE_SHEET_NAME } from "@/const";
+import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Song } from "@/domain/models/song/song";
+import { SongId } from "@/domain/models/song/songId/songId";
+import { ISongRepository } from "@/domain/repositories/songRepositoryImpl";
+import { SongMapper } from "@/infrastructure/mappers/songMapper";
+import { getSheet } from "@/utils/sheetHelper";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

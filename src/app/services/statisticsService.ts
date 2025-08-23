@@ -1,11 +1,11 @@
-import { BASE_MAX_SCORE } from "const";
-import { GradeData } from "domain/models/daily/greadeData/gradeData";
-import { ScoreData } from "domain/models/daily/scoreData/scoreData";
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "domain/models/song/song";
-import { Version } from "domain/models/song/songMetadata/version/version";
-import * as math from "utils/math";
-import { uniq } from "utils/util";
+import { BASE_MAX_SCORE } from "@/const";
+import { GradeData } from "@/domain/models/daily/greadeData/gradeData";
+import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Song } from "@/domain/models/song/song";
+import { Version } from "@/domain/models/song/songMetadata/version/version";
+import * as math from "@/utils/math";
+import { uniq } from "@/utils/util";
 
 export class StatisticsService {
     /**

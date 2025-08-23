@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 type LevelValue = string;
 export class Level extends ValueObject<LevelValue, "SongTitle"> {

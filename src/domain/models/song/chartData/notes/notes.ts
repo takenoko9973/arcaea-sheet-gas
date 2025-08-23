@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 type NotesValue = number;
 export abstract class Notes<U> extends ValueObject<NotesValue, "Notes"> {

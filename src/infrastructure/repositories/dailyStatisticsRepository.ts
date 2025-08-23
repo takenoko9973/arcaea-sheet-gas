@@ -1,8 +1,8 @@
-import { DAILY_REPOSITORY_SHEET_NAME } from "const";
-import { DailyData } from "domain/models/daily/dailyData";
-import { IDailyDataRepository } from "domain/repositories/dailyStatisticsRepositoryImpl";
-import { DailyDataMapper } from "infrastructure/mappers/dailyStatisticsMapper";
-import { getSheet } from "utils/sheetHelper";
+import { DAILY_REPOSITORY_SHEET_NAME } from "@/const";
+import { DailyData } from "@/domain/models/daily/dailyData";
+import { IDailyDataRepository } from "@/domain/repositories/dailyStatisticsRepositoryImpl";
+import { DailyDataMapper } from "@/infrastructure/mappers/dailyStatisticsMapper";
+import { getSheet } from "@/utils/sheetHelper";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

@@ -1,6 +1,6 @@
-import { WikiSongDetails } from "app/services/wikiDataFetcherService";
-import { ManualRegisterDto } from "domain/dto/manualRegisterDto";
-import { SongCollectionDto } from "domain/dto/songCollectionDto";
+import { WikiSongDetails } from "@/app/services/wikiDataFetcherService";
+import { ManualRegisterDto } from "@/domain/dto/manualRegisterDto";
+import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
 
 import { ChartData } from "./chartData/chartData";
 import { Constant } from "./chartData/constant/constant";

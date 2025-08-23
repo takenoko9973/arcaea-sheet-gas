@@ -1,4 +1,4 @@
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
 /**
  * データ更新や集計の対象難易度

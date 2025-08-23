@@ -1,20 +1,20 @@
-import { ChartData } from "domain/models/song/chartData/chartData";
-import { Constant } from "domain/models/song/chartData/constant/constant";
-import { SongNotes } from "domain/models/song/chartData/notes/songNotes";
-import { Difficulty } from "domain/models/song/difficulty/difficulty";
+import { ChartData } from "@/domain/models/song/chartData/chartData";
+import { Constant } from "@/domain/models/song/chartData/constant/constant";
+import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
+import { Difficulty } from "@/domain/models/song/difficulty/difficulty";
 import {
     DifficultyEnum,
     DifficultyName,
-} from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Level } from "domain/models/song/difficulty/level/level";
-import { Score } from "domain/models/song/score/score";
-import { Song } from "domain/models/song/song";
-import { SongData } from "domain/models/song/songData/songData";
-import { SongId } from "domain/models/song/songId/songId";
-import { Pack } from "domain/models/song/songMetadata/pack/pack";
-import { Side, SideEnum } from "domain/models/song/songMetadata/side/side";
-import { SongMetadata } from "domain/models/song/songMetadata/songMetadata";
-import { Version } from "domain/models/song/songMetadata/version/version";
+} from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Level } from "@/domain/models/song/difficulty/level/level";
+import { Score } from "@/domain/models/song/score/score";
+import { Song } from "@/domain/models/song/song";
+import { SongData } from "@/domain/models/song/songData/songData";
+import { SongId } from "@/domain/models/song/songId/songId";
+import { Pack } from "@/domain/models/song/songMetadata/pack/pack";
+import { Side, SideEnum } from "@/domain/models/song/songMetadata/side/side";
+import { SongMetadata } from "@/domain/models/song/songMetadata/songMetadata";
+import { Version } from "@/domain/models/song/songMetadata/version/version";
 
 export class SongMapper {
     /**

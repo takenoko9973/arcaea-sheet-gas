@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 type SongDataValue = { nameJp: string; nameEn: string; composer: string };
 

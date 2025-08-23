@@ -1,4 +1,4 @@
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
 export type ManualRegisterDto = {
     nameJp: string;

@@ -1,9 +1,9 @@
-import { DailyData } from "domain/models/daily/dailyData";
-import { GradeData, GradeDataValue } from "domain/models/daily/greadeData/gradeData";
-import { ScoreData } from "domain/models/daily/scoreData/scoreData";
-import { GradeEnum } from "domain/models/song/score/grade/grade";
-import { Version } from "domain/models/song/songMetadata/version/version";
-import { splitArrayIntoChunks } from "utils/util";
+import { DailyData } from "@/domain/models/daily/dailyData";
+import { GradeData, GradeDataValue } from "@/domain/models/daily/greadeData/gradeData";
+import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
+import { GradeEnum } from "@/domain/models/song/score/grade/grade";
+import { Version } from "@/domain/models/song/songMetadata/version/version";
+import { splitArrayIntoChunks } from "@/utils/util";
 
 export class DailyDataMapper {
     /**

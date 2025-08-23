@@ -1,11 +1,11 @@
 import {
     DifficultyEnum,
     DifficultyName,
-} from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { SongFactory } from "domain/models/song/songFactory";
-import { SongId } from "domain/models/song/songId/songId";
-import { SongCollectionRepository } from "infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+} from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { SongFactory } from "@/domain/models/song/songFactory";
+import { SongId } from "@/domain/models/song/songId/songId";
+import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
 

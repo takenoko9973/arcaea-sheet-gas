@@ -1,4 +1,4 @@
-import { DailyData } from "domain/models/daily/dailyData";
+import { DailyData } from "@/domain/models/daily/dailyData";
 
 export interface IDailyDataRepository {
     /**

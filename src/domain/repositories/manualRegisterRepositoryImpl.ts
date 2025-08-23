@@ -1,4 +1,4 @@
-import { ManualRegisterDto } from "domain/dto/manualRegisterDto";
+import { ManualRegisterDto } from "@/domain/dto/manualRegisterDto";
 
 export interface IManualRegisterRepository {
     /**

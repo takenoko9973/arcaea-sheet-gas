@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 type VersionValue = { major: number; minor: number };
 

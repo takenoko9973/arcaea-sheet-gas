@@ -1,5 +1,5 @@
-import { SongCollectionDto } from "domain/dto/songCollectionDto";
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
+import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
 /**
  * 収集済み楽曲データ（Wiki情報など）を取得するためのリポジトリインターフェース

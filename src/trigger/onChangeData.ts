@@ -1,9 +1,9 @@
-import { checkCollectedSong } from "app/checkCollectedSong";
-import { manualRegister } from "app/manualRegister";
-import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "const";
-import { SheetCellPair } from "domain/sheetCellPair";
-import { ConfigSheet } from "infrastructure/repositories/configSheet";
-import { getColumnIndexByName, getSheet } from "utils/sheetHelper";
+import { checkCollectedSong } from "@/app/checkCollectedSong";
+import { manualRegister } from "@/app/manualRegister";
+import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "@/const";
+import { SheetCellPair } from "@/domain/sheetCellPair";
+import { ConfigSheet } from "@/infrastructure/repositories/configSheet";
+import { getColumnIndexByName, getSheet } from "@/utils/sheetHelper";
 
 const configSheet = ConfigSheet.instance;
 

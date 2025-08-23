@@ -1,8 +1,8 @@
-import { DifficultyName } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { SongFactory } from "domain/models/song/songFactory";
-import { SongId } from "domain/models/song/songId/songId";
-import { ManualRegisterRepository } from "infrastructure/repositories/manualRegisterRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { SongFactory } from "@/domain/models/song/songFactory";
+import { SongId } from "@/domain/models/song/songId/songId";
+import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
 

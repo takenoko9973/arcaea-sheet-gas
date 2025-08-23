@@ -1,5 +1,5 @@
-import { ValueObject } from "domain/models/shared/valueObject";
-import { GradeEnum } from "domain/models/song/score/grade/grade";
+import { ValueObject } from "@/domain/models/shared/valueObject";
+import { GradeEnum } from "@/domain/models/song/score/grade/grade";
 
 // GradeDataが持つ値の型を定義
 export type GradeDataValue = Record<GradeEnum, number>;

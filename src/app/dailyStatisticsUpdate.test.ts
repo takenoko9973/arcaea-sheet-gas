@@ -1,9 +1,9 @@
-import { DailyData } from "domain/models/daily/dailyData";
-import { GradeData, GradeDataValue } from "domain/models/daily/greadeData/gradeData";
-import { ScoreData } from "domain/models/daily/scoreData/scoreData";
-import { Song } from "domain/models/song/song";
-import { DailyStatisticsRepository } from "infrastructure/repositories/dailyStatisticsRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+import { DailyData } from "@/domain/models/daily/dailyData";
+import { GradeData, GradeDataValue } from "@/domain/models/daily/greadeData/gradeData";
+import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
+import { Song } from "@/domain/models/song/song";
+import { DailyStatisticsRepository } from "@/infrastructure/repositories/dailyStatisticsRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { updateDailyStatistics } from "./dailyStatisticsUpdate";
 import { StatisticsService } from "./services/statisticsService";

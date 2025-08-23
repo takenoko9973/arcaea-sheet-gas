@@ -1,5 +1,5 @@
-import { SongCollectionDto } from "domain/dto/songCollectionDto";
-import { extractionJaName, extractionUrlName } from "utils/util";
+import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
+import { extractionJaName, extractionUrlName } from "@/utils/util";
 
 export class SongCollectionMapper {
     static toDto(row: string[], difficulty: string): SongCollectionDto {

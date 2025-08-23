@@ -1,4 +1,4 @@
-import { ValueObject } from "domain/models/shared/valueObject";
+import { ValueObject } from "@/domain/models/shared/valueObject";
 
 import { Constant } from "./constant/constant";
 import { SongNotes } from "./notes/songNotes";

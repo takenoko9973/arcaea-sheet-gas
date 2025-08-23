@@ -1,17 +1,17 @@
-import { SongCollectionDto } from "domain/dto/songCollectionDto";
-import { ChartData } from "domain/models/song/chartData/chartData";
-import { Constant } from "domain/models/song/chartData/constant/constant";
-import { SongNotes } from "domain/models/song/chartData/notes/songNotes";
-import { Difficulty } from "domain/models/song/difficulty/difficulty";
+import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
+import { ChartData } from "@/domain/models/song/chartData/chartData";
+import { Constant } from "@/domain/models/song/chartData/constant/constant";
+import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
+import { Difficulty } from "@/domain/models/song/difficulty/difficulty";
 import {
     DifficultyEnum,
     DifficultyName,
-} from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Level } from "domain/models/song/difficulty/level/level";
-import { Song } from "domain/models/song/song";
-import { SongId } from "domain/models/song/songId/songId";
-import { SongCollectionRepository } from "infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+} from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Level } from "@/domain/models/song/difficulty/level/level";
+import { Song } from "@/domain/models/song/song";
+import { SongId } from "@/domain/models/song/songId/songId";
+import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 export function updateData(difficulty: DifficultyEnum) {
     console.log("Start updating(%s)", difficulty);

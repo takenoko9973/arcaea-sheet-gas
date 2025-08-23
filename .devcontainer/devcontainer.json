@@ -45,7 +45,8 @@
                 "jasonnutter.search-node-modules",
                 "gamunu.vscode-yarn",
                 "mhutchie.git-graph",
-                "jebbs.plantuml"
+                "jebbs.plantuml",
+                "fill-labs.dependi"
             ]
         }
     },

@@ -1,4 +1,4 @@
-import { SHEET_BOOK } from "const/sheet";
+import { SHEET_BOOK } from "@/const/sheet";
 
 // シートオブジェクト キャッシュ用
 const sheetCache: { [sheetName: string]: GoogleAppsScript.Spreadsheet.Sheet } = {};

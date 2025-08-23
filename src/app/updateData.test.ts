@@ -1,12 +1,12 @@
-import { Constant } from "domain/models/song/chartData/constant/constant";
-import { SongNotes } from "domain/models/song/chartData/notes/songNotes";
+import { Constant } from "@/domain/models/song/chartData/constant/constant";
+import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
 import {
     DifficultyEnum,
     DifficultyName,
-} from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { Level } from "domain/models/song/difficulty/level/level";
-import { SongCollectionRepository } from "infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+} from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { Level } from "@/domain/models/song/difficulty/level/level";
+import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { updateData } from "./updateData";
 

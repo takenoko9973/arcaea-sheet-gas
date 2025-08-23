@@ -1,9 +1,9 @@
-import { COLLECT_SHEET_NAME } from "const";
-import { SongCollectionDto } from "domain/dto/songCollectionDto";
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { ISongCollectionRepository } from "domain/repositories/songCollectionRepositoryImpl";
-import { SongCollectionMapper } from "infrastructure/mappers/songCollectionMapper";
-import { getSheet } from "utils/sheetHelper";
+import { COLLECT_SHEET_NAME } from "@/const";
+import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { ISongCollectionRepository } from "@/domain/repositories/songCollectionRepositoryImpl";
+import { SongCollectionMapper } from "@/infrastructure/mappers/songCollectionMapper";
+import { getSheet } from "@/utils/sheetHelper";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

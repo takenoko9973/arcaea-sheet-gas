@@ -1,9 +1,9 @@
-import { PROCESSING_TARGET_DIFFICULTIES } from "const";
-import { DailyData } from "domain/models/daily/dailyData";
-import { GradeData } from "domain/models/daily/greadeData/gradeData";
-import { ScoreData } from "domain/models/daily/scoreData/scoreData";
-import { DailyStatisticsRepository } from "infrastructure/repositories/dailyStatisticsRepository";
-import { SongRepository } from "infrastructure/repositories/songRepository";
+import { PROCESSING_TARGET_DIFFICULTIES } from "@/const";
+import { DailyData } from "@/domain/models/daily/dailyData";
+import { GradeData } from "@/domain/models/daily/greadeData/gradeData";
+import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
+import { DailyStatisticsRepository } from "@/infrastructure/repositories/dailyStatisticsRepository";
+import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { StatisticsService } from "./services/statisticsService";
 

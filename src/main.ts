@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { updateDailyStatistics } from "app/dailyStatisticsUpdate";
-import { SheetCellPair } from "domain/sheetCellPair";
-import { runTrigger } from "trigger/onChangeData";
+import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
+import { SheetCellPair } from "@/domain/sheetCellPair";
+import { runTrigger } from "@/trigger/onChangeData";
 
-function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
+export { autoRegister, checkCollectedSong, update } from "@/app/checkCollectedSong";
+export { manualRegister } from "@/app/manualRegister";
+
+export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const sheet = e.source.getActiveSheet();
     const cell = e.source.getActiveRange();
     if (cell === null) return;
@@ -22,7 +24,7 @@ function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
 /**
  * 日付変更で実行
  */
-function setDataByDate() {
+export function setDataByDate() {
     console.log("Run daily task");
 
     updateDailyStatistics();

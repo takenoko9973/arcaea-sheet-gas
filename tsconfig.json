@@ -6,6 +6,11 @@
         ],
         "rootDir": "src",
         "baseUrl": "src",
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        },
         "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,

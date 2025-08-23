@@ -1,8 +1,8 @@
-import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK } from "const";
-import { ManualRegisterDto } from "domain/dto/manualRegisterDto";
-import { DifficultyEnum } from "domain/models/song/difficulty/difficultyName/difficultyName";
-import { IManualRegisterRepository } from "domain/repositories/manualRegisterRepositoryImpl";
-import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "utils/util";
+import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK } from "@/const";
+import { ManualRegisterDto } from "@/domain/dto/manualRegisterDto";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { IManualRegisterRepository } from "@/domain/repositories/manualRegisterRepositoryImpl";
+import { changeCodeToString, extractionJaName, extractionUrlName, toHalfWidth } from "@/utils/util";
 
 export class ManualRegisterRepository implements IManualRegisterRepository {
     public getEntry(): ManualRegisterDto | null {

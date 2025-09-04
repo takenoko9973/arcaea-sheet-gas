@@ -1,10 +1,11 @@
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
 export type ManualRegisterDto = {
-    nameJp: string;
     songTitle: string;
+    nameJp: string;
+    nameEn: string;
     difficulty: DifficultyEnum;
     level: string;
-    constant: number;
+    constant: string;
     urlName: string;
 };

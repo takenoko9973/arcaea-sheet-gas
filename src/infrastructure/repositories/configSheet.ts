@@ -1,6 +1,7 @@
 import {
     CONFIG_SHEET_NAME,
     IGNORE_CONSTANT_CONFIG_CELL,
+    MANUAL_REGISTER_CONFIG_CELL,
     SORT_CONSTANT_CONFIG_CELL,
     SORT_DIFFICULTY_CONFIG_CELL,
     SORT_LEVEL_CONFIG_CELL,
@@ -49,5 +50,9 @@ export class ConfigSheet implements IConfigSheet {
 
     ignoreConstantCell(): string {
         return this.getValue(IGNORE_CONSTANT_CONFIG_CELL);
+    }
+
+    manualRegisterCell(): string {
+        return this.getValue(MANUAL_REGISTER_CONFIG_CELL);
     }
 }

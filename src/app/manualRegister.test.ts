@@ -36,11 +36,12 @@ describe("manualRegister", () => {
 
     it("新しい曲が入力された場合、登録処理を実行", () => {
         const mockDto = {
+            songTitle: "テストソング",
             nameJp: "テストソング",
-            songTitle: "test-song",
+            nameEn: "test-song",
             difficulty: DifficultyEnum.FUTURE,
             level: "10",
-            constant: 10.5,
+            constant: "10.5",
             urlName: "test-song-url",
         };
 
@@ -49,6 +50,7 @@ describe("manualRegister", () => {
             pack: "Test Pack",
             version: "1.0",
             level: "10",
+            side: "光",
             notes: 1000,
             constant: 10.5,
         };
@@ -70,11 +72,12 @@ describe("manualRegister", () => {
 
     it("登録済みの曲が入力された場合、登録処理を実行しない", () => {
         const mockDto = {
+            songTitle: "テストソング",
             nameJp: "テストソング",
-            songTitle: "test-song",
+            nameEn: "test-song",
             difficulty: DifficultyEnum.FUTURE,
             level: "10",
-            constant: 10.5,
+            constant: "10.5",
             urlName: "test-song-url",
         };
         // findSongが返す、既存の曲のモック

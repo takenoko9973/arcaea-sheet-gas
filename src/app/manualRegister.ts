@@ -14,7 +14,7 @@ export function manualRegister() {
 
     // 1. 各リポジトリのインスタンスを取得
     const songRepo = SongRepository.instance;
-    const manualRegisterRepo = new ManualRegisterRepository(); // このリポジトリはシンプルなのでSingletonでなくてもOK
+    const manualRegisterRepo = new ManualRegisterRepository();
 
     // 2. 手動登録シートからエントリ（DTO）を取得
     const dto = manualRegisterRepo.getEntry();
@@ -24,7 +24,6 @@ export function manualRegister() {
     }
 
     // 3. 登録済みか確認
-
     const songId = new SongId(dto.songTitle);
     const difficultyName = new DifficultyName(dto.difficulty);
 

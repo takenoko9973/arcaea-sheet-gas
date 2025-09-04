@@ -1,4 +1,5 @@
-import { Version } from "../song/songMetadata/version/version";
+import { Version } from "@/domain/models/song/songMetadata/version/version";
+
 import { GradeData } from "./greadeData/gradeData";
 import { ScoreData } from "./scoreData/scoreData";
 

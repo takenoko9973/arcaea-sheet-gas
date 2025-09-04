@@ -56,20 +56,22 @@ export class SongFactory {
             new SongTitle(dto.songTitle),
             new SongData({
                 nameJp: dto.nameJp,
-                nameEn: "", // 手動登録シートにないので空
+                nameEn: dto.nameEn,
                 composer: details.composer,
             }),
             new SongMetadata({
                 pack: new Pack(details.pack),
                 version: Version.fromString(details.version),
-                side: new Side(SideEnum.COLORLESS), // 手動登録シートにないので仮の値
+                side: new Side(details.side as SideEnum),
             }),
             new Difficulty({
                 difficultyName: new DifficultyName(dto.difficulty as DifficultyEnum),
-                level: new Level(dto.level),
+                level: new Level(dto.level !== "" ? dto.level : details.level),
             }),
             new ChartData({
-                constant: new Constant(dto.constant),
+                constant: new Constant(
+                    dto.constant !== "" ? Number(dto.constant) : details.constant
+                ),
                 songNotes: new SongNotes(details.notes),
             })
         );

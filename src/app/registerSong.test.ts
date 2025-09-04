@@ -64,6 +64,7 @@ describe("registerSongData", () => {
             pack: "Test Pack",
             version: "2.0",
             level: "11",
+            side: "光",
             notes: 1200,
             constant: 11.0,
         };

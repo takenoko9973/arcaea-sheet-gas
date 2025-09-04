@@ -28,7 +28,10 @@ const triggerList = [
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.updateRegisterButtonCell()),
         func: checkCollectedSong,
     },
-    { pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, "G2"), func: manualRegister },
+    {
+        pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, configSheet.manualRegisterCell()),
+        func: manualRegister,
+    },
 ];
 
 /**

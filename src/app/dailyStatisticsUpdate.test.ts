@@ -63,9 +63,6 @@ describe("updateDailyStatistics", () => {
         // 結果を検証
         // 統計計算サービスが正しく呼ばれたか
         expect(mockedStatisticsService.calculateBestPotential).toHaveBeenCalledWith(mockSongs);
-        // ループ処理なので、対象の難易度の数だけ呼ばれる (現状の実装では3回)
-        expect(mockedStatisticsService.calculateGrades).toHaveBeenCalledTimes(3);
-        expect(mockedStatisticsService.calculateScoreData).toHaveBeenCalledTimes(3);
 
         // 最終的にaddメソッドが1回だけ呼ばれることを確認
         expect(mockDailyStatisticsRepositoryInstance.add).toHaveBeenCalledTimes(1);
@@ -74,6 +71,5 @@ describe("updateDailyStatistics", () => {
         const addedData = mockDailyStatisticsRepositoryInstance.add.mock.calls[0][0];
         expect(addedData).toBeInstanceOf(DailyData);
         expect(addedData.potential).toBe(mockPotential);
-        expect(addedData.scoreData.length).toBe(3);
     });
 });

@@ -2,12 +2,14 @@ import {
     CONFIG_SHEET_NAME,
     IGNORE_CONSTANT_CONFIG_CELL,
     MANUAL_REGISTER_CONFIG_CELL,
+    REGISTERED_DIFFICULTIES_CONFIG_CELL,
     SORT_CONSTANT_CONFIG_CELL,
     SORT_DIFFICULTY_CONFIG_CELL,
     SORT_LEVEL_CONFIG_CELL,
     SORT_SONG_NAME_CONFIG_CELL,
     UPDATE_REGISTER_BUTTON_CONFIG_CELL,
 } from "@/const";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { IConfigSheet } from "@/domain/repositories/configSheetImpl";
 import { getSheet } from "@/utils/sheetHelper";
 
@@ -54,5 +56,12 @@ export class ConfigSheet implements IConfigSheet {
 
     manualRegisterCell(): string {
         return this.getValue(MANUAL_REGISTER_CONFIG_CELL);
+    }
+
+    targetRegisteredDifficulties(): DifficultyEnum[] {
+        // [[DifficultyEnum, isRegistered], ...]
+        const regDiffConfigs = this.sheet.getRange(REGISTERED_DIFFICULTIES_CONFIG_CELL).getValues();
+
+        return regDiffConfigs.filter(value => value[1]).map(value => value[0] as DifficultyEnum);
     }
 }

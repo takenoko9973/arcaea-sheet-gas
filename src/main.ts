@@ -1,10 +1,23 @@
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
+import { SHEET_BOOK } from "@/const";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { runTrigger } from "@/trigger/onChangeData";
 import { setDailyTrigger } from "@/trigger/triggerSetting";
 
 export { autoRegister, checkCollectedSong, update } from "@/app/checkCollectedSong";
 export { manualRegister } from "@/app/manualRegister";
+
+export function initTriggers() {
+    // 既存のトリガーをすべて削除
+    const allTriggers = ScriptApp.getProjectTriggers();
+    for (const trigger of allTriggers) {
+        ScriptApp.deleteTrigger(trigger);
+    }
+
+    setDailyTrigger();
+    ScriptApp.newTrigger("checkCollectedSong").timeBased().everyHours(1).create();
+    ScriptApp.newTrigger("onChangeData").forSpreadsheet(SHEET_BOOK).onChange().create();
+}
 
 export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const sheet = e.source.getActiveSheet();

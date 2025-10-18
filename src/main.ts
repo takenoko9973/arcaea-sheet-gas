@@ -1,6 +1,7 @@
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { runTrigger } from "@/trigger/onChangeData";
+import { setDailyTrigger } from "@/trigger/triggerSetting";
 
 export { autoRegister, checkCollectedSong, update } from "@/app/checkCollectedSong";
 export { manualRegister } from "@/app/manualRegister";
@@ -30,4 +31,6 @@ export function setDataByDate() {
     updateDailyStatistics();
 
     console.log("End daily task");
+
+    setDailyTrigger();
 }

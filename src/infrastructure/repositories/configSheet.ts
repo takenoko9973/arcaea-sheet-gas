@@ -7,6 +7,7 @@ import {
     SORT_DIFFICULTY_CONFIG_CELL,
     SORT_LEVEL_CONFIG_CELL,
     SORT_SONG_NAME_CONFIG_CELL,
+    SORT_VERSION_CONFIG_CELL,
     UPDATE_REGISTER_BUTTON_CONFIG_CELL,
 } from "@/const";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
@@ -28,6 +29,10 @@ export class ConfigSheet implements IConfigSheet {
 
     getValue(cell: string): string {
         return this.sheet.getRange(cell).getValue();
+    }
+
+    sortVersionCell(): string {
+        return this.getValue(SORT_VERSION_CONFIG_CELL);
     }
 
     sortDifficultyCell(): string {

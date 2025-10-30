@@ -9,10 +9,11 @@ export const CONFIG_SHEET_NAME = "Config";
 export const DAILY_REPOSITORY_SHEET_NAME = "DailyRepository";
 
 // Sort
-export const SORT_DIFFICULTY_CONFIG_CELL = "B2";
-export const SORT_SONG_NAME_CONFIG_CELL = "B3";
-export const SORT_LEVEL_CONFIG_CELL = "B4";
-export const SORT_CONSTANT_CONFIG_CELL = "B5";
+export const SORT_VERSION_CONFIG_CELL = "B2";
+export const SORT_DIFFICULTY_CONFIG_CELL = "B3";
+export const SORT_SONG_NAME_CONFIG_CELL = "B4";
+export const SORT_LEVEL_CONFIG_CELL = "B5";
+export const SORT_CONSTANT_CONFIG_CELL = "B6";
 // Register
 export const UPDATE_REGISTER_BUTTON_CONFIG_CELL = "E2";
 export const IGNORE_CONSTANT_CONFIG_CELL = "E3";

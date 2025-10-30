@@ -46,9 +46,11 @@ function versionSort() {
     const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
+    const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
     const versionCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "バージョン(ソート用)");
 
     // 取得した列番号を使ってソート
+    filter.sort(diffCol, true);
     filter.sort(versionCol, true);
 }
 

@@ -3,7 +3,7 @@ const GasPlugin = require('gas-webpack-plugin');
 
 module.exports = {
     mode: 'development',
-    // devtool: 'inline-source-map',
+    devtool: 'inline-source-map',
     context: __dirname,
     entry: {
         main: path.resolve(__dirname, 'src', 'main.ts')

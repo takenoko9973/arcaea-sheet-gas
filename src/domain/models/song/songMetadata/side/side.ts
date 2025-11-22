@@ -3,7 +3,7 @@ import { ValueObject } from "@/domain/models/shared/valueObject";
 export enum SideEnum {
     LIGHT = "光",
     CONFLICT = "対立",
-    COLORLESS = "無",
+    ACHROMIC = "無",
     LEPHON = "リフォン",
 }
 

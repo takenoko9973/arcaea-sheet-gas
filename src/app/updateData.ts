@@ -24,23 +24,30 @@ export function updateData(difficulty: DifficultyEnum) {
     for (const dto of collectionDtos) {
         if (!dto.nameJp) continue;
 
-        // 存在するか確認
-        const songId = new SongId(dto.songTitle);
-        const difficultyName = new DifficultyName(difficulty);
+        const displayName = dto.nameJp || dto.songTitle || "(unknown)";
+        try {
+            // 存在するか確認
+            const songId = new SongId(dto.songTitle);
+            const difficultyName = new DifficultyName(difficulty);
 
-        const existingSong = songRepo.findSong(songId, difficultyName);
-        if (!existingSong) continue; // 登録されていなければスキップ
+            const existingSong = songRepo.findSong(songId, difficultyName);
+            if (!existingSong) continue; // 登録されていなければスキップ
 
-        const updatedSong = createUpdatedSongIfChanged(existingSong, dto);
-        if (updatedSong) {
-            console.log(
-                "Update data of %s(%s)",
-                updatedSong.songData.nameJp,
-                updatedSong.difficultyName
-            );
+            const updatedSong = createUpdatedSongIfChanged(existingSong, dto);
+            if (updatedSong) {
+                console.log(
+                    "Update data of %s(%s)",
+                    updatedSong.songData.nameJp,
+                    updatedSong.difficultyName
+                );
 
-            songRepo.save(updatedSong);
-            isUpdated = true;
+                songRepo.save(updatedSong);
+                isUpdated = true;
+            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.log("Skip %s(%s): %s", displayName, difficulty, message);
+            continue;
         }
     }
 

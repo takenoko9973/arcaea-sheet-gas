@@ -24,24 +24,31 @@ export function registerSongData(difficulty: DifficultyEnum) {
         if (dto.nameJp === "") continue;
         if (dto.constant === "" && !isIgnoreConstant) continue;
 
-        // 存在確認
-        const songId = new SongId(dto.songTitle);
-        const difficultyName = new DifficultyName(difficulty);
+        const displayName = dto.nameJp || dto.songTitle || "(unknown)";
+        try {
+            // 存在確認
+            const songId = new SongId(dto.songTitle);
+            const difficultyName = new DifficultyName(difficulty);
 
-        const existingSong = songRepo.findSong(songId, difficultyName);
-        if (existingSong) continue;
+            const existingSong = songRepo.findSong(songId, difficultyName);
+            if (existingSong) continue;
 
-        console.log("getting data of %s(%s)", dto.nameJp, difficulty);
+            console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
-        // Wikiからデータを取得
-        const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, difficulty);
+            // Wikiからデータを取得
+            const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, difficulty);
 
-        // ドメインエンティティを生成
-        const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);
+            // ドメインエンティティを生成
+            const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);
 
-        // リポジトリに保存
-        songRepo.save(newSong);
-        isRegistered = true;
+            // リポジトリに保存
+            songRepo.save(newSong);
+            isRegistered = true;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.log("Skip %s(%s): %s", displayName, difficulty, message);
+            continue;
+        }
     }
 
     // シートに書き込み

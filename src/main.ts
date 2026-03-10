@@ -27,12 +27,14 @@ export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
     const lock = LockService.getScriptLock(); // 二重実行防止
     if (!lock.tryLock(1)) return;
 
-    const changedPair = new SheetCellPair(sheet.getName(), cell.getA1Notation());
-    console.log("Changed %s(%s)", changedPair.cell_location, changedPair.sheet_name);
+    try {
+        const changedPair = new SheetCellPair(sheet.getName(), cell.getA1Notation());
+        console.log("Changed %s(%s)", changedPair.cell_location, changedPair.sheet_name);
 
-    runTrigger(changedPair);
-
-    lock.releaseLock();
+        runTrigger(changedPair);
+    } finally {
+        lock.releaseLock();
+    }
 }
 
 /**

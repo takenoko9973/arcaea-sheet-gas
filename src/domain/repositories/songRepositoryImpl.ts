@@ -18,4 +18,19 @@ export interface ISongRepository {
      * @param song 楽曲エンティティ
      */
     save(song: Song): void;
+
+    /**
+     * まとめてシートへ書き込む
+     */
+    flush(): void;
+
+    /**
+     * 保存済みの楽曲一覧を取得する
+     */
+    fetchSongs(): Song[];
+
+    /**
+     * 定数未登録でも登録を許可するか判定する
+     */
+    isIgnoreConstant(): boolean;
 }

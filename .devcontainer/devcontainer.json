@@ -32,7 +32,6 @@
                 "plantuml.server": "http://172.22.0.3:8080/"
             },
             "extensions": [
-                "VisualStudioExptTeam.vscodeintellicode",
                 "codezombiech.gitignore",
                 "rvest.vs-code-prettier-eslint",
                 "esbenp.prettier-vscode",

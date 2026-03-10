@@ -75,7 +75,8 @@ export class SongRepository implements ISongRepository {
         return this.songs;
     }
 
-    isIgnoreConstant() {
-        return this.sheet.getRange(IGNORE_CONSTANT_CONFIG_CELL);
+    isIgnoreConstant(): boolean {
+        const value = this.sheet.getRange(IGNORE_CONSTANT_CONFIG_CELL).getValue();
+        return value === true;
     }
 }

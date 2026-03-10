@@ -1,19 +1,18 @@
+import { getSongCollectionRepository, getSongRepository } from "@/app/dependencies";
 import {
     DifficultyEnum,
     DifficultyName,
 } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
-import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
 
 export function registerSongData(difficulty: DifficultyEnum) {
     console.log("Start registering(%s)", difficulty);
 
-    const songRepo = SongRepository.instance;
-    const songCollectionRepo = SongCollectionRepository.instance;
+    const songRepo = getSongRepository();
+    const songCollectionRepo = getSongCollectionRepository();
     const isIgnoreConstant = songRepo.isIgnoreConstant(); // 定数情報が未登録でも強制登録
 
     // 指定の難易度のみのデータを取り出し

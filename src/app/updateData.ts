@@ -1,3 +1,4 @@
+import { getSongCollectionRepository, getSongRepository } from "@/app/dependencies";
 import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
 import { ChartData } from "@/domain/models/song/chartData/chartData";
 import { Constant } from "@/domain/models/song/chartData/constant/constant";
@@ -10,14 +11,12 @@ import {
 import { Level } from "@/domain/models/song/difficulty/level/level";
 import { Song } from "@/domain/models/song/song";
 import { SongId } from "@/domain/models/song/songId/songId";
-import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 export function updateData(difficulty: DifficultyEnum) {
     console.log("Start updating(%s)", difficulty);
 
-    const songRepo = SongRepository.instance;
-    const songCollectionRepo = SongCollectionRepository.instance;
+    const songRepo = getSongRepository();
+    const songCollectionRepo = getSongCollectionRepository();
 
     const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
 

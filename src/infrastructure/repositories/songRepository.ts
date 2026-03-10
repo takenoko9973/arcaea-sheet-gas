@@ -75,6 +75,7 @@ export class SongRepository implements ISongRepository {
         return this.songs;
     }
 
+    // Configシートの設定値を読み取り、trueのときのみ許可する
     isIgnoreConstant(): boolean {
         const value = this.sheet.getRange(IGNORE_CONSTANT_CONFIG_CELL).getValue();
         return value === true;

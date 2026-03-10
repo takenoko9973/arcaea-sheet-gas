@@ -1,4 +1,4 @@
-import { getSongRepository } from "@/app/dependencies";
+import { repositories } from "@/app/dependencies";
 import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
@@ -13,7 +13,7 @@ export function manualRegister() {
     console.log("start manual register");
 
     // 1. 各リポジトリのインスタンスを取得
-    const songRepo = getSongRepository();
+    const songRepo = repositories.song();
     const manualRegisterRepo = new ManualRegisterRepository();
 
     // 2. 手動登録シートからエントリ（DTO）を取得

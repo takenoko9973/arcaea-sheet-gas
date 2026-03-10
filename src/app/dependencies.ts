@@ -6,22 +6,21 @@ import { DailyStatisticsRepository } from "@/infrastructure/repositories/dailySt
 import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
 import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
-export function getSongRepository(): ISongRepository {
+export const repositories = {
     // app層からの参照点を一箇所に集約する
-    return SongRepository.instance;
-}
-
-export function getSongCollectionRepository(): ISongCollectionRepository {
+    song(): ISongRepository {
+        return SongRepository.instance;
+    },
     // 収集データの参照も集約して依存を一本化する
-    return SongCollectionRepository.instance;
-}
-
-export function getDailyStatisticsRepository(): IDailyDataRepository {
+    songCollection(): ISongCollectionRepository {
+        return SongCollectionRepository.instance;
+    },
     // 日次統計の永続化先をここで固定する
-    return DailyStatisticsRepository.instance;
-}
-
-export function getConfigSheet(): ConfigSheet {
+    dailyStatistics(): IDailyDataRepository {
+        return DailyStatisticsRepository.instance;
+    },
     // Configシートへの参照をapp層から直接持たないようにする
-    return ConfigSheet.instance;
-}
+    configSheet(): ConfigSheet {
+        return ConfigSheet.instance;
+    },
+};

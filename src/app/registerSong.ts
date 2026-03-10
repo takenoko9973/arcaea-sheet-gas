@@ -1,4 +1,5 @@
-import { getSongCollectionRepository, getSongRepository } from "@/app/dependencies";
+import { processCollectionDtos } from "@/app/collectionProcessing";
+import { repositories } from "@/app/dependencies";
 import {
     DifficultyEnum,
     DifficultyName,
@@ -11,27 +12,26 @@ import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
 export function registerSongData(difficulty: DifficultyEnum) {
     console.log("Start registering(%s)", difficulty);
 
-    const songRepo = getSongRepository();
-    const songCollectionRepo = getSongCollectionRepository();
+    const songRepo = repositories.song();
+    const songCollectionRepo = repositories.songCollection();
     const isIgnoreConstant = songRepo.isIgnoreConstant(); // 定数情報が未登録でも強制登録
 
     // 指定の難易度のみのデータを取り出し
     const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
 
-    // 全データチェック
-    let isRegistered = false;
-    for (const dto of collectionDtos) {
-        if (dto.nameJp === "") continue;
-        if (dto.constant === "" && !isIgnoreConstant) continue;
-
-        const displayName = dto.nameJp || dto.songTitle || "(unknown)";
-        try {
+    // 共通ループ処理で登録対象だけを処理する
+    const isRegistered = processCollectionDtos({
+        dtos: collectionDtos,
+        difficulty,
+        // 名前が空、または定数が空で許可設定が無い場合はスキップ
+        shouldSkip: dto => dto.nameJp === "" || (dto.constant === "" && !isIgnoreConstant),
+        process: dto => {
             // 存在確認
             const songId = new SongId(dto.songTitle);
             const difficultyName = new DifficultyName(difficulty);
 
             const existingSong = songRepo.findSong(songId, difficultyName);
-            if (existingSong) continue;
+            if (existingSong) return false;
 
             console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
@@ -41,15 +41,11 @@ export function registerSongData(difficulty: DifficultyEnum) {
             // ドメインエンティティを生成
             const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);
 
-            // リポジトリに保存
+            // リポジトリに保存（保存できたらtrue）
             songRepo.save(newSong);
-            isRegistered = true;
-        } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            console.log("Skip %s(%s): %s", displayName, difficulty, message);
-            continue;
-        }
-    }
+            return true;
+        },
+    });
 
     // シートに書き込み
     if (isRegistered) songRepo.flush();

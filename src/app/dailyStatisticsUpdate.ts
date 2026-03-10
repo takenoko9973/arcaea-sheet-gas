@@ -1,8 +1,4 @@
-import {
-    getConfigSheet,
-    getDailyStatisticsRepository,
-    getSongRepository,
-} from "@/app/dependencies";
+import { repositories } from "@/app/dependencies";
 import { DailyData } from "@/domain/models/daily/dailyData";
 import { GradeData } from "@/domain/models/daily/greadeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
@@ -15,9 +11,9 @@ export function updateDailyStatistics() {
     const today = new Date();
 
     // シート取得
-    const songRepo = getSongRepository();
-    const dailyRepo = getDailyStatisticsRepository();
-    const configSheet = getConfigSheet();
+    const songRepo = repositories.song();
+    const dailyRepo = repositories.dailyStatistics();
+    const configSheet = repositories.configSheet();
 
     // 集計
     const allSongs = songRepo.fetchSongs();

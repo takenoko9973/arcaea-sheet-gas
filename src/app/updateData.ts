@@ -1,3 +1,5 @@
+import { processCollectionDtos } from "@/app/collectionProcessing";
+import { repositories } from "@/app/dependencies";
 import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
 import { ChartData } from "@/domain/models/song/chartData/chartData";
 import { Constant } from "@/domain/models/song/chartData/constant/constant";
@@ -10,40 +12,43 @@ import {
 import { Level } from "@/domain/models/song/difficulty/level/level";
 import { Song } from "@/domain/models/song/song";
 import { SongId } from "@/domain/models/song/songId/songId";
-import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
-import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 export function updateData(difficulty: DifficultyEnum) {
     console.log("Start updating(%s)", difficulty);
 
-    const songRepo = SongRepository.instance;
-    const songCollectionRepo = SongCollectionRepository.instance;
+    const songRepo = repositories.song();
+    const songCollectionRepo = repositories.songCollection();
 
     const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
 
-    let isUpdated = false;
-    for (const dto of collectionDtos) {
-        if (!dto.nameJp) continue;
+    // 共通ループ処理で更新対象だけを処理する
+    const isUpdated = processCollectionDtos({
+        dtos: collectionDtos,
+        difficulty,
+        // 名前が空の場合はスキップ
+        shouldSkip: dto => !dto.nameJp,
+        process: dto => {
+            // 存在するか確認
+            const songId = new SongId(dto.songTitle);
+            const difficultyName = new DifficultyName(difficulty);
 
-        // 存在するか確認
-        const songId = new SongId(dto.songTitle);
-        const difficultyName = new DifficultyName(difficulty);
+            const existingSong = songRepo.findSong(songId, difficultyName);
+            if (!existingSong) return false; // 登録されていなければスキップ
 
-        const existingSong = songRepo.findSong(songId, difficultyName);
-        if (!existingSong) continue; // 登録されていなければスキップ
+            const updatedSong = createUpdatedSongIfChanged(existingSong, dto);
+            if (!updatedSong) return false;
 
-        const updatedSong = createUpdatedSongIfChanged(existingSong, dto);
-        if (updatedSong) {
             console.log(
                 "Update data of %s(%s)",
                 updatedSong.songData.nameJp,
                 updatedSong.difficultyName
             );
 
+            // 更新できたらtrue
             songRepo.save(updatedSong);
-            isUpdated = true;
-        }
-    }
+            return true;
+        },
+    });
 
     // 更新があった場合\、最後にシートに書き込む
     if (isUpdated) {

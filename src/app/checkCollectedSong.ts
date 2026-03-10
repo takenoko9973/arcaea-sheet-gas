@@ -1,5 +1,4 @@
-import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
-import { ConfigSheet } from "@/infrastructure/repositories/configSheet";
+import { repositories } from "@/app/dependencies";
 
 import { registerSongData } from "./registerSong";
 import { updateData } from "./updateData";
@@ -12,10 +11,11 @@ export function checkCollectedSong() {
 export function autoRegister() {
     console.log("Start auto register");
 
-    const configSheet = ConfigSheet.instance;
+    // Configシートの設定に従って対象難易度を取得
+    const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
     for (const difficulty of registeredDifficulties) {
-        registerSongData(difficulty as DifficultyEnum);
+        registerSongData(difficulty);
     }
 
     console.log("End auto register");
@@ -24,10 +24,11 @@ export function autoRegister() {
 export function update() {
     console.log("Start update");
 
-    const configSheet = ConfigSheet.instance;
+    // Configシートの設定に従って対象難易度を取得
+    const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
     for (const difficulty of registeredDifficulties) {
-        updateData(difficulty as DifficultyEnum);
+        updateData(difficulty);
     }
 
     console.log("End update");

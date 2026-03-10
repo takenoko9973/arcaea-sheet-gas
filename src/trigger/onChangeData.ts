@@ -9,6 +9,10 @@ const configSheet = ConfigSheet.instance;
 
 const triggerList = [
     {
+        pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortVersionCell()),
+        func: versionSort,
+    },
+    {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortDifficultyCell()),
         func: songDifficultySort,
     },
@@ -33,6 +37,22 @@ const triggerList = [
         func: manualRegister,
     },
 ];
+
+/**
+ * バージョン順に並び替え
+ */
+function versionSort() {
+    console.log("Sort by Difficulty");
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
+
+    const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
+    const versionCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "バージョン(ソート用)");
+
+    // 取得した列番号を使ってソート
+    filter.sort(diffCol, true);
+    filter.sort(versionCol, true);
+}
 
 /**
  * 難易度順に並び替え

@@ -1,9 +1,10 @@
-import { IGNORE_CONSTANT_CONFIG_CELL, SONG_SCORE_SHEET_NAME } from "@/const";
+import { SONG_SCORE_SHEET_NAME } from "@/const";
 import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { Song } from "@/domain/models/song/song";
 import { SongId } from "@/domain/models/song/songId/songId";
 import { ISongRepository } from "@/domain/repositories/songRepositoryImpl";
 import { SongMapper } from "@/infrastructure/mappers/songMapper";
+import { ConfigSheet } from "@/infrastructure/repositories/configSheet";
 import { getSheet } from "@/utils/sheetHelper";
 
 type Sheet = GoogleAppsScript.Spreadsheet.Sheet;
@@ -75,7 +76,11 @@ export class SongRepository implements ISongRepository {
         return this.songs;
     }
 
-    isIgnoreConstant() {
-        return this.sheet.getRange(IGNORE_CONSTANT_CONFIG_CELL);
+    // Configシートで指定されたセルを参照して判定する
+    isIgnoreConstant(): boolean {
+        const configSheet = ConfigSheet.instance;
+        const targetCell = configSheet.ignoreConstantCell();
+        const value = this.sheet.getRange(targetCell).getValue();
+        return value === true;
     }
 }

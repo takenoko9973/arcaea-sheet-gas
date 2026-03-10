@@ -10,7 +10,10 @@ import {
     SORT_VERSION_CONFIG_CELL,
     UPDATE_REGISTER_BUTTON_CONFIG_CELL,
 } from "@/const";
-import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import {
+    DifficultyEnum,
+    isDifficultyEnum,
+} from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { IConfigSheet } from "@/domain/repositories/configSheetImpl";
 import { getSheet } from "@/utils/sheetHelper";
 
@@ -66,7 +69,18 @@ export class ConfigSheet implements IConfigSheet {
     targetRegisteredDifficulties(): DifficultyEnum[] {
         // [[DifficultyEnum, isRegistered], ...]
         const regDiffConfigs = this.sheet.getRange(REGISTERED_DIFFICULTIES_CONFIG_CELL).getValues();
+        const difficulties: DifficultyEnum[] = [];
+        for (const [difficulty, isRegistered] of regDiffConfigs) {
+            if (!isRegistered) continue;
 
-        return regDiffConfigs.filter(value => value[1]).map(value => value[0] as DifficultyEnum);
+            if (isDifficultyEnum(difficulty)) {
+                difficulties.push(difficulty);
+            } else {
+                // 不正値はスキップして最小限のログを残す
+                console.log("Skip invalid difficulty: %s", difficulty);
+            }
+        }
+
+        return difficulties;
     }
 }

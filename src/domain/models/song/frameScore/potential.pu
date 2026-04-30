@@ -1,0 +1,7 @@
+@startuml FrameScore
+
+class "FrameScore(フレーム値)" as FrameScore {
+    + value: number
+}
+
+@enduml

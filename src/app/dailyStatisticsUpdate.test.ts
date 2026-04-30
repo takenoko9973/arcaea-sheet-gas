@@ -1,5 +1,6 @@
 import { DailyData } from "@/domain/models/daily/dailyData";
-import { GradeData, GradeDataValue } from "@/domain/models/daily/greadeData/gradeData";
+import { FrameScoreData } from "@/domain/models/daily/frameScoreData/frameScoreData";
+import { GradeData, GradeDataValue } from "@/domain/models/daily/gradeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
 import { Song } from "@/domain/models/song/song";
 import { DailyStatisticsRepository } from "@/infrastructure/repositories/dailyStatisticsRepository";
@@ -9,7 +10,7 @@ import { updateDailyStatistics } from "./dailyStatisticsUpdate";
 import { StatisticsService } from "./services/statisticsService";
 
 // 依存モジュールをモック化
-jest.mock("domain/models/daily/greadeData/gradeData");
+jest.mock("domain/models/daily/gradeData/gradeData");
 jest.mock("infrastructure/repositories/songRepository");
 jest.mock("infrastructure/repositories/dailyStatisticsRepository");
 
@@ -46,6 +47,7 @@ describe("updateDailyStatistics", () => {
         const mockPotential = 12.34;
         const mockGradeData = new GradeData({} as GradeDataValue); // モックインスタンス
         const mockScoreData = new ScoreData(0, 0, 0, 0);
+        const mockFrameScoreData = new FrameScoreData(10, 1);
 
         // GradeData.createEmpty()がモックインスタンスを返すように設定
         mockedGradeData.createEmpty.mockReturnValue(mockGradeData);
@@ -56,6 +58,7 @@ describe("updateDailyStatistics", () => {
         mockedStatisticsService.calculateBestPotential.mockReturnValue(mockPotential);
         mockedStatisticsService.calculateGrades.mockReturnValue(mockGradeData);
         mockedStatisticsService.calculateScoreData.mockReturnValue(mockScoreData);
+        mockedStatisticsService.calculateFrameScoreData.mockReturnValue(mockFrameScoreData);
 
         // テスト対象の関数を実行
         updateDailyStatistics();

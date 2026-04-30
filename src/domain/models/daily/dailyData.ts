@@ -1,6 +1,7 @@
 import { Version } from "@/domain/models/song/songMetadata/version/version";
 
-import { GradeData } from "./greadeData/gradeData";
+import { FrameScoreData } from "./frameScoreData/frameScoreData";
+import { GradeData } from "./gradeData/gradeData";
 import { ScoreData } from "./scoreData/scoreData";
 
 /**
@@ -13,6 +14,7 @@ export class DailyData {
         public readonly potential: number,
         public readonly potentialMax: number,
         public readonly grade: GradeData,
-        public readonly scoreData: ScoreData[]
+        public readonly scoreData: ScoreData[],
+        public readonly frameScoreData: FrameScoreData
     ) {}
 }

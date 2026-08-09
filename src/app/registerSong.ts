@@ -25,7 +25,7 @@ export function registerSongData(
 
     const songRepo = repositories.song();
     const songCollectionRepo = repositories.songCollection();
-    // 設定セルの参照と既存のfatal境界を維持する。定数欠損のskip判定はWiki補完後に行う。
+    // 設定セルの参照と既存のfatal境界を維持する。この設定はWiki補完前のskip判定には使わない。
     songRepo.isIgnoreConstant();
 
     // 指定の難易度のみのデータを取り出し

@@ -150,9 +150,9 @@ function readKnownNumber(value: string | undefined): number | null {
 
 function matchesKnownValues(chart: IArcaeaWikiChart, known: KnownChartValues): boolean {
     return (
-        (known.level === null || chart.level === known.level) &&
-        (known.notes === null || chart.notes === known.notes) &&
-        (known.constant === null || chart.constant === known.constant)
+        (known.level === null || chart.level === null || chart.level === known.level) &&
+        (known.notes === null || chart.notes === null || chart.notes === known.notes) &&
+        (known.constant === null || chart.constant === null || chart.constant === known.constant)
     );
 }
 

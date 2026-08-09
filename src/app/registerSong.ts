@@ -25,7 +25,8 @@ export function registerSongData(
 
     const songRepo = repositories.song();
     const songCollectionRepo = repositories.songCollection();
-    const isIgnoreConstant = songRepo.isIgnoreConstant(); // 定数情報が未登録でも強制登録
+    // 設定セルの参照と既存のfatal境界を維持する。定数欠損のskip判定はWiki補完後に行う。
+    songRepo.isIgnoreConstant();
 
     // 指定の難易度のみのデータを取り出し
     let collectionDtos;
@@ -43,8 +44,8 @@ export function registerSongData(
         dtos: collectionDtos,
         difficulty,
         operation: "register",
-        // 名前が空、または定数が空で許可設定が無い場合はスキップ
-        shouldSkip: dto => dto.nameJp === "" || (dto.constant === "" && !isIgnoreConstant),
+        // 名前が空の場合はスキップ
+        shouldSkip: dto => dto.nameJp === "",
         process: dto => {
             // 存在確認
             const songId = new SongId(dto.songTitle);

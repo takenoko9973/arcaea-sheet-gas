@@ -191,6 +191,75 @@ describe("registerSongData", () => {
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
     });
 
+    it("定数欠損でもignore設定が無効ならWikiの定数で登録を試行する", () => {
+        const mockWikiProvider = createWikiProvider();
+        const mockSongDto = {
+            songTitle: "constant-missing-without-ignore-song",
+            nameJp: "定数欠損・無視設定なし曲",
+            nameEn: "constant-missing-without-ignore-song",
+            composer: "Collection Composer",
+            side: "光",
+            difficulty: DifficultyEnum.FUTURE,
+            level: "11",
+            constant: "",
+            notes: "1200",
+            urlName: "constant-missing-without-ignore-url",
+        };
+
+        mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
+        mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(false);
+        mockSongRepositoryInstance.findSong.mockReturnValue(null);
+
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+
+        expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
+        expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
+    });
+
+    it("定数欠損かつWikiの定数がnullなら0補完せず失敗する", () => {
+        const mockWikiProvider = {
+            fetchSongData: jest.fn().mockReturnValue({
+                composer: "Wiki Composer",
+                pack: "Test Pack",
+                version: "2.0.0",
+                side: "光(光)",
+                charts: [
+                    {
+                        difficulty: DifficultyEnum.FUTURE,
+                        level: "11",
+                        notes: 1200,
+                        constant: null,
+                    },
+                ],
+            }),
+        };
+        const mockSongDto = {
+            songTitle: "constant-missing-wiki-null-song",
+            nameJp: "定数欠損・Wiki null曲",
+            nameEn: "constant-missing-wiki-null-song",
+            composer: "Collection Composer",
+            side: "光",
+            difficulty: DifficultyEnum.FUTURE,
+            level: "11",
+            constant: "",
+            notes: "1200",
+            urlName: "constant-missing-wiki-null-url",
+        };
+
+        mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
+        mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(false);
+        mockSongRepositoryInstance.findSong.mockReturnValue(null);
+
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+
+        expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
+        expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
+        expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
+        expect(result).toMatchObject({ processed: 0, changed: 0, skipped: 0 });
+        expect(result.failures).toHaveLength(1);
+    });
+
     it("定数確認無視設定でも既知のCollection定数との矛盾は失敗にする", () => {
         const mockWikiProvider = {
             fetchSongData: jest.fn().mockReturnValue({

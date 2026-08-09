@@ -160,6 +160,19 @@ describe("resolveWikiChart", () => {
         ).toThrow();
     });
 
+    it("Wiki chartのnull値は未知値としてCollection既知値を採用する", () => {
+        expect(
+            resolveWikiChart(collectionDto, DifficultyEnum.BEYOND, [
+                {
+                    difficulty: DifficultyEnum.BEYOND,
+                    level: null,
+                    notes: null,
+                    constant: null,
+                },
+            ])
+        ).toEqual({ level: "9+", notes: 1000, constant: 9.7 });
+    });
+
     it("候補が複数件なら推測せず失敗する", () => {
         const dto = { ...collectionDto, level: "", constant: "", notes: "" };
 
@@ -174,6 +187,27 @@ describe("resolveWikiChart", () => {
                 {
                     difficulty: DifficultyEnum.BEYOND,
                     level: "9+",
+                    notes: 1001,
+                    constant: 9.8,
+                },
+            ])
+        ).toThrow();
+    });
+
+    it("Wiki chartのnull値を未知値としても複数候補なら失敗する", () => {
+        const dto = { ...collectionDto, level: "", constant: "", notes: "" };
+
+        expect(() =>
+            resolveWikiChart(dto, DifficultyEnum.BEYOND, [
+                {
+                    difficulty: DifficultyEnum.BEYOND,
+                    level: null,
+                    notes: 1000,
+                    constant: 9.7,
+                },
+                {
+                    difficulty: DifficultyEnum.BEYOND,
+                    level: null,
                     notes: 1001,
                     constant: 9.8,
                 },

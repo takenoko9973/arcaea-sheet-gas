@@ -1,3 +1,4 @@
+import { IWikiProvider, WikiProvider } from "@/app/services/wikiDataFetcherService";
 import { IDailyDataRepository } from "@/domain/repositories/dailyStatisticsRepositoryImpl";
 import { ISongCollectionRepository } from "@/domain/repositories/songCollectionRepositoryImpl";
 import { ISongRepository } from "@/domain/repositories/songRepositoryImpl";
@@ -22,5 +23,12 @@ export const repositories = {
     // Configシートへの参照をapp層から直接持たないようにする
     configSheet(): ConfigSheet {
         return ConfigSheet.instance;
+    },
+};
+
+export const providers = {
+    // 自動登録ではdifficultyをまたいで同じproviderを共有する
+    wiki(): IWikiProvider {
+        return new WikiProvider();
     },
 };

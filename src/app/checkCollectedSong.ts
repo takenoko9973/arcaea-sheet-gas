@@ -1,4 +1,4 @@
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 
 import { registerSongData } from "./registerSong";
 import { updateData } from "./updateData";
@@ -14,8 +14,9 @@ export function autoRegister() {
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
+    const wikiProvider = providers.wiki();
     for (const difficulty of registeredDifficulties) {
-        registerSongData(difficulty);
+        registerSongData(difficulty, wikiProvider);
     }
 
     console.log("End auto register");

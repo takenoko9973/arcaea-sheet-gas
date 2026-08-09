@@ -1,33 +1,20 @@
-import { Difficulty } from "src/types";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
-interface IFetchArcaeaWiki {
-    createSongData(urlName: string): IArcaeaWikiSong;
+export interface IFetchArcaeaWiki {
+    createSongData(pageName: string): IArcaeaWikiSong;
 }
 
-interface IArcaeaWikiSong {
-    songName: string;
-    composer: string;
-    illustrator: string;
-    levels: string[];
-    notes: number[];
-    constants: number[];
-    length: string;
-    bpm: string;
-    pack: string;
-    side: string;
-    version: string;
-
-    difficultyInfoList(): IDifficultyInfo[];
-    difficulties(): Difficulty[];
-    getDifficultyInfoByName(name: Difficulty): IDifficultyInfo[];
-    getLevelByDiff(name: Difficulty): string[];
-    getNotesByDiff(name: Difficulty): number[];
-    getConstantByDiff(name: Difficulty): number[];
+export interface IArcaeaWikiSong {
+    composer: string | null;
+    pack: string | null;
+    version: string | null;
+    side: string | null;
+    charts: IArcaeaWikiChart[];
 }
 
-interface IDifficultyInfo {
-    difficulty: Difficulty;
-    level: string;
-    notes: number;
-    constant: number;
+export interface IArcaeaWikiChart {
+    difficulty: DifficultyEnum;
+    level: string | null;
+    notes: number | null;
+    constant: number | null;
 }

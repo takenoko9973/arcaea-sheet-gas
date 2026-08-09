@@ -4,19 +4,14 @@ import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRe
 import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { manualRegister } from "./manualRegister";
-import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
 
 jest.mock("domain/models/song/songFactory");
 jest.mock("infrastructure/repositories/songRepository");
 jest.mock("infrastructure/repositories/manualRegisterRepository");
 
-jest.mock("./services/wikiDataFetcherService");
-
 describe("manualRegister", () => {
-    // 各リポジトリのモック
     const mockedSongRepository = jest.mocked(SongRepository);
     const mockedManualRegisterRepository = jest.mocked(ManualRegisterRepository);
-    const mockedWikiDataFetcherService = jest.mocked(WikiDataFetcherService);
 
     const mockSongRepositoryInstance = {
         findSong: jest.fn(),
@@ -34,7 +29,26 @@ describe("manualRegister", () => {
         jest.clearAllMocks();
     });
 
-    it("新しい曲が入力された場合、登録処理を実行", () => {
+    function createWikiProvider() {
+        return {
+            fetchSongData: jest.fn().mockReturnValue({
+                composer: "Wiki Composer",
+                pack: "Test Pack",
+                version: "1.0.0",
+                side: "光(光)",
+                charts: [
+                    {
+                        difficulty: DifficultyEnum.FUTURE,
+                        level: "10",
+                        notes: 1000,
+                        constant: 10.5,
+                    },
+                ],
+            }),
+        };
+    }
+
+    it("新しい曲が入力された場合、登録処理を実行する", () => {
         const mockDto = {
             songTitle: "テストソング",
             nameJp: "テストソング",
@@ -44,28 +58,15 @@ describe("manualRegister", () => {
             constant: "10.5",
             urlName: "test-song-url",
         };
+        const mockWikiProvider = createWikiProvider();
 
-        const mockWikiDetails = {
-            composer: "Test Composer",
-            pack: "Test Pack",
-            version: "1.0",
-            level: "10",
-            side: "光",
-            notes: 1000,
-            constant: 10.5,
-        };
-
-        // パターン状況設定
         mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
-        mockSongRepositoryInstance.findSong.mockReturnValue(null); // 見つからなかったパターン
-        mockedWikiDataFetcherService.fetchDetails.mockReturnValue(mockWikiDetails);
+        mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        // 仮想環境で実行
-        manualRegister();
+        manualRegister(mockWikiProvider);
 
-        // 各関数が実行されたかどうか (関数完遂の確認)
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalled();
-        expect(mockedWikiDataFetcherService.fetchDetails).toHaveBeenCalled();
+        expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalled();
         expect(mockSongRepositoryInstance.flush).toHaveBeenCalled();
     });
@@ -80,22 +81,14 @@ describe("manualRegister", () => {
             constant: "10.5",
             urlName: "test-song-url",
         };
-        // findSongが返す、既存の曲のモック
-        const mockExistingSong = {} as Song; // 中身は空でOK
 
         mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
-        mockSongRepositoryInstance.findSong.mockReturnValue(mockExistingSong);
+        mockSongRepositoryInstance.findSong.mockReturnValue({} as Song);
 
-        // テスト対象の関数を実行
         manualRegister();
 
-        // 結果を検証
-        // findSongは呼ばれる
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalled();
-        // saveとflushは呼ばれないことを確認
         expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
         expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
-        // Wikiへの問い合わせも行われない
-        expect(mockedWikiDataFetcherService.fetchDetails).not.toHaveBeenCalled();
     });
 });

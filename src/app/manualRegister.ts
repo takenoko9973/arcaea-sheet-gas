@@ -1,15 +1,18 @@
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
 
-import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
+import {
+    IWikiProvider,
+    resolveWikiSongDetails,
+} from "./services/wikiDataFetcherService";
 
 /**
  * 手動登録ルーチン
  */
-export function manualRegister() {
+export function manualRegister(wikiProvider?: IWikiProvider) {
     console.log("start manual register");
 
     // 1. 各リポジトリのインスタンスを取得
@@ -35,8 +38,8 @@ export function manualRegister() {
 
     console.log("Manual registering %s(%s)", dto.nameJp, dto.difficulty);
 
-    // 4. Wikiから補足データを取得 (DTOを元にした形に修正)
-    const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, dto.difficulty);
+    // 4. DTOの既知値を優先し、不足値だけをWikiから補完
+    const wikiDetails = resolveWikiSongDetails(dto, dto.difficulty, wikiProvider ?? providers.wiki());
 
     // 5. ドメインエンティティを生成
     const newSong = SongFactory.createFromManualRegisterDto(dto, wikiDetails);

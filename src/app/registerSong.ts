@@ -1,5 +1,5 @@
 import { processCollectionDtos } from "@/app/collectionProcessing";
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 import {
     DifficultyEnum,
     DifficultyName,
@@ -7,9 +7,15 @@ import {
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 
-import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
+import {
+    IWikiProvider,
+    resolveWikiSongDetails,
+} from "./services/wikiDataFetcherService";
 
-export function registerSongData(difficulty: DifficultyEnum) {
+export function registerSongData(
+    difficulty: DifficultyEnum,
+    wikiProvider: IWikiProvider = providers.wiki()
+) {
     console.log("Start registering(%s)", difficulty);
 
     const songRepo = repositories.song();
@@ -35,8 +41,8 @@ export function registerSongData(difficulty: DifficultyEnum) {
 
             console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
-            // Wikiからデータを取得
-            const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, difficulty);
+            // SongCollectionの既知値を優先し、不足値だけをWikiから補完
+            const wikiDetails = resolveWikiSongDetails(dto, difficulty, wikiProvider);
 
             // ドメインエンティティを生成
             const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);

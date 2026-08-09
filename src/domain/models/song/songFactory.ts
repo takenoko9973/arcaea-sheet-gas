@@ -26,11 +26,11 @@ export class SongFactory {
     static createFromCollectionDto(dto: SongCollectionDto, details: WikiSongDetails): Song {
         return Song.create(
             new SongTitle(dto.songTitle),
-            new SongData({ nameJp: dto.nameJp, nameEn: dto.nameEn, composer: dto.composer }),
+            new SongData({ nameJp: dto.nameJp, nameEn: dto.nameEn, composer: details.composer }),
             new SongMetadata({
                 pack: new Pack(details.pack),
                 version: Version.fromString(details.version),
-                side: new Side(dto.side as SideEnum),
+                side: new Side(details.side as SideEnum),
             }),
             new Difficulty({
                 difficultyName: new DifficultyName(dto.difficulty as DifficultyEnum),

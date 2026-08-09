@@ -122,4 +122,40 @@ describe("updateData", () => {
         expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
         expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
     });
+
+    it("1曲の処理失敗後も後続曲を更新する", () => {
+        const changedSong = {
+            songData: { nameJp: "後続曲" },
+            difficultyName: new DifficultyName(DifficultyEnum.FUTURE),
+            level: new Level("11"),
+            constant: new Constant(11.0),
+            songNotes: new SongNotes(1000),
+            changeDifficulty: jest.fn(),
+            changeChartData: jest.fn(),
+        };
+        changedSong.changeDifficulty.mockReturnValue(changedSong);
+        changedSong.changeChartData.mockReturnValue(changedSong);
+        mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([
+            { songTitle: "failed-song", nameJp: "失敗曲", level: "11", constant: "11", notes: "1000" },
+            { songTitle: "following-song", nameJp: "後続曲", level: "11+", constant: "11", notes: "1000" },
+        ]);
+        mockSongRepositoryInstance.findSong
+            .mockImplementationOnce(() => {
+                throw new Error("Collection processing failure");
+            })
+            .mockReturnValueOnce(changedSong);
+
+        const result = updateData(DifficultyEnum.FUTURE);
+
+        expect(mockSongRepositoryInstance.findSong).toHaveBeenCalledTimes(2);
+        expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+        expect(mockSongRepositoryInstance.flush).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0 });
+        expect(result.failures).toHaveLength(1);
+        expect(result.failures[0]).toMatchObject({
+            song: "failed-song",
+            difficulty: DifficultyEnum.FUTURE,
+            operation: "update",
+        });
+    });
 });

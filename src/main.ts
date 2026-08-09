@@ -1,11 +1,31 @@
+import {
+    autoRegister as runAutoRegister,
+    checkCollectedSong as runCheckCollectedSong,
+    update as runUpdate,
+} from "@/app/checkCollectedSong";
+import {
+    logProcessingResult,
+    ProcessingResult,
+} from "@/app/collectionProcessing";
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
 import { SHEET_BOOK } from "@/const";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { runTrigger } from "@/trigger/onChangeData";
 import { setDailyTrigger } from "@/trigger/triggerSetting";
 
-export { autoRegister, checkCollectedSong, update } from "@/app/checkCollectedSong";
 export { manualRegister } from "@/app/manualRegister";
+
+export function checkCollectedSong(): ProcessingResult {
+    return runProcessingEntryPoint("check collected song", runCheckCollectedSong);
+}
+
+export function autoRegister(): ProcessingResult {
+    return runProcessingEntryPoint("auto register", runAutoRegister);
+}
+
+export function update(): ProcessingResult {
+    return runProcessingEntryPoint("update", runUpdate);
+}
 
 export function initTriggers() {
     // 既存のトリガーをすべて削除
@@ -32,6 +52,9 @@ export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
         console.log("Changed %s(%s)", changedPair.cell_location, changedPair.sheet_name);
 
         runTrigger(changedPair);
+    } catch (cause) {
+        console.error("onChangeData fatal: %s", describeError(cause));
+        throw cause;
     } finally {
         lock.releaseLock();
     }
@@ -48,4 +71,22 @@ export function setDataByDate() {
     console.log("End daily task");
 
     setDailyTrigger();
+}
+
+function runProcessingEntryPoint(
+    operation: string,
+    process: () => ProcessingResult
+): ProcessingResult {
+    try {
+        const result = process();
+        logProcessingResult(operation, result);
+        return result;
+    } catch (cause) {
+        console.error("%s fatal: %s", operation, describeError(cause));
+        throw cause;
+    }
+}
+
+function describeError(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
 }

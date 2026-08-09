@@ -1,5 +1,10 @@
-import { processCollectionDtos } from "@/app/collectionProcessing";
+import {
+    createFailureResult,
+    processCollectionDtos,
+    ProcessingResult,
+} from "@/app/collectionProcessing";
 import { providers, repositories } from "@/app/dependencies";
+import { isPersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import {
     DifficultyEnum,
     DifficultyName,
@@ -15,7 +20,7 @@ import {
 export function registerSongData(
     difficulty: DifficultyEnum,
     wikiProvider: IWikiProvider = providers.wiki()
-) {
+): ProcessingResult {
     console.log("Start registering(%s)", difficulty);
 
     const songRepo = repositories.song();
@@ -23,12 +28,21 @@ export function registerSongData(
     const isIgnoreConstant = songRepo.isIgnoreConstant(); // 定数情報が未登録でも強制登録
 
     // 指定の難易度のみのデータを取り出し
-    const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    let collectionDtos;
+    try {
+        collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    } catch (cause) {
+        if (isPersistenceFatalError(cause)) throw cause;
+
+        console.log("End registering(%s)", difficulty);
+        return createFailureResult({ difficulty, operation: "collection fetch", cause });
+    }
 
     // 共通ループ処理で登録対象だけを処理する
-    const isRegistered = processCollectionDtos({
+    const result = processCollectionDtos({
         dtos: collectionDtos,
         difficulty,
+        operation: "register",
         // 名前が空、または定数が空で許可設定が無い場合はスキップ
         shouldSkip: dto => dto.nameJp === "" || (dto.constant === "" && !isIgnoreConstant),
         process: dto => {
@@ -54,7 +68,8 @@ export function registerSongData(
     });
 
     // シートに書き込み
-    if (isRegistered) songRepo.flush();
+    if (result.changed > 0) songRepo.flush();
 
     console.log("End registering(%s)", difficulty);
+    return result;
 }

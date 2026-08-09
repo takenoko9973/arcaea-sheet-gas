@@ -75,12 +75,13 @@ describe("registerSongData", () => {
         mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(false);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalledTimes(1);
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.flush).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
     });
 
     it("登録済みの曲はWikiProviderを呼ばずにスキップする", () => {
@@ -150,11 +151,19 @@ describe("registerSongData", () => {
         mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(false);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(2);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.flush).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0 });
+        expect(result.failures).toHaveLength(1);
+        expect(result.failures[0]).toMatchObject({
+            song: "failed-song",
+            name: "failed-song",
+            difficulty: DifficultyEnum.FUTURE,
+            operation: "register",
+        });
     });
 
     it("定数確認無視設定ではCollectionの定数欠損をWikiで補完して登録する", () => {

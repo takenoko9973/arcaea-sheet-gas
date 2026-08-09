@@ -26,7 +26,7 @@ export function registerSongData(
     const songRepo = repositories.song();
     const songCollectionRepo = repositories.songCollection();
     // 設定セルの参照と既存のfatal境界を維持する。この設定はWiki補完前のskip判定には使わない。
-    songRepo.isIgnoreConstant();
+    const ignoreConstant = songRepo.isIgnoreConstant();
 
     // 指定の難易度のみのデータを取り出し
     let collectionDtos;
@@ -57,7 +57,12 @@ export function registerSongData(
             console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
             // SongCollectionの既知値を優先し、不足値だけをWikiから補完
-            const wikiDetails = resolveWikiSongDetails(dto, difficulty, wikiProvider);
+            const wikiDetails = resolveWikiSongDetails(
+                dto,
+                difficulty,
+                wikiProvider,
+                ignoreConstant
+            );
 
             // ドメインエンティティを生成
             const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);

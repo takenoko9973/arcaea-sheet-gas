@@ -75,7 +75,8 @@ export type ResolvedChartDetails = {
 export function resolveWikiChart(
     dto: RegistrationDto,
     difficulty: DifficultyEnum,
-    charts: IArcaeaWikiChart[]
+    charts: IArcaeaWikiChart[],
+    ignoreConstant = false
 ): ResolvedChartDetails {
     const known = readKnownChartValues(dto);
     const candidates = charts.filter(
@@ -91,7 +92,9 @@ export function resolveWikiChart(
     const candidate = candidates[0];
     const level = known.level ?? candidate.level;
     const notes = known.notes ?? candidate.notes;
-    const constant = known.constant ?? candidate.constant;
+    // 0補完は候補の一意解決後、Collection/Wiki双方の定数が未知の場合だけ行う。
+    const resolvedConstant = known.constant ?? candidate.constant;
+    const constant = resolvedConstant === null && ignoreConstant ? 0 : resolvedConstant;
 
     if (
         typeof level !== "string" ||
@@ -113,10 +116,11 @@ export function resolveWikiChart(
 export function resolveWikiSongDetails(
     dto: RegistrationDto,
     difficulty: DifficultyEnum,
-    provider: IWikiProvider
+    provider: IWikiProvider,
+    ignoreConstant = false
 ): WikiSongDetails {
     const wikiSong = provider.fetchSongData(dto.urlName);
-    const chart = resolveWikiChart(dto, difficulty, wikiSong.charts);
+    const chart = resolveWikiChart(dto, difficulty, wikiSong.charts, ignoreConstant);
 
     return {
         composer: resolveComposer(dto, wikiSong),

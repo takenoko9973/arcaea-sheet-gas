@@ -1,5 +1,6 @@
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { Song } from "@/domain/models/song/song";
+import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
 import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
@@ -10,6 +11,7 @@ jest.mock("infrastructure/repositories/songRepository");
 jest.mock("infrastructure/repositories/songCollectionRepository");
 
 describe("registerSongData", () => {
+    const mockedSongFactory = jest.mocked(SongFactory);
     const mockedSongRepository = jest.mocked(SongRepository);
     const mockedSongCollectionRepository = jest.mocked(SongCollectionRepository);
 
@@ -37,7 +39,7 @@ describe("registerSongData", () => {
         jest.clearAllMocks();
     });
 
-    function createWikiProvider() {
+    function createWikiProvider(constant = 11.0) {
         return {
             fetchSongData: jest.fn().mockReturnValue({
                 composer: "Wiki Composer",
@@ -49,15 +51,22 @@ describe("registerSongData", () => {
                         difficulty: DifficultyEnum.FUTURE,
                         level: "11",
                         notes: 1200,
-                        constant: 11.0,
+                        constant,
                     },
                 ],
             }),
         };
     }
 
+    function expectFactoryConstant(expected: number) {
+        const calls = mockedSongFactory.createFromCollectionDto.mock.calls;
+        expect(calls[calls.length - 1]?.[1]).toEqual(
+            expect.objectContaining({ constant: expected })
+        );
+    }
+
     it("新曲を登録し、WikiProviderから詳細を取得する", () => {
-        const mockWikiProvider = createWikiProvider();
+        const mockWikiProvider = createWikiProvider(10.5);
         const mockSongDto = {
             songTitle: "new-song",
             nameJp: "新しい曲",
@@ -66,7 +75,7 @@ describe("registerSongData", () => {
             side: "光",
             difficulty: DifficultyEnum.FUTURE,
             level: "11",
-            constant: "11.0",
+            constant: "10.5",
             notes: "1200",
             urlName: "new-song-url",
         };
@@ -81,6 +90,7 @@ describe("registerSongData", () => {
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.flush).toHaveBeenCalledTimes(1);
+        expectFactoryConstant(10.5);
         expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
     });
 
@@ -167,7 +177,7 @@ describe("registerSongData", () => {
     });
 
     it("定数確認無視設定ではCollectionの定数欠損をWikiで補完して登録する", () => {
-        const mockWikiProvider = createWikiProvider();
+        const mockWikiProvider = createWikiProvider(10.5);
         const mockSongDto = {
             songTitle: "constant-missing-song",
             nameJp: "定数欠損曲",
@@ -185,14 +195,16 @@ describe("registerSongData", () => {
         mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(true);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+        expectFactoryConstant(10.5);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
     });
 
     it("定数欠損でもignore設定が無効ならWikiの定数で登録を試行する", () => {
-        const mockWikiProvider = createWikiProvider();
+        const mockWikiProvider = createWikiProvider(10.5);
         const mockSongDto = {
             songTitle: "constant-missing-without-ignore-song",
             nameJp: "定数欠損・無視設定なし曲",
@@ -214,6 +226,7 @@ describe("registerSongData", () => {
 
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+        expectFactoryConstant(10.5);
         expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
     });
 
@@ -260,7 +273,7 @@ describe("registerSongData", () => {
         expect(result.failures).toHaveLength(1);
     });
 
-    it("定数確認無視設定でも既知のCollection定数との矛盾は失敗にする", () => {
+    it("定数欠損かつWikiの定数がnullでもignore設定が有効なら0で登録する", () => {
         const mockWikiProvider = {
             fetchSongData: jest.fn().mockReturnValue({
                 composer: "Wiki Composer",
@@ -272,32 +285,123 @@ describe("registerSongData", () => {
                         difficulty: DifficultyEnum.FUTURE,
                         level: "11",
                         notes: 1200,
-                        constant: 11.1,
+                        constant: null,
                     },
                 ],
             }),
         };
         const mockSongDto = {
-            songTitle: "constant-conflict-song",
-            nameJp: "定数矛盾曲",
-            nameEn: "constant-conflict-song",
+            songTitle: "constant-missing-wiki-null-with-ignore-song",
+            nameJp: "定数欠損・Wiki null・無視設定あり曲",
+            nameEn: "constant-missing-wiki-null-with-ignore-song",
             composer: "Collection Composer",
             side: "光",
             difficulty: DifficultyEnum.FUTURE,
             level: "11",
-            constant: "11.0",
+            constant: "",
             notes: "1200",
-            urlName: "constant-conflict-url",
+            urlName: "constant-missing-wiki-null-with-ignore-url",
         };
 
         mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
         mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(true);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
 
-        expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
-        expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
-        expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
+        expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+        expect(mockSongRepositoryInstance.flush).toHaveBeenCalledTimes(1);
+        expectFactoryConstant(0);
+        expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
     });
+
+    it.each([false, true])(
+        "定数確認無視設定(%s)でも既知のCollection定数との矛盾は失敗にする",
+        ignoreConstant => {
+            const mockWikiProvider = {
+                fetchSongData: jest.fn().mockReturnValue({
+                    composer: "Wiki Composer",
+                    pack: "Test Pack",
+                    version: "2.0.0",
+                    side: "光(光)",
+                    charts: [
+                        {
+                            difficulty: DifficultyEnum.FUTURE,
+                            level: "11",
+                            notes: 1200,
+                            constant: 10.6,
+                        },
+                    ],
+                }),
+            };
+            const mockSongDto = {
+                songTitle: "constant-conflict-song",
+                nameJp: "定数矛盾曲",
+                nameEn: "constant-conflict-song",
+                composer: "Collection Composer",
+                side: "光",
+                difficulty: DifficultyEnum.FUTURE,
+                level: "11",
+                constant: "10.5",
+                notes: "1200",
+                urlName: "constant-conflict-url",
+            };
+
+            mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
+            mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(ignoreConstant);
+            mockSongRepositoryInstance.findSong.mockReturnValue(null);
+
+            const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+
+            expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
+            expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
+            expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
+            expect(result).toMatchObject({ processed: 0, changed: 0, skipped: 0 });
+            expect(result.failures).toHaveLength(1);
+        }
+    );
+
+    it.each([false, true])(
+        "Collection既知定数はWikiがnullでもignore設定(%s)に関わらず優先する",
+        ignoreConstant => {
+            const mockWikiProvider = {
+                fetchSongData: jest.fn().mockReturnValue({
+                    composer: "Wiki Composer",
+                    pack: "Test Pack",
+                    version: "2.0.0",
+                    side: "光(光)",
+                    charts: [
+                        {
+                            difficulty: DifficultyEnum.FUTURE,
+                            level: "11",
+                            notes: 1200,
+                            constant: null,
+                        },
+                    ],
+                }),
+            };
+            const mockSongDto = {
+                songTitle: "constant-known-wiki-null-song",
+                nameJp: "Collection既知・Wiki null曲",
+                nameEn: "constant-known-wiki-null-song",
+                composer: "Collection Composer",
+                side: "光",
+                difficulty: DifficultyEnum.FUTURE,
+                level: "11",
+                constant: "10.5",
+                notes: "1200",
+                urlName: "constant-known-wiki-null-url",
+            };
+
+            mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
+            mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(ignoreConstant);
+            mockSongRepositoryInstance.findSong.mockReturnValue(null);
+
+            const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+
+            expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);
+            expectFactoryConstant(10.5);
+            expect(result).toMatchObject({ processed: 1, changed: 1, skipped: 0, failures: [] });
+        }
+    );
 });

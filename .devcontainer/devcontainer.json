@@ -1,11 +1,13 @@
 {
     "name": "arcaea-potential",
     "dockerComposeFile": [
-        "../docker-compose.yml"
+        "docker-compose.yml"
+        // "overlays/plantuml.compose.yml"
     ],
     "init": true,
-    "service": "myservice",
+    "service": "workspace",
     "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
     "customizations": {
         "vscode": {
             "settings": {
@@ -26,8 +28,7 @@
                         "overrideConfigFile": "eslint.config.mjs"
                     }
                 },
-                "javascript.updateImportsOnFileMove.enabled": "always",
-                "typescript.updateImportsOnFileMove.enabled": "always",
+                "js/ts.updateImportsOnFileMove.enabled": "always",
                 "plantuml.render": "PlantUMLServer",
                 "plantuml.server": "http://172.22.0.3:8080/"
             },
@@ -51,6 +52,5 @@
     },
     "mounts": [
         "source=${localEnv:USERPROFILE}/.clasprc.json,target=/root/.clasprc.json,type=bind,consistency=cached"
-    ],
-    "initializeCommand": "docker network inspect arcaea-potential-group || docker network create arcaea-potential-group"
+    ]
 }

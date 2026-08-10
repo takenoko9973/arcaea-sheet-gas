@@ -26,7 +26,9 @@ describe("updateDailyStatistics", () => {
     const mockedGradeData = vi.mocked(GradeData);
 
     const mockSongRepositoryInstance = { fetchSongs: vi.fn() };
-    const mockDailyStatisticsRepositoryInstance = { add: vi.fn() };
+    const mockDailyStatisticsRepositoryInstance = {
+        add: vi.fn<(data: DailyData) => void>(),
+    };
 
     // 1度だけのセットアップ
     beforeAll(() => {
@@ -54,7 +56,8 @@ describe("updateDailyStatistics", () => {
         // GradeData.createEmpty()がモックインスタンスを返すように設定
         mockedGradeData.createEmpty.mockReturnValue(mockGradeData);
         // plusメソッドは自分自身を返すようにして、チェーンできるようにする
-        vi.mocked(mockGradeData.plus).mockReturnValue(mockGradeData);
+        const mockedPlus = vi.spyOn(mockGradeData, "plus");
+        mockedPlus.mockReturnValue(mockGradeData);
 
         mockSongRepositoryInstance.fetchSongs.mockReturnValue(mockSongs);
         mockedStatisticsService.calculateBestPotential.mockReturnValue(mockPotential);

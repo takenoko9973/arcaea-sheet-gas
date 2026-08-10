@@ -35,6 +35,8 @@ vi.mock("@/trigger/triggerSetting", () => ({
     setupManagedTriggers: vi.fn(),
 }));
 
+const mockedGetScriptLock = vi.spyOn(LockService, "getScriptLock");
+
 describe("GAS entry points", () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -123,8 +125,7 @@ describe("GAS entry points", () => {
     });
 
     it("active rangeがない場合はSpreadsheet dispatcherとLockを呼ばない", () => {
-        const getScriptLock = vi.mocked(LockService.getScriptLock);
-        getScriptLock.mockClear();
+        mockedGetScriptLock.mockClear();
         const event = {
             source: {
                 getActiveSheet: vi.fn(),
@@ -134,7 +135,7 @@ describe("GAS entry points", () => {
 
         onSpreadsheetChange(event);
 
-        expect(getScriptLock).not.toHaveBeenCalled();
+        expect(mockedGetScriptLock).not.toHaveBeenCalled();
     });
 
     it("Lock取得に失敗した場合はSpreadsheet dispatcherを呼ばない", () => {
@@ -142,7 +143,7 @@ describe("GAS entry points", () => {
             tryLock: vi.fn().mockReturnValue(false),
             releaseLock: vi.fn(),
         };
-        vi.mocked(LockService.getScriptLock).mockReturnValue(
+        mockedGetScriptLock.mockReturnValue(
             lock as unknown as GoogleAppsScript.Lock.Lock
         );
         const event = {
@@ -163,7 +164,7 @@ describe("GAS entry points", () => {
             tryLock: vi.fn().mockReturnValue(true),
             releaseLock: vi.fn(),
         };
-        vi.mocked(LockService.getScriptLock).mockReturnValue(
+        mockedGetScriptLock.mockReturnValue(
             lock as unknown as GoogleAppsScript.Lock.Lock
         );
         vi.mocked(dispatchChangeAction).mockImplementation(() => {

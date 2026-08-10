@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "@/domain/models/song/song";
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongCollectionRepository } from "@/infrastructure/repositories/songCollectionRepository";
 import { SongRepository } from "@/infrastructure/repositories/songRepository";

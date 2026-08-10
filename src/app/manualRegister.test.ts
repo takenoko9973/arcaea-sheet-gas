@@ -1,7 +1,6 @@
 import { vi } from "vitest";
 
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
-import { Song } from "@/domain/models/song/song";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
 import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
@@ -13,7 +12,7 @@ vi.mock("@/infrastructure/repositories/manualRegisterRepository");
 
 describe("registerFromManualEntry", () => {
     const mockedSongRepository = vi.mocked(SongRepository);
-    const mockedManualRegisterRepository = vi.mocked(ManualRegisterRepository);
+    const mockedGetEntry = vi.spyOn(ManualRegisterRepository.prototype, "getEntry");
 
     const mockSongRepositoryInstance = {
         findSong: vi.fn(),
@@ -62,7 +61,7 @@ describe("registerFromManualEntry", () => {
         };
         const mockWikiProvider = createWikiProvider();
 
-        mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
+        mockedGetEntry.mockReturnValue(mockDto);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
         registerFromManualEntry(mockWikiProvider);
@@ -84,7 +83,7 @@ describe("registerFromManualEntry", () => {
             urlName: "test-song-url",
         };
 
-        mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
+        mockedGetEntry.mockReturnValue(mockDto);
         mockSongRepositoryInstance.findSong.mockReturnValue({});
 
         registerFromManualEntry();

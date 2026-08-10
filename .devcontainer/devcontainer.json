@@ -21,30 +21,18 @@
                     "editor.formatOnType": true,
                     "editor.defaultFormatter": "esbenp.prettier-vscode",
                     "editor.codeActionsOnSave": {
-                        "source.fixAll.eslint": "never"
-                    },
-                    "eslint.useESLintClass": true,
-                    "eslint.useFlatConfig": true,
-                    "eslint.options": {
-                        "overrideConfigFile": "eslint.config.mjs"
+                        "source.fixAll.eslint": "explicit"
                     }
                 },
                 "js/ts.updateImportsOnFileMove.enabled": "always",
                 "plantuml.render": "PlantUMLServer",
-                "plantuml.server": "http://172.22.0.3:8080/"
+                "plantuml.server": "http://plantuml-server:8080/"
             },
             "extensions": [
                 "codezombiech.gitignore",
-                "rvest.vs-code-prettier-eslint",
                 "esbenp.prettier-vscode",
                 "dbaeumer.vscode-eslint",
-                "ionutvmi.path-autocomplete",
-                "stylelint.vscode-stylelint",
-                "pmneo.tsimporter",
                 "streetsidesoftware.code-spell-checker",
-                "dsznajder.es7-react-js-snippets",
-                "jasonnutter.search-node-modules",
-                "gamunu.vscode-yarn",
                 "mhutchie.git-graph",
                 "jebbs.plantuml",
                 "fill-labs.dependi"

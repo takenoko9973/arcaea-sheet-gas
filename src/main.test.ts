@@ -143,9 +143,7 @@ describe("GAS entry points", () => {
             tryLock: vi.fn().mockReturnValue(false),
             releaseLock: vi.fn(),
         };
-        mockedGetScriptLock.mockReturnValue(
-            lock as unknown as GoogleAppsScript.Lock.Lock
-        );
+        mockedGetScriptLock.mockReturnValue(lock as unknown as GoogleAppsScript.Lock.Lock);
         const event = {
             source: {
                 getActiveSheet: () => ({ getName: () => "Sheet1" }),
@@ -164,9 +162,7 @@ describe("GAS entry points", () => {
             tryLock: vi.fn().mockReturnValue(true),
             releaseLock: vi.fn(),
         };
-        mockedGetScriptLock.mockReturnValue(
-            lock as unknown as GoogleAppsScript.Lock.Lock
-        );
+        mockedGetScriptLock.mockReturnValue(lock as unknown as GoogleAppsScript.Lock.Lock);
         vi.mocked(dispatchChangeAction).mockImplementation(() => {
             throw new Error("trigger failure");
         });

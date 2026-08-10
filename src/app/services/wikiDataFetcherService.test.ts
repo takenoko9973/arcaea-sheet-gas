@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { IArcaeaWikiSong } from "@/@types/fetch-arcaea-wiki";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
@@ -27,7 +29,7 @@ function createWikiSong(overrides: Partial<IArcaeaWikiSong> = {}): IArcaeaWikiSo
 
 describe("WikiProvider", () => {
     it("取得するまでGatewayを呼ばない", () => {
-        const gateway = { createSongData: jest.fn().mockReturnValue(createWikiSong()) };
+        const gateway = { createSongData: vi.fn().mockReturnValue(createWikiSong()) };
 
         new WikiProvider(gateway);
 
@@ -36,7 +38,7 @@ describe("WikiProvider", () => {
 
     it("同じpageの成功結果をrun内でcacheする", () => {
         const song = createWikiSong();
-        const gateway = { createSongData: jest.fn().mockReturnValue(song) };
+        const gateway = { createSongData: vi.fn().mockReturnValue(song) };
         const provider = new WikiProvider(gateway);
 
         expect(provider.fetchSongData("same-page")).toBe(song);
@@ -68,7 +70,7 @@ describe("WikiProvider", () => {
                 },
             ],
         });
-        const gateway = { createSongData: jest.fn().mockReturnValue(song) };
+        const gateway = { createSongData: vi.fn().mockReturnValue(song) };
         const provider = new WikiProvider(gateway);
         const createDto = (difficulty: DifficultyEnum, level: string, notes: string, constant: string) => ({
             songTitle: "same-song",
@@ -104,7 +106,7 @@ describe("WikiProvider", () => {
 
     it("同じpageの取得失敗もrun内でcacheする", () => {
         const error = new Error("Gateway failure");
-        const gateway = { createSongData: jest.fn().mockImplementation(() => { throw error; }) };
+        const gateway = { createSongData: vi.fn().mockImplementation(() => { throw error; }) };
         const provider = new WikiProvider(gateway);
 
         expect(() => provider.fetchSongData("failed-page")).toThrow(error);
@@ -250,7 +252,7 @@ describe("resolveWikiChart", () => {
 
 describe("resolveWikiSongDetails", () => {
     const provider = (song: IArcaeaWikiSong) => ({
-        fetchSongData: jest.fn().mockReturnValue(song),
+        fetchSongData: vi.fn().mockReturnValue(song),
     });
 
     it("Collectionのcomposer/sideをWiki値より優先する", () => {

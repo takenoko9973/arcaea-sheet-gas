@@ -1,3 +1,5 @@
+import { vi, type Mock } from "vitest";
+
 import {
     AUTO_TRIGGER_HANDLERS,
     scheduleNextDailyTrigger,
@@ -7,8 +9,8 @@ import {
 type MockTrigger = {
     handlerFunction: string;
     uniqueId: string;
-    getHandlerFunction: jest.Mock<string, []>;
-    getUniqueId: jest.Mock<string, []>;
+    getHandlerFunction: Mock<() => string>;
+    getUniqueId: Mock<() => string>;
 };
 
 const createdTriggers: MockTrigger[] = [];
@@ -17,14 +19,14 @@ const events: string[] = [];
 const atDates: Date[] = [];
 
 const scriptApp = {
-    getProjectTriggers: jest.fn(() => [...existingTriggers, ...createdTriggers]),
-    deleteTrigger: jest.fn((trigger: MockTrigger) => {
+    getProjectTriggers: vi.fn(() => [...existingTriggers, ...createdTriggers]),
+    deleteTrigger: vi.fn((trigger: MockTrigger) => {
         events.push(`delete:${trigger.uniqueId}`);
     }),
-    newTrigger: jest.fn((handlerFunction: string) => {
+    newTrigger: vi.fn((handlerFunction: string) => {
         events.push(`new:${handlerFunction}`);
 
-        const create = jest.fn(() => {
+        const create = vi.fn(() => {
             const trigger = createMockTrigger(handlerFunction, `created-${createdTriggers.length}`);
             createdTriggers.push(trigger);
             events.push(`create:${handlerFunction}`);
@@ -32,15 +34,15 @@ const scriptApp = {
         });
 
         return {
-            timeBased: jest.fn(() => ({
-                at: jest.fn((date: Date) => {
+            timeBased: vi.fn(() => ({
+                at: vi.fn((date: Date) => {
                     atDates.push(date);
                     return { create };
                 }),
-                everyHours: jest.fn(() => ({ create })),
+                everyHours: vi.fn(() => ({ create })),
             })),
-            forSpreadsheet: jest.fn(() => ({
-                onChange: jest.fn(() => ({ create })),
+            forSpreadsheet: vi.fn(() => ({
+                onChange: vi.fn(() => ({ create })),
             })),
         };
     }),
@@ -50,14 +52,14 @@ function createMockTrigger(handlerFunction: string, uniqueId: string): MockTrigg
     return {
         handlerFunction,
         uniqueId,
-        getHandlerFunction: jest.fn(() => handlerFunction),
-        getUniqueId: jest.fn(() => uniqueId),
+        getHandlerFunction: vi.fn(() => handlerFunction),
+        getUniqueId: vi.fn(() => uniqueId),
     };
 }
 
 describe("trigger setting", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         createdTriggers.length = 0;
         existingTriggers.length = 0;
         events.length = 0;
@@ -66,7 +68,7 @@ describe("trigger setting", () => {
     });
 
     afterEach(() => {
-        jest.useRealTimers();
+        vi.useRealTimers();
     });
 
     it("管理対象を新規作成してから旧handlerを整理し、無関係なtriggerを残す", () => {
@@ -109,7 +111,7 @@ describe("trigger setting", () => {
     });
 
     it("日次再設定は翌日00:00の新規triggerを先に確保する", () => {
-        jest.useFakeTimers().setSystemTime(new Date(2026, 7, 10, 12, 34, 56));
+        vi.useFakeTimers().setSystemTime(new Date(2026, 7, 10, 12, 34, 56));
         const oldDailyTrigger = createMockTrigger("setDataByDate", "old-daily");
         const unrelatedTrigger = createMockTrigger("unrelatedHandler", "unrelated");
         existingTriggers.push(oldDailyTrigger, unrelatedTrigger);

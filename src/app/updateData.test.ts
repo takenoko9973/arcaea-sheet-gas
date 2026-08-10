@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { Constant } from "@/domain/models/song/chartData/constant/constant";
 import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
 import {
@@ -11,36 +13,36 @@ import { SongRepository } from "@/infrastructure/repositories/songRepository";
 import { updateData } from "./updateData";
 
 // 1. 依存モジュールをモック化
-jest.mock("infrastructure/repositories/songRepository");
-jest.mock("infrastructure/repositories/songCollectionRepository");
+vi.mock("@/infrastructure/repositories/songRepository");
+vi.mock("@/infrastructure/repositories/songCollectionRepository");
 
 describe("updateData", () => {
     // 2. モックの準備
-    const mockedSongRepository = jest.mocked(SongRepository);
-    const mockedSongCollectionRepository = jest.mocked(SongCollectionRepository);
+    const mockedSongRepository = vi.mocked(SongRepository);
+    const mockedSongCollectionRepository = vi.mocked(SongCollectionRepository);
 
     const mockSongRepositoryInstance = {
-        findSong: jest.fn(),
-        save: jest.fn(),
-        flush: jest.fn(),
+        findSong: vi.fn(),
+        save: vi.fn(),
+        flush: vi.fn(),
     };
     const mockSongCollectionRepositoryInstance = {
-        fetchByDifficulty: jest.fn(),
+        fetchByDifficulty: vi.fn(),
     };
 
     // 1度だけのセットアップ
     beforeAll(() => {
         Object.defineProperty(mockedSongRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongRepositoryInstance),
         });
         Object.defineProperty(mockedSongCollectionRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongCollectionRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongCollectionRepositoryInstance),
         });
     });
 
     // 各テスト前のリセット
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("収集データに更新があった場合、正しく更新処理が実行", () => {
@@ -62,8 +64,8 @@ describe("updateData", () => {
             constant: new Constant(11.6), // 古い定数
             songNotes: new SongNotes(1300),
             // 更新ロジックで呼ばれるメソッドもモック化
-            changeDifficulty: jest.fn(),
-            changeChartData: jest.fn(),
+            changeDifficulty: vi.fn(),
+            changeChartData: vi.fn(),
         };
         // changeDifficultyが呼ばれたら、自分自身(のフリをしたオブジェクト)を返すように設定
         mockExistingSong.changeDifficulty.mockReturnValue(mockExistingSong);
@@ -102,8 +104,8 @@ describe("updateData", () => {
             level: new Level("11"),
             constant: new Constant(11.4),
             songNotes: new SongNotes(1300),
-            changeDifficulty: jest.fn(),
-            changeChartData: jest.fn(),
+            changeDifficulty: vi.fn(),
+            changeChartData: vi.fn(),
         };
 
         // 各リポジトリの振る舞いを設定
@@ -130,8 +132,8 @@ describe("updateData", () => {
             level: new Level("11"),
             constant: new Constant(11.0),
             songNotes: new SongNotes(1000),
-            changeDifficulty: jest.fn(),
-            changeChartData: jest.fn(),
+            changeDifficulty: vi.fn(),
+            changeChartData: vi.fn(),
         };
         changedSong.changeDifficulty.mockReturnValue(changedSong);
         changedSong.changeChartData.mockReturnValue(changedSong);

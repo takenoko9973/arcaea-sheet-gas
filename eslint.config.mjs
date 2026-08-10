@@ -29,17 +29,17 @@ export default tseslint.config(
         languageOptions: {
             globals: {
                 ...globals.node,
-                ...globals.jest,
+                ...globals.vitest,
             },
         },
     },
     {
-        files: ["src/**/*.ts"],
+        files: ["src/**/*.ts", "test/setup.ts"],
         extends: [eslint.configs.recommended, tseslint.configs.recommendedTypeChecked],
         languageOptions: {
             globals: {
                 ...globals.es2021,
-                ...globals.jest,
+                ...globals.vitest,
                 console: "readonly",
                 ...googleAppsScriptGlobals,
             },

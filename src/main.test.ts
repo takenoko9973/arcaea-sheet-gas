@@ -1,5 +1,19 @@
+import { vi } from "vitest";
+
+import {
+    registerNewSongs,
+    syncSongs,
+    updateRegisteredSongs,
+} from "@/app/checkCollectedSong";
 import { createFailureResult, createProcessingResult } from "@/app/collectionProcessing";
+import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
+import { registerFromManualEntry } from "@/app/manualRegister";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
+import { dispatchChangeAction } from "@/trigger/spreadsheetChangeDispatcher";
+import {
+    scheduleNextDailyTrigger,
+    setupManagedTriggers,
+} from "@/trigger/triggerSetting";
 
 import {
     onDailyTasks,
@@ -13,31 +27,29 @@ import {
     setupTriggers,
 } from "./main";
 
-jest.mock("@/app/checkCollectedSong", () => ({
-    syncSongs: jest.fn(),
-    registerNewSongs: jest.fn(),
-    updateRegisteredSongs: jest.fn(),
+vi.mock("@/app/checkCollectedSong", () => ({
+    syncSongs: vi.fn(),
+    registerNewSongs: vi.fn(),
+    updateRegisteredSongs: vi.fn(),
 }));
-jest.mock("@/app/dailyStatisticsUpdate", () => ({ updateDailyStatistics: jest.fn() }));
-jest.mock("@/app/manualRegister", () => ({ registerFromManualEntry: jest.fn() }));
-jest.mock("@/trigger/spreadsheetChangeDispatcher", () => ({
-    dispatchChangeAction: jest.fn(),
+vi.mock("@/app/dailyStatisticsUpdate", () => ({ updateDailyStatistics: vi.fn() }));
+vi.mock("@/app/manualRegister", () => ({ registerFromManualEntry: vi.fn() }));
+vi.mock("@/trigger/spreadsheetChangeDispatcher", () => ({
+    dispatchChangeAction: vi.fn(),
 }));
-jest.mock("@/trigger/triggerSetting", () => ({
-    scheduleNextDailyTrigger: jest.fn(),
-    setupManagedTriggers: jest.fn(),
+vi.mock("@/trigger/triggerSetting", () => ({
+    scheduleNextDailyTrigger: vi.fn(),
+    setupManagedTriggers: vi.fn(),
 }));
 
 describe("GAS entry points", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("曲同期処理の結果とfailureを記録する", () => {
-        const app = jest.requireMock("@/app/checkCollectedSong") as {
-            syncSongs: jest.Mock;
-        };
-        app.syncSongs.mockReturnValue(
+        const mockedSyncSongs = vi.mocked(syncSongs);
+        mockedSyncSongs.mockReturnValue(
             createFailureResult({
                 difficulty: DifficultyEnum.FUTURE,
                 operation: "register",
@@ -46,8 +58,8 @@ describe("GAS entry points", () => {
                 cause: new Error("Wiki unavailable"),
             })
         );
-        const logSpy = jest.spyOn(console, "log").mockImplementation();
-        const warningSpy = jest.spyOn(console, "warn").mockImplementation();
+        const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        const warningSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
         const result = runSongSync();
 
@@ -63,65 +75,44 @@ describe("GAS entry points", () => {
     });
 
     it("登録処理と手動入口が対応するapp処理へ到達する", () => {
-        const app = jest.requireMock("@/app/checkCollectedSong") as {
-            registerNewSongs: jest.Mock;
-            syncSongs: jest.Mock;
-            updateRegisteredSongs: jest.Mock;
-        };
+        const mockedRegisterNewSongs = vi.mocked(registerNewSongs);
+        const mockedSyncSongs = vi.mocked(syncSongs);
+        const mockedUpdateRegisteredSongs = vi.mocked(updateRegisteredSongs);
         const result = createProcessingResult();
-        app.registerNewSongs.mockReturnValue(result);
-        app.syncSongs.mockReturnValue(result);
-        app.updateRegisteredSongs.mockReturnValue(result);
+        mockedRegisterNewSongs.mockReturnValue(result);
+        mockedSyncSongs.mockReturnValue(result);
+        mockedUpdateRegisteredSongs.mockReturnValue(result);
 
         expect(runNewSongRegistration()).toBe(result);
         expect(runRegisteredSongUpdate()).toBe(result);
         expect(runSongSync()).toBe(result);
         expect(onHourlySongSync()).toBe(result);
 
-        expect(app.registerNewSongs).toHaveBeenCalledTimes(1);
-        expect(app.updateRegisteredSongs).toHaveBeenCalledTimes(1);
-        expect(app.syncSongs).toHaveBeenCalledTimes(2);
+        expect(mockedRegisterNewSongs).toHaveBeenCalledTimes(1);
+        expect(mockedUpdateRegisteredSongs).toHaveBeenCalledTimes(1);
+        expect(mockedSyncSongs).toHaveBeenCalledTimes(2);
 
-        const registerFromManualEntry = jest.requireMock("@/app/manualRegister")
-            .registerFromManualEntry as jest.Mock;
         runManualEntryRegistration();
-        expect(registerFromManualEntry).toHaveBeenCalledTimes(1);
+        expect(vi.mocked(registerFromManualEntry)).toHaveBeenCalledTimes(1);
     });
 
     it("setup入口が管理対象triggerの再構築へ到達する", () => {
-        const triggerSetting = jest.requireMock("@/trigger/triggerSetting") as {
-            setupManagedTriggers: jest.Mock;
-        };
-
         setupTriggers();
 
-        expect(triggerSetting.setupManagedTriggers).toHaveBeenCalledTimes(1);
+        expect(vi.mocked(setupManagedTriggers)).toHaveBeenCalledTimes(1);
     });
 
     it("手動日次入口は統計更新だけを実行する", () => {
-        const triggerSetting = jest.requireMock("@/trigger/triggerSetting") as {
-            scheduleNextDailyTrigger: jest.Mock;
-        };
-        const dailyStatistics = jest.requireMock("@/app/dailyStatisticsUpdate") as {
-            updateDailyStatistics: jest.Mock;
-        };
-
         runDailyStatisticsUpdate();
 
-        expect(dailyStatistics.updateDailyStatistics).toHaveBeenCalledTimes(1);
-        expect(triggerSetting.scheduleNextDailyTrigger).not.toHaveBeenCalled();
+        expect(vi.mocked(updateDailyStatistics)).toHaveBeenCalledTimes(1);
+        expect(vi.mocked(scheduleNextDailyTrigger)).not.toHaveBeenCalled();
     });
 
     it("日次handlerは次回triggerを確保してから日次処理を実行する", () => {
-        const triggerSetting = jest.requireMock("@/trigger/triggerSetting") as {
-            scheduleNextDailyTrigger: jest.Mock;
-        };
-        const dailyStatistics = jest.requireMock("@/app/dailyStatisticsUpdate") as {
-            updateDailyStatistics: jest.Mock;
-        };
         const order: string[] = [];
-        triggerSetting.scheduleNextDailyTrigger.mockImplementation(() => order.push("schedule"));
-        dailyStatistics.updateDailyStatistics.mockImplementation(() => order.push("process"));
+        vi.mocked(scheduleNextDailyTrigger).mockImplementation(() => order.push("schedule"));
+        vi.mocked(updateDailyStatistics).mockImplementation(() => order.push("process"));
 
         onDailyTasks();
 
@@ -129,27 +120,21 @@ describe("GAS entry points", () => {
     });
 
     it("日次処理が失敗しても先に確保した次回triggerを失わない", () => {
-        const triggerSetting = jest.requireMock("@/trigger/triggerSetting") as {
-            scheduleNextDailyTrigger: jest.Mock;
-        };
-        const dailyStatistics = jest.requireMock("@/app/dailyStatisticsUpdate") as {
-            updateDailyStatistics: jest.Mock;
-        };
         const error = new Error("daily failure");
-        dailyStatistics.updateDailyStatistics.mockImplementation(() => {
+        vi.mocked(updateDailyStatistics).mockImplementation(() => {
             throw error;
         });
 
         expect(() => onDailyTasks()).toThrow(error);
-        expect(triggerSetting.scheduleNextDailyTrigger).toHaveBeenCalled();
+        expect(vi.mocked(scheduleNextDailyTrigger)).toHaveBeenCalled();
     });
 
     it("active rangeがない場合はSpreadsheet dispatcherとLockを呼ばない", () => {
-        const getScriptLock = jest.mocked(LockService.getScriptLock);
+        const getScriptLock = vi.mocked(LockService.getScriptLock);
         getScriptLock.mockClear();
         const event = {
             source: {
-                getActiveSheet: jest.fn(),
+                getActiveSheet: vi.fn(),
                 getActiveRange: () => null,
             },
         } as unknown as GoogleAppsScript.Events.SheetsOnChange;
@@ -161,10 +146,10 @@ describe("GAS entry points", () => {
 
     it("Lock取得に失敗した場合はSpreadsheet dispatcherを呼ばない", () => {
         const lock = {
-            tryLock: jest.fn().mockReturnValue(false),
-            releaseLock: jest.fn(),
+            tryLock: vi.fn().mockReturnValue(false),
+            releaseLock: vi.fn(),
         };
-        jest.mocked(LockService.getScriptLock).mockReturnValue(
+        vi.mocked(LockService.getScriptLock).mockReturnValue(
             lock as unknown as GoogleAppsScript.Lock.Lock
         );
         const event = {
@@ -182,19 +167,16 @@ describe("GAS entry points", () => {
 
     it("Spreadsheet dispatcherで失敗してもfinallyでLockを解放し、fatalを再送出する", () => {
         const lock = {
-            tryLock: jest.fn().mockReturnValue(true),
-            releaseLock: jest.fn(),
+            tryLock: vi.fn().mockReturnValue(true),
+            releaseLock: vi.fn(),
         };
-        jest.mocked(LockService.getScriptLock).mockReturnValue(
+        vi.mocked(LockService.getScriptLock).mockReturnValue(
             lock as unknown as GoogleAppsScript.Lock.Lock
         );
-        const dispatcher = jest.requireMock("@/trigger/spreadsheetChangeDispatcher") as {
-            dispatchChangeAction: jest.Mock;
-        };
-        jest.mocked(dispatcher.dispatchChangeAction).mockImplementation(() => {
+        vi.mocked(dispatchChangeAction).mockImplementation(() => {
             throw new Error("trigger failure");
         });
-        jest.spyOn(console, "error").mockImplementation();
+        vi.spyOn(console, "error").mockImplementation(() => {});
         const event = {
             source: {
                 getActiveSheet: () => ({ getName: () => "Sheet1" }),
@@ -205,6 +187,6 @@ describe("GAS entry points", () => {
         expect(() => onSpreadsheetChange(event)).toThrow("trigger failure");
         expect(lock.releaseLock).toHaveBeenCalledTimes(1);
 
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 });

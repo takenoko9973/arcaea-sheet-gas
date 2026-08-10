@@ -4,7 +4,6 @@
         "lib": [
             "ESNext"
         ],
-        "rootDir": "src",
         "paths": {
             "@/*": [
                 "src/*"
@@ -21,12 +20,13 @@
         "allowUnusedLabels": false,
         "strict": true,
         "types": [
-            "jest",
+            "vitest/globals",
             "node",
             "google-apps-script"
         ]
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "test/setup.ts"
     ]
 }

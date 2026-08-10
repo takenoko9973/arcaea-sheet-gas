@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { Song } from "@/domain/models/song/song";
 import { SongFactory } from "@/domain/models/song/songFactory";
@@ -6,42 +8,42 @@ import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { registerSongData } from "./registerSong";
 
-jest.mock("domain/models/song/songFactory");
-jest.mock("infrastructure/repositories/songRepository");
-jest.mock("infrastructure/repositories/songCollectionRepository");
+vi.mock("@/domain/models/song/songFactory");
+vi.mock("@/infrastructure/repositories/songRepository");
+vi.mock("@/infrastructure/repositories/songCollectionRepository");
 
 describe("registerSongData", () => {
-    const mockedSongFactory = jest.mocked(SongFactory);
-    const mockedSongRepository = jest.mocked(SongRepository);
-    const mockedSongCollectionRepository = jest.mocked(SongCollectionRepository);
+    const mockedSongFactory = vi.mocked(SongFactory);
+    const mockedSongRepository = vi.mocked(SongRepository);
+    const mockedSongCollectionRepository = vi.mocked(SongCollectionRepository);
 
     const mockSongRepositoryInstance = {
-        findSong: jest.fn(),
-        save: jest.fn(),
-        flush: jest.fn(),
-        isIgnoreConstant: jest.fn(),
+        findSong: vi.fn(),
+        save: vi.fn(),
+        flush: vi.fn(),
+        isIgnoreConstant: vi.fn(),
     };
 
     const mockSongCollectionRepositoryInstance = {
-        fetchByDifficulty: jest.fn(),
+        fetchByDifficulty: vi.fn(),
     };
 
     beforeAll(() => {
         Object.defineProperty(mockedSongRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongRepositoryInstance),
         });
         Object.defineProperty(mockedSongCollectionRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongCollectionRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongCollectionRepositoryInstance),
         });
     });
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     function createWikiProvider(constant = 11.0) {
         return {
-            fetchSongData: jest.fn().mockReturnValue({
+            fetchSongData: vi.fn().mockReturnValue({
                 composer: "Wiki Composer",
                 pack: "Test Pack",
                 version: "2.0.0",
@@ -232,7 +234,7 @@ describe("registerSongData", () => {
 
     it("定数欠損かつWikiの定数がnullなら0補完せず失敗する", () => {
         const mockWikiProvider = {
-            fetchSongData: jest.fn().mockReturnValue({
+            fetchSongData: vi.fn().mockReturnValue({
                 composer: "Wiki Composer",
                 pack: "Test Pack",
                 version: "2.0.0",
@@ -275,7 +277,7 @@ describe("registerSongData", () => {
 
     it("定数欠損かつWikiの定数がnullでもignore設定が有効なら0で登録する", () => {
         const mockWikiProvider = {
-            fetchSongData: jest.fn().mockReturnValue({
+            fetchSongData: vi.fn().mockReturnValue({
                 composer: "Wiki Composer",
                 pack: "Test Pack",
                 version: "2.0.0",
@@ -319,7 +321,7 @@ describe("registerSongData", () => {
         "定数確認無視設定(%s)でも既知のCollection定数との矛盾は失敗にする",
         ignoreConstant => {
             const mockWikiProvider = {
-                fetchSongData: jest.fn().mockReturnValue({
+                fetchSongData: vi.fn().mockReturnValue({
                     composer: "Wiki Composer",
                     pack: "Test Pack",
                     version: "2.0.0",
@@ -365,7 +367,7 @@ describe("registerSongData", () => {
         "Collection既知定数はWikiがnullでもignore設定(%s)に関わらず優先する",
         ignoreConstant => {
             const mockWikiProvider = {
-                fetchSongData: jest.fn().mockReturnValue({
+                fetchSongData: vi.fn().mockReturnValue({
                     composer: "Wiki Composer",
                     pack: "Test Pack",
                     version: "2.0.0",

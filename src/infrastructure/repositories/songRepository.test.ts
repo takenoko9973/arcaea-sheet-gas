@@ -1,16 +1,18 @@
+import { vi } from "vitest";
+
 import { PersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import { SongReconstructionError } from "@/infrastructure/mappers/songMapper";
 import { getSheet } from "@/utils/sheetHelper";
 
 import { SongRepository } from "./songRepository";
 
-jest.mock("@/utils/sheetHelper", () => ({ getSheet: jest.fn() }));
+vi.mock("@/utils/sheetHelper", () => ({ getSheet: vi.fn() }));
 
 describe("SongRepository", () => {
-    const mockedGetSheet = jest.mocked(getSheet);
+    const mockedGetSheet = vi.mocked(getSheet);
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         Reflect.deleteProperty(SongRepository, "singleton");
     });
 

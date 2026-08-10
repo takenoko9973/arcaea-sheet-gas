@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { createProcessingResult } from "@/app/collectionProcessing";
 import { providers, repositories } from "@/app/dependencies";
 import { PersistenceFatalError } from "@/domain/errors/persistenceFatalError";
@@ -6,18 +8,18 @@ import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/d
 import { registerNewSongs } from "./checkCollectedSong";
 import { registerSongData } from "./registerSong";
 
-jest.mock("./registerSong", () => ({ registerSongData: jest.fn() }));
+vi.mock("./registerSong", () => ({ registerSongData: vi.fn() }));
 
 describe("registerNewSongs", () => {
-    const mockedRegisterSongData = jest.mocked(registerSongData);
+    const mockedRegisterSongData = vi.mocked(registerSongData);
 
     beforeEach(() => {
-        jest.clearAllMocks();
-        jest.restoreAllMocks();
-        jest.spyOn(repositories, "configSheet").mockReturnValue({
+        vi.clearAllMocks();
+        vi.restoreAllMocks();
+        vi.spyOn(repositories, "configSheet").mockReturnValue({
             targetRegisteredDifficulties: () => [DifficultyEnum.PAST, DifficultyEnum.FUTURE],
         } as ReturnType<typeof repositories.configSheet>);
-        jest.spyOn(providers, "wiki").mockReturnValue({ fetchSongData: jest.fn() });
+        vi.spyOn(providers, "wiki").mockReturnValue({ fetchSongData: vi.fn() });
     });
 
     it("ある難易度の処理失敗を記録し、次の難易度を継続する", () => {

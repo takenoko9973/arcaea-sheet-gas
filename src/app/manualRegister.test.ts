@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { Song } from "@/domain/models/song/song";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
@@ -5,33 +7,33 @@ import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
 import { registerFromManualEntry } from "./manualRegister";
 
-jest.mock("domain/models/song/songFactory");
-jest.mock("infrastructure/repositories/songRepository");
-jest.mock("infrastructure/repositories/manualRegisterRepository");
+vi.mock("@/domain/models/song/songFactory");
+vi.mock("@/infrastructure/repositories/songRepository");
+vi.mock("@/infrastructure/repositories/manualRegisterRepository");
 
 describe("registerFromManualEntry", () => {
-    const mockedSongRepository = jest.mocked(SongRepository);
-    const mockedManualRegisterRepository = jest.mocked(ManualRegisterRepository);
+    const mockedSongRepository = vi.mocked(SongRepository);
+    const mockedManualRegisterRepository = vi.mocked(ManualRegisterRepository);
 
     const mockSongRepositoryInstance = {
-        findSong: jest.fn(),
-        save: jest.fn(),
-        flush: jest.fn(),
+        findSong: vi.fn(),
+        save: vi.fn(),
+        flush: vi.fn(),
     };
 
     beforeAll(() => {
         Object.defineProperty(mockedSongRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongRepositoryInstance),
         });
     });
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     function createWikiProvider() {
         return {
-            fetchSongData: jest.fn().mockReturnValue({
+            fetchSongData: vi.fn().mockReturnValue({
                 composer: "Wiki Composer",
                 pack: "Test Pack",
                 version: "1.0.0",

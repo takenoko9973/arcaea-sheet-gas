@@ -3,13 +3,13 @@ import { Song } from "@/domain/models/song/song";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
 import { SongRepository } from "@/infrastructure/repositories/songRepository";
 
-import { manualRegister } from "./manualRegister";
+import { registerFromManualEntry } from "./manualRegister";
 
 jest.mock("domain/models/song/songFactory");
 jest.mock("infrastructure/repositories/songRepository");
 jest.mock("infrastructure/repositories/manualRegisterRepository");
 
-describe("manualRegister", () => {
+describe("registerFromManualEntry", () => {
     const mockedSongRepository = jest.mocked(SongRepository);
     const mockedManualRegisterRepository = jest.mocked(ManualRegisterRepository);
 
@@ -63,7 +63,7 @@ describe("manualRegister", () => {
         mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
         mockSongRepositoryInstance.findSong.mockReturnValue(null);
 
-        manualRegister(mockWikiProvider);
+        registerFromManualEntry(mockWikiProvider);
 
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalled();
         expect(mockWikiProvider.fetchSongData).toHaveBeenCalledTimes(1);
@@ -85,7 +85,7 @@ describe("manualRegister", () => {
         mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
         mockSongRepositoryInstance.findSong.mockReturnValue({} as Song);
 
-        manualRegister();
+        registerFromManualEntry();
 
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalled();
         expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();

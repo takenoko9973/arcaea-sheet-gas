@@ -1,27 +1,29 @@
 import { SHEET_BOOK } from "@/const";
 
 export const AUTO_TRIGGER_HANDLERS = {
-    daily: "onDailyStatisticsUpdate",
-    hourly: "onHourlyCheckCollectedSong",
+    daily: "onDailyTasks",
+    hourly: "onHourlySongSync",
     spreadsheetChange: "onSpreadsheetChange",
 } as const;
 
 type AutoTriggerKind = keyof typeof AUTO_TRIGGER_HANDLERS;
 type Trigger = GoogleAppsScript.Script.Trigger;
 
-const legacyHandlerFunctions = {
-    daily: "setDataByDate",
-    hourly: "checkCollectedSong",
-    spreadsheetChange: "onChangeData",
+const obsoleteHandlerFunctions = {
+    daily: ["setDataByDate", "onDailyStatisticsUpdate"],
+    hourly: ["checkCollectedSong", "onHourlyCheckCollectedSong", "onHourlyRegisterAndUpdateSongs"],
+    spreadsheetChange: ["onChangeData"],
 } as const;
 
 const managedHandlerFunctions = new Set([
     ...Object.values(AUTO_TRIGGER_HANDLERS),
-    ...Object.values(legacyHandlerFunctions),
+    ...obsoleteHandlerFunctions.daily,
+    ...obsoleteHandlerFunctions.hourly,
+    ...obsoleteHandlerFunctions.spreadsheetChange,
 ]);
 const dailyHandlerFunctions = new Set([
     AUTO_TRIGGER_HANDLERS.daily,
-    legacyHandlerFunctions.daily,
+    ...obsoleteHandlerFunctions.daily,
 ]);
 
 const managedTriggerFactories: Record<AutoTriggerKind, () => Trigger> = {

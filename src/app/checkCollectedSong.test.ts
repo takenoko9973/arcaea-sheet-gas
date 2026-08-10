@@ -3,12 +3,12 @@ import { providers, repositories } from "@/app/dependencies";
 import { PersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
-import { autoRegister } from "./checkCollectedSong";
+import { registerNewSongs } from "./checkCollectedSong";
 import { registerSongData } from "./registerSong";
 
 jest.mock("./registerSong", () => ({ registerSongData: jest.fn() }));
 
-describe("autoRegister", () => {
+describe("registerNewSongs", () => {
     const mockedRegisterSongData = jest.mocked(registerSongData);
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe("autoRegister", () => {
             })
             .mockReturnValueOnce({ ...createProcessingResult(), processed: 1, changed: 1 });
 
-        const result = autoRegister();
+        const result = registerNewSongs();
 
         expect(mockedRegisterSongData).toHaveBeenCalledTimes(2);
         expect(mockedRegisterSongData).toHaveBeenNthCalledWith(
@@ -49,7 +49,7 @@ describe("autoRegister", () => {
             throw fatal;
         });
 
-        expect(autoRegister).toThrow(fatal);
+        expect(registerNewSongs).toThrow(fatal);
         expect(mockedRegisterSongData).toHaveBeenCalledTimes(1);
     });
 });

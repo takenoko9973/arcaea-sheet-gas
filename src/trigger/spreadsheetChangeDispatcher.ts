@@ -1,5 +1,5 @@
-import { checkCollectedSong } from "@/app/checkCollectedSong";
-import { manualRegister } from "@/app/manualRegister";
+import { syncSongs } from "@/app/checkCollectedSong";
+import { registerFromManualEntry } from "@/app/manualRegister";
 import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "@/const";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { ConfigSheet } from "@/infrastructure/repositories/configSheet";
@@ -7,7 +7,7 @@ import { getColumnIndexByName, getSheet } from "@/utils/sheetHelper";
 
 const configSheet = ConfigSheet.instance;
 
-const spreadsheetChangeRoutes = [
+const changeActions = [
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortVersionCell()),
         run: versionSort,
@@ -30,11 +30,11 @@ const spreadsheetChangeRoutes = [
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.updateRegisterButtonCell()),
-        run: checkCollectedSong,
+        run: syncSongs,
     },
     {
         pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, configSheet.manualRegisterCell()),
-        run: manualRegister,
+        run: registerFromManualEntry,
     },
 ];
 
@@ -117,11 +117,11 @@ function songConstantSort() {
     filter.sort(constantCol, true);
 }
 
-export function dispatchSpreadsheetChange(changedPair: SheetCellPair): void {
-    const route = spreadsheetChangeRoutes.find(candidate =>
+export function dispatchChangeAction(changedPair: SheetCellPair): void {
+    const action = changeActions.find(candidate =>
         candidate.pair.equal(changedPair)
     );
-    if (!route) return;
+    if (!action) return;
 
     // チェックボックスの場合、falseに変更 (チェックされてない場合は終了)
     if (changedPair.cell_location !== "") {
@@ -132,5 +132,5 @@ export function dispatchSpreadsheetChange(changedPair: SheetCellPair): void {
         cell.setValue(false);
     }
 
-    route.run();
+    action.run();
 }

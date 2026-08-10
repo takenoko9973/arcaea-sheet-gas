@@ -1,12 +1,12 @@
 import { SheetCellPair } from "@/domain/sheetCellPair";
 
-import { dispatchSpreadsheetChange } from "./spreadsheetChangeDispatcher";
+import { dispatchChangeAction } from "./spreadsheetChangeDispatcher";
 
 jest.mock("@/app/checkCollectedSong", () => ({
-    checkCollectedSong: jest.fn(),
+    syncSongs: jest.fn(),
 }));
 jest.mock("@/app/manualRegister", () => ({
-    manualRegister: jest.fn(),
+    registerFromManualEntry: jest.fn(),
 }));
 jest.mock("@/const", () => {
     const mockCell = {
@@ -73,7 +73,7 @@ function getMocks() {
     };
 }
 
-describe("spreadsheet change dispatcher", () => {
+describe("change action dispatcher", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         getMocks().__mockCell.getValue.mockReturnValue(true);
@@ -82,7 +82,7 @@ describe("spreadsheet change dispatcher", () => {
     it("各sort routeへ到達し、対象セルをfalseへ戻す", () => {
         const mocks = getMocks();
         for (const cellLocation of ["A1", "A2", "A3", "A4", "A5"]) {
-            dispatchSpreadsheetChange(new SheetCellPair("SongScore", cellLocation));
+            dispatchChangeAction(new SheetCellPair("SongScore", cellLocation));
         }
 
         expect(mocks.__mockSheetBook.getSheetByName).toHaveBeenCalledTimes(5);
@@ -91,38 +91,37 @@ describe("spreadsheet change dispatcher", () => {
         expect(mocks.__mockFilter.sort).toHaveBeenCalled();
     });
 
-    it("収集処理routeへ到達する", () => {
-        const checkCollectedSong = jest.requireMock("@/app/checkCollectedSong")
-            .checkCollectedSong as jest.Mock;
+    it("曲同期routeへ到達する", () => {
+        const syncSongs = jest.requireMock("@/app/checkCollectedSong").syncSongs as jest.Mock;
         const mocks = getMocks();
 
-        dispatchSpreadsheetChange(new SheetCellPair("SongScore", "B1"));
+        dispatchChangeAction(new SheetCellPair("SongScore", "B1"));
 
-        expect(checkCollectedSong).toHaveBeenCalledTimes(1);
+        expect(syncSongs).toHaveBeenCalledTimes(1);
         expect(mocks.__mockCell.setValue).toHaveBeenCalledWith(false);
     });
 
-    it("manual register routeは空セル番地で同一sheet全体に一致する", () => {
-        const manualRegister = jest.requireMock("@/app/manualRegister").manualRegister as jest.Mock;
+    it("manual entry registration routeは空セル番地で同一sheet全体に一致する", () => {
+        const registerFromManualEntry = jest.requireMock("@/app/manualRegister")
+            .registerFromManualEntry as jest.Mock;
         const mocks = getMocks();
 
-        dispatchSpreadsheetChange(new SheetCellPair("ManualRegister", "D5"));
+        dispatchChangeAction(new SheetCellPair("ManualRegister", "D5"));
 
-        expect(manualRegister).toHaveBeenCalledTimes(1);
+        expect(registerFromManualEntry).toHaveBeenCalledTimes(1);
         expect(mocks.__mockSheet.getRange).toHaveBeenCalledWith("D5");
         expect(mocks.__mockCell.setValue).toHaveBeenCalledWith(false);
     });
 
     it("対象セルがfalseなら処理せず、非対象変更も無視する", () => {
-        const checkCollectedSong = jest.requireMock("@/app/checkCollectedSong")
-            .checkCollectedSong as jest.Mock;
+        const syncSongs = jest.requireMock("@/app/checkCollectedSong").syncSongs as jest.Mock;
         const mocks = getMocks();
         mocks.__mockCell.getValue.mockReturnValue(false);
 
-        dispatchSpreadsheetChange(new SheetCellPair("SongScore", "B1"));
-        dispatchSpreadsheetChange(new SheetCellPair("Potential", "A1"));
+        dispatchChangeAction(new SheetCellPair("SongScore", "B1"));
+        dispatchChangeAction(new SheetCellPair("Potential", "A1"));
 
-        expect(checkCollectedSong).not.toHaveBeenCalled();
+        expect(syncSongs).not.toHaveBeenCalled();
         expect(mocks.__mockCell.setValue).not.toHaveBeenCalled();
     });
 });

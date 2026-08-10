@@ -73,6 +73,8 @@ describe("trigger setting", () => {
         existingTriggers.push(
             createMockTrigger("setDataByDate", "legacy-daily"),
             createMockTrigger("checkCollectedSong", "legacy-hourly"),
+            createMockTrigger("onHourlyCheckCollectedSong", "previous-hourly"),
+            createMockTrigger("onHourlyRegisterAndUpdateSongs", "previous-sync"),
             createMockTrigger("onChangeData", "legacy-change"),
             createMockTrigger("onDailyStatisticsUpdate", "old-daily"),
             createMockTrigger("unrelatedHandler", "unrelated")
@@ -92,12 +94,14 @@ describe("trigger setting", () => {
             3,
             AUTO_TRIGGER_HANDLERS.spreadsheetChange
         );
-        expect(scriptApp.deleteTrigger).toHaveBeenCalledTimes(4);
+        expect(scriptApp.deleteTrigger).toHaveBeenCalledTimes(6);
         expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[0]);
         expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[1]);
         expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[2]);
         expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[3]);
-        expect(scriptApp.deleteTrigger).not.toHaveBeenCalledWith(existingTriggers[4]);
+        expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[4]);
+        expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(existingTriggers[5]);
+        expect(scriptApp.deleteTrigger).not.toHaveBeenCalledWith(existingTriggers[6]);
 
         const firstDelete = events.findIndex(event => event.startsWith("delete:"));
         const lastCreate = events.findLastIndex(event => event.startsWith("create:"));
@@ -117,14 +121,14 @@ describe("trigger setting", () => {
         expect(scriptApp.deleteTrigger).toHaveBeenCalledWith(oldDailyTrigger);
         expect(scriptApp.deleteTrigger).not.toHaveBeenCalledWith(unrelatedTrigger);
 
-        const createIndex = events.findIndex(event => event === "create:onDailyStatisticsUpdate");
+        const createIndex = events.findIndex(event => event === "create:onDailyTasks");
         const deleteIndex = events.findIndex(event => event === "delete:old-daily");
         expect(createIndex).toBeGreaterThanOrEqual(0);
         expect(deleteIndex).toBeGreaterThan(createIndex);
     });
 
     it("日次triggerの新規作成に失敗した場合は既存triggerを削除しない", () => {
-        const oldDailyTrigger = createMockTrigger("onDailyStatisticsUpdate", "old-daily");
+        const oldDailyTrigger = createMockTrigger("onDailyTasks", "old-daily");
         existingTriggers.push(oldDailyTrigger);
         scriptApp.newTrigger.mockImplementationOnce(() => {
             throw new Error("trigger creation failed");

@@ -11,12 +11,12 @@ import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/d
 import { registerSongData } from "./registerSong";
 import { updateData } from "./updateData";
 
-export function checkCollectedSong(): ProcessingResult {
-    return mergeProcessingResults(autoRegister(), update());
+export function syncSongs(): ProcessingResult {
+    return mergeProcessingResults(registerNewSongs(), updateRegisteredSongs());
 }
 
-export function autoRegister(): ProcessingResult {
-    console.log("Start auto register");
+export function registerNewSongs(): ProcessingResult {
+    console.log("Start register new songs");
 
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
@@ -26,19 +26,19 @@ export function autoRegister(): ProcessingResult {
         registerSongData(difficulty, wikiProvider)
     );
 
-    console.log("End auto register");
+    console.log("End register new songs");
     return result;
 }
 
-export function update(): ProcessingResult {
-    console.log("Start update");
+export function updateRegisteredSongs(): ProcessingResult {
+    console.log("Start update registered songs");
 
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
     const result = processDifficulties("update", registeredDifficulties, updateData);
 
-    console.log("End update");
+    console.log("End update registered songs");
     return result;
 }
 

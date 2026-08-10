@@ -1,39 +1,44 @@
 import {
-    autoRegister,
-    checkCollectedSong,
-    update,
+    registerNewSongs,
+    syncSongs,
+    updateRegisteredSongs,
 } from "@/app/checkCollectedSong";
 import {
     logProcessingResult,
     ProcessingResult,
 } from "@/app/collectionProcessing";
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
-import { manualRegister } from "@/app/manualRegister";
+import { registerFromManualEntry } from "@/app/manualRegister";
 import { SheetCellPair } from "@/domain/sheetCellPair";
-import { dispatchSpreadsheetChange } from "@/trigger/spreadsheetChangeDispatcher";
+import { dispatchChangeAction } from "@/trigger/spreadsheetChangeDispatcher";
 import {
     scheduleNextDailyTrigger,
     setupManagedTriggers,
 } from "@/trigger/triggerSetting";
 
-/** 毎時の自動処理と同じ収集処理を手動で実行する入口 */
-export function runCheckCollectedSong(): ProcessingResult {
-    return runProcessingEntryPoint("check collected song", checkCollectedSong);
+/** 曲の同期処理を手動で実行する入口 */
+export function runSongSync(): ProcessingResult {
+    return runProcessingEntryPoint("sync songs", syncSongs);
 }
 
 /** 登録処理だけを手動で実行する入口 */
-export function runAutoRegister(): ProcessingResult {
-    return runProcessingEntryPoint("auto register", autoRegister);
+export function runNewSongRegistration(): ProcessingResult {
+    return runProcessingEntryPoint("register new songs", registerNewSongs);
 }
 
 /** 更新処理だけを手動で実行する入口 */
-export function runUpdate(): ProcessingResult {
-    return runProcessingEntryPoint("update", update);
+export function runRegisteredSongUpdate(): ProcessingResult {
+    return runProcessingEntryPoint("update registered songs", updateRegisteredSongs);
 }
 
-/** 手動登録シートの内容を登録する入口 */
-export function runManualRegister() {
-    return manualRegister();
+/** 手動入力シートの内容から曲を登録する入口 */
+export function runManualEntryRegistration() {
+    return registerFromManualEntry();
+}
+
+/** 日次統計更新だけを手動で実行する入口 */
+export function runDailyStatisticsUpdate(): void {
+    updateDailyStatistics();
 }
 
 /** 管理対象の自動triggerを初期化する入口 */
@@ -41,9 +46,9 @@ export function setupTriggers(): void {
     setupManagedTriggers();
 }
 
-/** 毎時の登録・更新を実行するGAS handler */
-export function onHourlyCheckCollectedSong(): ProcessingResult {
-    return runCheckCollectedSong();
+/** 毎時の曲同期を実行するGAS handler */
+export function onHourlySongSync(): ProcessingResult {
+    return runSongSync();
 }
 
 /** Spreadsheet changeを内部dispatcherへ渡すGAS handler */
@@ -59,7 +64,7 @@ export function onSpreadsheetChange(e: GoogleAppsScript.Events.SheetsOnChange): 
         const changedPair = new SheetCellPair(sheet.getName(), cell.getA1Notation());
         console.log("Changed %s(%s)", changedPair.cell_location, changedPair.sheet_name);
 
-        dispatchSpreadsheetChange(changedPair);
+        dispatchChangeAction(changedPair);
     } catch (cause) {
         console.error("onSpreadsheetChange fatal: %s", describeError(cause));
         throw cause;
@@ -69,15 +74,19 @@ export function onSpreadsheetChange(e: GoogleAppsScript.Events.SheetsOnChange): 
 }
 
 /** 翌日00:00のone-shotから実行される日次GAS handler */
-export function onDailyStatisticsUpdate(): void {
+export function onDailyTasks(): void {
     // 本処理より先に次回予定を確保し、日次処理の失敗で次回実行を失わないようにする。
     scheduleNextDailyTrigger();
 
     console.log("Run daily task");
 
-    updateDailyStatistics();
+    runDailyTasks();
 
     console.log("End daily task");
+}
+
+function runDailyTasks(): void {
+    updateDailyStatistics();
 }
 
 function runProcessingEntryPoint(

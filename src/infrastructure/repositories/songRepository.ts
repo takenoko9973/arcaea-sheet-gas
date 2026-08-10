@@ -97,7 +97,7 @@ export class SongRepository implements ISongRepository {
         try {
             const configSheet = ConfigSheet.instance;
             const targetCell = configSheet.ignoreConstantCell();
-            const value = this.sheet.getRange(targetCell).getValue();
+            const value: unknown = this.sheet.getRange(targetCell).getValue();
             return value === true;
         } catch (cause) {
             throw new PersistenceFatalError("Configセル参照", cause);

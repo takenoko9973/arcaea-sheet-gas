@@ -60,7 +60,7 @@ function createDailyTrigger(): Trigger {
         .at(dailyTriggerDate)
         .create();
 
-    console.log("set daily Trigger: " + dailyTriggerDate);
+    console.log("set daily Trigger: " + dailyTriggerDate.toString());
     return trigger;
 }
 

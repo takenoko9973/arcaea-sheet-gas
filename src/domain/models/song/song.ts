@@ -128,7 +128,7 @@ export class Song {
      * 楽曲ポテンシャル
      */
     obtainPotential(): Potential {
-        let scorePotential = 0;
+        let scorePotential: number;
 
         if (
             this.scoreGrade().equals(new Grade(GradeEnum.PM)) ||

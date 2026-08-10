@@ -1,12 +1,5 @@
 import { buildSync } from "esbuild";
-import {
-    copyFileSync,
-    existsSync,
-    mkdirSync,
-    readFileSync,
-    rmSync,
-    writeFileSync,
-} from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -45,21 +38,21 @@ function assertEntrypointsMatchSource() {
     const sourceText = readFileSync(sourceEntry, "utf8");
     const sourceEntrypoints = [
         ...sourceText.matchAll(/^export\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)/gm),
-    ].map((match) => match[1]);
+    ].map(match => match[1]);
 
     const sourceEntrypointNames = sourceEntrypoints.join(", ");
     assertCondition(
         JSON.stringify(sourceEntrypoints) === JSON.stringify(PUBLIC_ENTRYPOINTS),
-        `PUBLIC_ENTRYPOINTS does not match src/main.ts exports (source: ${sourceEntrypointNames})`,
+        `PUBLIC_ENTRYPOINTS does not match src/main.ts exports (source: ${sourceEntrypointNames})`
     );
 }
 
 function createWrappers() {
     return PUBLIC_ENTRYPOINTS.map(
-        (entrypoint) =>
+        entrypoint =>
             `function ${entrypoint}(...args) {\n` +
             `    return ${exportNamespace}.${entrypoint}(...args);\n` +
-            "}",
+            "}"
     ).join("\n\n");
 }
 
@@ -88,7 +81,7 @@ function buildBundle() {
 
     assertCondition(
         result.outputFiles.length === 1,
-        "esbuild must produce exactly one main.js output",
+        "esbuild must produce exactly one main.js output"
     );
     return result.outputFiles[0].text;
 }
@@ -113,9 +106,9 @@ function readWrapperNames(mainText) {
     assertCondition(start >= 0 && end > start, "wrapper markers are missing or out of order");
 
     const wrapperText = mainText.slice(start + wrapperStartMarker.length, end);
-    return [
-        ...wrapperText.matchAll(/^function\s+([A-Za-z_$][\w$]*)\(\.\.\.args\)\s*\{/gm),
-    ].map((match) => match[1]);
+    return [...wrapperText.matchAll(/^function\s+([A-Za-z_$][\w$]*)\(\.\.\.args\)\s*\{/gm)].map(
+        match => match[1]
+    );
 }
 
 function inspectArtifacts() {
@@ -127,17 +120,17 @@ function inspectArtifacts() {
     const mainText = readFileSync(outputEntry, "utf8");
     const moduleSyntaxLine = mainText
         .split(/\r?\n/)
-        .find((line) => /^\s*(?:import|export)(?:\s|[{*]|$)/.test(line));
+        .find(line => /^\s*(?:import|export)(?:\s|[{*]|$)/.test(line));
     assertCondition(
         moduleSyntaxLine === undefined,
-        "main.js contains an import/export syntax line",
+        "main.js contains an import/export syntax line"
     );
     assertCondition(!mainText.includes("__webpack"), "main.js contains webpack output");
 
     const wrapperNames = readWrapperNames(mainText);
     assertCondition(
         JSON.stringify(wrapperNames) === JSON.stringify(PUBLIC_ENTRYPOINTS),
-        `unexpected Apps Script wrappers: ${wrapperNames.join(", ")}`,
+        `unexpected Apps Script wrappers: ${wrapperNames.join(", ")}`
     );
 }
 

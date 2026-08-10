@@ -12,10 +12,7 @@ import {
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 
-import {
-    IWikiProvider,
-    resolveWikiSongDetails,
-} from "./services/wikiDataFetcherService";
+import { IWikiProvider, resolveWikiSongDetails } from "./services/wikiDataFetcherService";
 
 export function registerSongData(
     difficulty: DifficultyEnum,

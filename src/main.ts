@@ -1,20 +1,10 @@
-import {
-    registerNewSongs,
-    syncSongs,
-    updateRegisteredSongs,
-} from "@/app/checkCollectedSong";
-import {
-    logProcessingResult,
-    ProcessingResult,
-} from "@/app/collectionProcessing";
+import { registerNewSongs, syncSongs, updateRegisteredSongs } from "@/app/checkCollectedSong";
+import { logProcessingResult, ProcessingResult } from "@/app/collectionProcessing";
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
 import { registerFromManualEntry } from "@/app/manualRegister";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { dispatchChangeAction } from "@/trigger/spreadsheetChangeDispatcher";
-import {
-    scheduleNextDailyTrigger,
-    setupManagedTriggers,
-} from "@/trigger/triggerSetting";
+import { scheduleNextDailyTrigger, setupManagedTriggers } from "@/trigger/triggerSetting";
 
 /** 曲の同期処理を手動で実行する入口 */
 export function runSongSync(): ProcessingResult {

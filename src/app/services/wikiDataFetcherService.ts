@@ -1,8 +1,4 @@
-import {
-    IArcaeaWikiChart,
-    IArcaeaWikiSong,
-    IFetchArcaeaWiki,
-} from "@/@types/fetch-arcaea-wiki";
+import { IArcaeaWikiChart, IArcaeaWikiSong, IFetchArcaeaWiki } from "@/@types/fetch-arcaea-wiki";
 import { ManualRegisterDto } from "@/domain/dto/manualRegisterDto";
 import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
@@ -24,8 +20,7 @@ export interface IWikiProvider {
 }
 
 type CachedWikiSong =
-    | { status: "success"; data: IArcaeaWikiSong }
-    | { status: "failure"; error: unknown };
+    { status: "success"; data: IArcaeaWikiSong } | { status: "failure"; error: unknown };
 
 /**
  * 1回の登録処理で共有するWiki取得境界。

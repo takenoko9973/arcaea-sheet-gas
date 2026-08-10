@@ -4,10 +4,7 @@ import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
 
-import {
-    IWikiProvider,
-    resolveWikiSongDetails,
-} from "./services/wikiDataFetcherService";
+import { IWikiProvider, resolveWikiSongDetails } from "./services/wikiDataFetcherService";
 
 /** 手動入力から曲を登録する処理 */
 export function registerFromManualEntry(wikiProvider?: IWikiProvider) {
@@ -37,7 +34,11 @@ export function registerFromManualEntry(wikiProvider?: IWikiProvider) {
     console.log("Register from manual entry: %s(%s)", dto.nameJp, dto.difficulty);
 
     // 4. DTOの既知値を優先し、不足値だけをWikiから補完
-    const wikiDetails = resolveWikiSongDetails(dto, dto.difficulty, wikiProvider ?? providers.wiki());
+    const wikiDetails = resolveWikiSongDetails(
+        dto,
+        dto.difficulty,
+        wikiProvider ?? providers.wiki()
+    );
 
     // 5. ドメインエンティティを生成
     const newSong = SongFactory.createFromManualRegisterDto(dto, wikiDetails);

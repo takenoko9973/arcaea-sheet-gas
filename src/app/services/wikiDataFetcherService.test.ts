@@ -3,11 +3,7 @@ import { vi } from "vitest";
 import { IArcaeaWikiSong } from "@/@types/fetch-arcaea-wiki";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
-import {
-    resolveWikiChart,
-    resolveWikiSongDetails,
-    WikiProvider,
-} from "./wikiDataFetcherService";
+import { resolveWikiChart, resolveWikiSongDetails, WikiProvider } from "./wikiDataFetcherService";
 
 function createWikiSong(overrides: Partial<IArcaeaWikiSong> = {}): IArcaeaWikiSong {
     return {
@@ -72,7 +68,12 @@ describe("WikiProvider", () => {
         });
         const gateway = { createSongData: vi.fn().mockReturnValue(song) };
         const provider = new WikiProvider(gateway);
-        const createDto = (difficulty: DifficultyEnum, level: string, notes: string, constant: string) => ({
+        const createDto = (
+            difficulty: DifficultyEnum,
+            level: string,
+            notes: string,
+            constant: string
+        ) => ({
             songTitle: "same-song",
             nameJp: "同じ曲",
             nameEn: "same-song",
@@ -106,7 +107,11 @@ describe("WikiProvider", () => {
 
     it("同じpageの取得失敗もrun内でcacheする", () => {
         const error = new Error("Gateway failure");
-        const gateway = { createSongData: vi.fn().mockImplementation(() => { throw error; }) };
+        const gateway = {
+            createSongData: vi.fn().mockImplementation(() => {
+                throw error;
+            }),
+        };
         const provider = new WikiProvider(gateway);
 
         expect(() => provider.fetchSongData("failed-page")).toThrow(error);

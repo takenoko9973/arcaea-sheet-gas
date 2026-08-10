@@ -29,10 +29,7 @@ const dailyHandlerFunctions = new Set([
 const managedTriggerFactories: Record<AutoTriggerKind, () => Trigger> = {
     daily: createDailyTrigger,
     hourly: () =>
-        ScriptApp.newTrigger(AUTO_TRIGGER_HANDLERS.hourly)
-            .timeBased()
-            .everyHours(1)
-            .create(),
+        ScriptApp.newTrigger(AUTO_TRIGGER_HANDLERS.hourly).timeBased().everyHours(1).create(),
     spreadsheetChange: () =>
         ScriptApp.newTrigger(AUTO_TRIGGER_HANDLERS.spreadsheetChange)
             .forSpreadsheet(SHEET_BOOK)

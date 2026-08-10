@@ -1,19 +1,12 @@
 import { vi } from "vitest";
 
-import {
-    registerNewSongs,
-    syncSongs,
-    updateRegisteredSongs,
-} from "@/app/checkCollectedSong";
+import { registerNewSongs, syncSongs, updateRegisteredSongs } from "@/app/checkCollectedSong";
 import { createFailureResult, createProcessingResult } from "@/app/collectionProcessing";
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
 import { registerFromManualEntry } from "@/app/manualRegister";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { dispatchChangeAction } from "@/trigger/spreadsheetChangeDispatcher";
-import {
-    scheduleNextDailyTrigger,
-    setupManagedTriggers,
-} from "@/trigger/triggerSetting";
+import { scheduleNextDailyTrigger, setupManagedTriggers } from "@/trigger/triggerSetting";
 
 import {
     onDailyTasks,

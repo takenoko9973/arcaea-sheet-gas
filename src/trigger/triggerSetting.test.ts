@@ -84,14 +84,8 @@ describe("trigger setting", () => {
 
         setupManagedTriggers();
 
-        expect(scriptApp.newTrigger).toHaveBeenNthCalledWith(
-            1,
-            AUTO_TRIGGER_HANDLERS.daily
-        );
-        expect(scriptApp.newTrigger).toHaveBeenNthCalledWith(
-            2,
-            AUTO_TRIGGER_HANDLERS.hourly
-        );
+        expect(scriptApp.newTrigger).toHaveBeenNthCalledWith(1, AUTO_TRIGGER_HANDLERS.daily);
+        expect(scriptApp.newTrigger).toHaveBeenNthCalledWith(2, AUTO_TRIGGER_HANDLERS.hourly);
         expect(scriptApp.newTrigger).toHaveBeenNthCalledWith(
             3,
             AUTO_TRIGGER_HANDLERS.spreadsheetChange

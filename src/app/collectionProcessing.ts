@@ -59,7 +59,9 @@ export function getDisplayName(dto: NameSource): string {
 }
 
 // DTO配列を共通処理し、アイテム単位で回復可能な失敗だけを記録して継続する
-export function processCollectionDtos<T extends NameSource>(options: ProcessOptions<T>): ProcessingResult {
+export function processCollectionDtos<T extends NameSource>(
+    options: ProcessOptions<T>
+): ProcessingResult {
     const result = createProcessingResult();
 
     for (const dto of options.dtos) {

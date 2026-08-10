@@ -65,7 +65,7 @@ export class SongFactory {
                 side: new Side(details.side as SideEnum),
             }),
             new Difficulty({
-                difficultyName: new DifficultyName(dto.difficulty as DifficultyEnum),
+                difficultyName: new DifficultyName(dto.difficulty),
                 level: new Level(dto.level !== "" ? dto.level : details.level),
             }),
             new ChartData({

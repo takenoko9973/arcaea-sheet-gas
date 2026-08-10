@@ -39,7 +39,7 @@ export class SongCollectionRepository implements ISongCollectionRepository {
             const diffColIndex = header.indexOf(difficulty);
             if (diffColIndex === -1) continue;
 
-            data[difficulty as DifficultyEnum] = values
+            data[difficulty] = values
                 .map(row => row.slice(diffColIndex + 1, diffColIndex + 10))
                 .map(item => SongCollectionMapper.toDto(item, difficulty))
                 .filter(dto => dto.songTitle !== "");

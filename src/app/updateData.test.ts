@@ -138,8 +138,20 @@ describe("updateData", () => {
         changedSong.changeDifficulty.mockReturnValue(changedSong);
         changedSong.changeChartData.mockReturnValue(changedSong);
         mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([
-            { songTitle: "failed-song", nameJp: "失敗曲", level: "11", constant: "11", notes: "1000" },
-            { songTitle: "following-song", nameJp: "後続曲", level: "11+", constant: "11", notes: "1000" },
+            {
+                songTitle: "failed-song",
+                nameJp: "失敗曲",
+                level: "11",
+                constant: "11",
+                notes: "1000",
+            },
+            {
+                songTitle: "following-song",
+                nameJp: "後続曲",
+                level: "11+",
+                constant: "11",
+                notes: "1000",
+            },
         ]);
         mockSongRepositoryInstance.findSong
             .mockImplementationOnce(() => {

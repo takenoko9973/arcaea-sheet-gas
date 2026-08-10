@@ -38,7 +38,9 @@ export class SongRepository implements ISongRepository {
         const values = this.sheet.getDataRange().getValues();
         values.shift()!; // ヘッダー行を削除
         return values
-            .map((row, index) => SongMapper.toDomain(row, { sheet: this.sheet.getName(), row: index + 2 }))
+            .map((row, index) =>
+                SongMapper.toDomain(row, { sheet: this.sheet.getName(), row: index + 2 })
+            )
             .filter(song => song && song.songId.value !== "") as Song[]; // 空の曲を除外
     }
 

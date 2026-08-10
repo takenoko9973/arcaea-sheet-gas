@@ -85,7 +85,7 @@ describe("registerFromManualEntry", () => {
         };
 
         mockedManualRegisterRepository.prototype.getEntry.mockReturnValue(mockDto);
-        mockSongRepositoryInstance.findSong.mockReturnValue({} as Song);
+        mockSongRepositoryInstance.findSong.mockReturnValue({});
 
         registerFromManualEntry();
 

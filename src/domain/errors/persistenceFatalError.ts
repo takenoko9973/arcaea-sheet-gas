@@ -19,10 +19,7 @@ export function isPersistenceFatalError(error: unknown): error is PersistenceFat
     return error instanceof PersistenceFatalError;
 }
 
-export function asPersistenceFatalError(
-    operation: string,
-    error: unknown
-): PersistenceFatalError {
+export function asPersistenceFatalError(operation: string, error: unknown): PersistenceFatalError {
     return isPersistenceFatalError(error) ? error : new PersistenceFatalError(operation, error);
 }
 

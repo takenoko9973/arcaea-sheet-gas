@@ -43,7 +43,7 @@ const changeActions = [
  */
 function versionSort() {
     console.log("Sort by Difficulty");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
@@ -59,7 +59,7 @@ function versionSort() {
  */
 function songDifficultySort() {
     console.log("Sort by Difficulty");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -77,7 +77,7 @@ function songDifficultySort() {
  */
 function songNameSort() {
     console.log("Sort by Song Title");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -92,7 +92,7 @@ function songNameSort() {
  */
 function songLevelSort() {
     console.log("Sort by Level");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -107,7 +107,7 @@ function songLevelSort() {
  */
 function songConstantSort() {
     console.log("Sort by Constant");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -118,9 +118,7 @@ function songConstantSort() {
 }
 
 export function dispatchChangeAction(changedPair: SheetCellPair): void {
-    const action = changeActions.find(candidate =>
-        candidate.pair.equal(changedPair)
-    );
+    const action = changeActions.find(candidate => candidate.pair.equal(changedPair));
     if (!action) return;
 
     // チェックボックスの場合、falseに変更 (チェックされてない場合は終了)

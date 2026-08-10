@@ -113,7 +113,7 @@ describe("registerSongData", () => {
 
         mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
         mockSongRepositoryInstance.isIgnoreConstant.mockReturnValue(false);
-        mockSongRepositoryInstance.findSong.mockReturnValue({} as Song);
+        mockSongRepositoryInstance.findSong.mockReturnValue({});
 
         registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
 

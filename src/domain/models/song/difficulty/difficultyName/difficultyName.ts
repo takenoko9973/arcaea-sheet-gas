@@ -10,7 +10,9 @@ export enum DifficultyEnum {
 
 // DifficultyEnumとして妥当な値かを判定する
 export function isDifficultyEnum(value: unknown): value is DifficultyEnum {
-    return typeof value === "string" && Object.values(DifficultyEnum).includes(value as DifficultyEnum);
+    return (
+        typeof value === "string" && Object.values(DifficultyEnum).includes(value as DifficultyEnum)
+    );
 }
 
 type DifficultyNameValue = DifficultyEnum;

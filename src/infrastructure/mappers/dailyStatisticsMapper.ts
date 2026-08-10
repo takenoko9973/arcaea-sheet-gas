@@ -74,7 +74,13 @@ export class DailyDataMapper {
 
         const scoreDataArray = row.splice(0, 12);
         const scoreData = splitArrayIntoChunks(scoreDataArray, 4).map(
-            array => new ScoreData(array[0], array[1], array[2], array[3])
+            (array: unknown[]) =>
+                new ScoreData(
+                    Number(array[0]),
+                    Number(array[1]),
+                    Number(array[2]),
+                    Number(array[3])
+                )
         );
 
         return new DailyData(

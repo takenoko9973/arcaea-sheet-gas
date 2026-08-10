@@ -24,7 +24,7 @@ export class SongCollectionRepository implements ISongCollectionRepository {
     }
 
     private loadAll(sheet: Sheet): { [index in DifficultyEnum]: SongCollectionDto[] } {
-        const values = sheet.getDataRange().getValues();
+        const values: unknown[][] = sheet.getDataRange().getValues();
         const header = values.shift()!; // ヘッダー行を取得して削除
 
         const data: { [index in DifficultyEnum]: SongCollectionDto[] } = {
@@ -40,7 +40,9 @@ export class SongCollectionRepository implements ISongCollectionRepository {
             if (diffColIndex === -1) continue;
 
             data[difficulty] = values
-                .map(row => row.slice(diffColIndex + 1, diffColIndex + 10))
+                .map(row =>
+                    row.slice(diffColIndex + 1, diffColIndex + 10).map(value => String(value))
+                )
                 .map(item => SongCollectionMapper.toDto(item, difficulty))
                 .filter(dto => dto.songTitle !== "");
         }

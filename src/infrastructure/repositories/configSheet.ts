@@ -31,7 +31,8 @@ export class ConfigSheet implements IConfigSheet {
     private constructor(private readonly sheet: Sheet) {}
 
     getValue(cell: string): string {
-        return this.sheet.getRange(cell).getValue();
+        const value: unknown = this.sheet.getRange(cell).getValue();
+        return String(value);
     }
 
     sortVersionCell(): string {
@@ -68,7 +69,9 @@ export class ConfigSheet implements IConfigSheet {
 
     targetRegisteredDifficulties(): DifficultyEnum[] {
         // [[DifficultyEnum, isRegistered], ...]
-        const regDiffConfigs = this.sheet.getRange(REGISTERED_DIFFICULTIES_CONFIG_CELL).getValues();
+        const regDiffConfigs: unknown[][] = this.sheet
+            .getRange(REGISTERED_DIFFICULTIES_CONFIG_CELL)
+            .getValues();
         const difficulties: DifficultyEnum[] = [];
         for (const [difficulty, isRegistered] of regDiffConfigs) {
             if (!isRegistered) continue;

@@ -35,7 +35,7 @@ export class SongRepository implements ISongRepository {
     }
 
     private loadSongs(): Song[] {
-        const values = this.sheet.getDataRange().getValues();
+        const values: unknown[][] = this.sheet.getDataRange().getValues();
         values.shift()!; // ヘッダー行を削除
         return values
             .map((row, index) =>

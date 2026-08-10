@@ -7,34 +7,34 @@ import { getColumnIndexByName, getSheet } from "@/utils/sheetHelper";
 
 const configSheet = ConfigSheet.instance;
 
-const triggerList = [
+const spreadsheetChangeRoutes = [
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortVersionCell()),
-        func: versionSort,
+        run: versionSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortDifficultyCell()),
-        func: songDifficultySort,
+        run: songDifficultySort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortSongNameCell()),
-        func: songNameSort,
+        run: songNameSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortLevelCell()),
-        func: songLevelSort,
+        run: songLevelSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortConstantCell()),
-        func: songConstantSort,
+        run: songConstantSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.updateRegisterButtonCell()),
-        func: checkCollectedSong,
+        run: checkCollectedSong,
     },
     {
         pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, configSheet.manualRegisterCell()),
-        func: manualRegister,
+        run: manualRegister,
     },
 ];
 
@@ -117,9 +117,11 @@ function songConstantSort() {
     filter.sort(constantCol, true);
 }
 
-export function runTrigger(changedPair: SheetCellPair) {
-    const pairIndex = triggerList.findIndex(pair => pair["pair"].equal(changedPair));
-    if (pairIndex === -1) return;
+export function dispatchSpreadsheetChange(changedPair: SheetCellPair): void {
+    const route = spreadsheetChangeRoutes.find(candidate =>
+        candidate.pair.equal(changedPair)
+    );
+    if (!route) return;
 
     // チェックボックスの場合、falseに変更 (チェックされてない場合は終了)
     if (changedPair.cell_location !== "") {
@@ -130,5 +132,5 @@ export function runTrigger(changedPair: SheetCellPair) {
         cell.setValue(false);
     }
 
-    triggerList[pairIndex]["func"]();
+    route.run();
 }

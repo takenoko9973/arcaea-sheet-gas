@@ -3,7 +3,7 @@
         "target": "ES2019",
         "lib": ["ESNext"],
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         },
         "module": "ESNext",
         "moduleResolution": "Bundler",

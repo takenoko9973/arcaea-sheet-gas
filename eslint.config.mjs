@@ -1,7 +1,7 @@
-import globals from "globals";
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 const googleAppsScriptGlobals = {
     LockService: "readonly",
@@ -38,8 +38,9 @@ export default tseslint.config(
         extends: [eslint.configs.recommended, tseslint.configs.recommendedTypeChecked],
         languageOptions: {
             globals: {
-                ...globals.node,
+                ...globals.es2021,
                 ...globals.jest,
+                console: "readonly",
                 ...googleAppsScriptGlobals,
             },
             parserOptions: {

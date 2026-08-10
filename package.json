@@ -11,10 +11,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "yarn clean && yarn webpack && cpx src/appsscript.json dist/",
     "fix": "yarn format && yarn lint:fix",
     "verify": "yarn format:check && yarn lint && yarn typecheck && yarn test && yarn build",
-    "test": "jest",
-    "build": "yarn clean && yarn webpack && cpx src/appsscript.json dist/",
     "deploy": "yarn test && yarn build && clasp push",
     "login": "clasp login"
   },

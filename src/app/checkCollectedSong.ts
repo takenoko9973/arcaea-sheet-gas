@@ -1,35 +1,67 @@
-import { repositories } from "@/app/dependencies";
+import {
+    createFailureResult,
+    createProcessingResult,
+    mergeProcessingResults,
+    ProcessingResult,
+} from "@/app/collectionProcessing";
+import { providers, repositories } from "@/app/dependencies";
+import { isPersistenceFatalError } from "@/domain/errors/persistenceFatalError";
+import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
 import { registerSongData } from "./registerSong";
 import { updateData } from "./updateData";
 
-export function checkCollectedSong() {
-    autoRegister();
-    update();
+export function syncSongs(): ProcessingResult {
+    return mergeProcessingResults(registerNewSongs(), updateRegisteredSongs());
 }
 
-export function autoRegister() {
-    console.log("Start auto register");
+export function registerNewSongs(): ProcessingResult {
+    console.log("Start register new songs");
 
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
-    for (const difficulty of registeredDifficulties) {
-        registerSongData(difficulty);
-    }
+    const wikiProvider = providers.wiki();
+    const result = processDifficulties("register", registeredDifficulties, difficulty =>
+        registerSongData(difficulty, wikiProvider)
+    );
 
-    console.log("End auto register");
+    console.log("End register new songs");
+    return result;
 }
 
-export function update() {
-    console.log("Start update");
+export function updateRegisteredSongs(): ProcessingResult {
+    console.log("Start update registered songs");
 
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
-    for (const difficulty of registeredDifficulties) {
-        updateData(difficulty);
+    const result = processDifficulties("update", registeredDifficulties, updateData);
+
+    console.log("End update registered songs");
+    return result;
+}
+
+function processDifficulties(
+    operation: string,
+    difficulties: DifficultyEnum[],
+    process: (difficulty: DifficultyEnum) => ProcessingResult
+): ProcessingResult {
+    let result = createProcessingResult();
+
+    for (const difficulty of difficulties) {
+        try {
+            result = mergeProcessingResults(result, process(difficulty));
+        } catch (cause) {
+            if (isPersistenceFatalError(cause)) throw cause;
+
+            // 難易度境界での失敗は、次の難易度を処理して診断情報を残す。
+            result = mergeProcessingResults(
+                result,
+                createFailureResult({ difficulty, operation, cause })
+            );
+        }
     }
 
-    console.log("End update");
+    return result;
 }

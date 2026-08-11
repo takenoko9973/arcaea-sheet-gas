@@ -1,5 +1,6 @@
 import { DailyData } from "@/domain/models/daily/dailyData";
-import { GradeData, GradeDataValue } from "@/domain/models/daily/greadeData/gradeData";
+import { FrameScoreData } from "@/domain/models/daily/frameScoreData/frameScoreData";
+import { GradeData, GradeDataValue } from "@/domain/models/daily/gradeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
 import { GradeEnum } from "@/domain/models/song/score/grade/grade";
 import { Version } from "@/domain/models/song/songMetadata/version/version";
@@ -31,12 +32,18 @@ export class DailyDataMapper {
             value.luckShinyPureNotes,
         ]);
 
+        const frameScoreList = [
+            data.frameScoreData.maxFrameScore,
+            data.frameScoreData.lostFrameScore,
+        ];
+
         return [
             Utilities.formatDate(data.date, "JST", "yyyy/MM/dd"),
             "'" + data.version.toString(),
             data.potential,
             data.potentialMax,
             ...gradeList,
+            ...frameScoreList,
             ...scoreList,
         ];
     }
@@ -63,12 +70,27 @@ export class DailyDataMapper {
             [GradeEnum.NOT_PLAYED]: Number(row.shift()),
         };
         const grade = new GradeData(counts);
+        const frameScoreData = new FrameScoreData(Number(row.shift()), Number(row.shift()));
 
         const scoreDataArray = row.splice(0, 12);
         const scoreData = splitArrayIntoChunks(scoreDataArray, 4).map(
-            array => new ScoreData(array[0], array[1], array[2], array[3])
+            (array: unknown[]) =>
+                new ScoreData(
+                    Number(array[0]),
+                    Number(array[1]),
+                    Number(array[2]),
+                    Number(array[3])
+                )
         );
 
-        return new DailyData(date, version, potential, potentialMax, grade, scoreData);
+        return new DailyData(
+            date,
+            version,
+            potential,
+            potentialMax,
+            grade,
+            scoreData,
+            frameScoreData
+        );
     }
 }

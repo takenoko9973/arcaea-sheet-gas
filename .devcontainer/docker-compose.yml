@@ -1,0 +1,17 @@
+name: "arcaea_potential"
+
+services:
+    workspace:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        init: true
+        container_name: arcaea_potential-gas
+        working_dir: /workspace
+        volumes:
+            - ..:/workspace
+            - gas-node-modules:/workspace/node_modules
+        tty: true
+
+volumes:
+    gas-node-modules:

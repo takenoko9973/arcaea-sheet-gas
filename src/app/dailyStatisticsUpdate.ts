@@ -1,6 +1,6 @@
 import { repositories } from "@/app/dependencies";
 import { DailyData } from "@/domain/models/daily/dailyData";
-import { GradeData } from "@/domain/models/daily/greadeData/gradeData";
+import { GradeData } from "@/domain/models/daily/gradeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
 
 import { StatisticsService } from "./services/statisticsService";
@@ -32,6 +32,8 @@ export function updateDailyStatistics() {
         scoreDataList.push(scoreData);
     }
 
+    const frameScoreData = StatisticsService.calculateFrameScoreData(allSongs);
+
     // 更新
     const dailyData = new DailyData(
         today,
@@ -39,7 +41,8 @@ export function updateDailyStatistics() {
         bestPotential,
         potentialMax,
         totalGradeData,
-        scoreDataList
+        scoreDataList,
+        frameScoreData
     );
     dailyRepo.add(dailyData);
 

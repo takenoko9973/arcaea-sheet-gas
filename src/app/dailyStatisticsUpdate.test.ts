@@ -1,5 +1,8 @@
+import { vi } from "vitest";
+
 import { DailyData } from "@/domain/models/daily/dailyData";
-import { GradeData, GradeDataValue } from "@/domain/models/daily/greadeData/gradeData";
+import { FrameScoreData } from "@/domain/models/daily/frameScoreData/frameScoreData";
+import { GradeData, GradeDataValue } from "@/domain/models/daily/gradeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
 import { Song } from "@/domain/models/song/song";
 import { DailyStatisticsRepository } from "@/infrastructure/repositories/dailyStatisticsRepository";
@@ -9,35 +12,37 @@ import { updateDailyStatistics } from "./dailyStatisticsUpdate";
 import { StatisticsService } from "./services/statisticsService";
 
 // 依存モジュールをモック化
-jest.mock("domain/models/daily/greadeData/gradeData");
-jest.mock("infrastructure/repositories/songRepository");
-jest.mock("infrastructure/repositories/dailyStatisticsRepository");
+vi.mock("@/domain/models/daily/gradeData/gradeData");
+vi.mock("@/infrastructure/repositories/songRepository");
+vi.mock("@/infrastructure/repositories/dailyStatisticsRepository");
 
-jest.mock("./services/statisticsService");
+vi.mock("./services/statisticsService");
 
 describe("updateDailyStatistics", () => {
     // モックの準備
-    const mockedSongRepository = jest.mocked(SongRepository);
-    const mockedDailyStatisticsRepository = jest.mocked(DailyStatisticsRepository);
-    const mockedStatisticsService = jest.mocked(StatisticsService);
-    const mockedGradeData = jest.mocked(GradeData);
+    const mockedSongRepository = vi.mocked(SongRepository);
+    const mockedDailyStatisticsRepository = vi.mocked(DailyStatisticsRepository);
+    const mockedStatisticsService = vi.mocked(StatisticsService);
+    const mockedGradeData = vi.mocked(GradeData);
 
-    const mockSongRepositoryInstance = { fetchSongs: jest.fn() };
-    const mockDailyStatisticsRepositoryInstance = { add: jest.fn() };
+    const mockSongRepositoryInstance = { fetchSongs: vi.fn() };
+    const mockDailyStatisticsRepositoryInstance = {
+        add: vi.fn<(data: DailyData) => void>(),
+    };
 
     // 1度だけのセットアップ
     beforeAll(() => {
         Object.defineProperty(mockedSongRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockSongRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockSongRepositoryInstance),
         });
         Object.defineProperty(mockedDailyStatisticsRepository, "instance", {
-            get: jest.fn().mockReturnValue(mockDailyStatisticsRepositoryInstance),
+            get: vi.fn().mockReturnValue(mockDailyStatisticsRepositoryInstance),
         });
     });
 
     // 各テスト前のリセット
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it("統計データが計算され、保存される", () => {
@@ -46,16 +51,19 @@ describe("updateDailyStatistics", () => {
         const mockPotential = 12.34;
         const mockGradeData = new GradeData({} as GradeDataValue); // モックインスタンス
         const mockScoreData = new ScoreData(0, 0, 0, 0);
+        const mockFrameScoreData = new FrameScoreData(10, 1);
 
         // GradeData.createEmpty()がモックインスタンスを返すように設定
         mockedGradeData.createEmpty.mockReturnValue(mockGradeData);
         // plusメソッドは自分自身を返すようにして、チェーンできるようにする
-        (mockGradeData.plus as jest.Mock).mockReturnValue(mockGradeData);
+        const mockedPlus = vi.spyOn(mockGradeData, "plus");
+        mockedPlus.mockReturnValue(mockGradeData);
 
         mockSongRepositoryInstance.fetchSongs.mockReturnValue(mockSongs);
         mockedStatisticsService.calculateBestPotential.mockReturnValue(mockPotential);
         mockedStatisticsService.calculateGrades.mockReturnValue(mockGradeData);
         mockedStatisticsService.calculateScoreData.mockReturnValue(mockScoreData);
+        mockedStatisticsService.calculateFrameScoreData.mockReturnValue(mockFrameScoreData);
 
         // テスト対象の関数を実行
         updateDailyStatistics();

@@ -1,5 +1,5 @@
 import { Difficulty } from "./difficulty";
-import { DifficultyEnum,DifficultyName } from "./difficultyName/difficultyName";
+import { DifficultyEnum, DifficultyName } from "./difficultyName/difficultyName";
 import { Level } from "./level/level";
 
 describe("Difficulty", () => {

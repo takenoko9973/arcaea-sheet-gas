@@ -6,6 +6,7 @@ import { SongNotes } from "./chartData/notes/songNotes";
 import { Difficulty } from "./difficulty/difficulty";
 import { DifficultyEnum, DifficultyName } from "./difficulty/difficultyName/difficultyName";
 import { Level } from "./difficulty/level/level";
+import { FrameScore } from "./frameScore/potential";
 import { Grade, GradeEnum } from "./score/grade/grade";
 import { Score } from "./score/score";
 import { Song } from "./song";
@@ -32,7 +33,7 @@ describe("Song", () => {
     const difficulty = new Difficulty({ difficultyName, level });
 
     const songNotes = new SongNotes(1000);
-    const constant = new Constant(1.0);
+    const constant = new Constant(10.0);
     const chartData = new ChartData({ songNotes, constant });
 
     const songId = new SongId(songTitle.value);
@@ -86,7 +87,7 @@ describe("Song", () => {
                 new Score(10000000)
             );
 
-            expect(song.scoreGrade().equals(new Grade(GradeEnum.PM)));
+            expect(song.scoreGrade().equals(new Grade(GradeEnum.PM))).toBeTruthy();
 
             song = Song.reconstruct(
                 songId,
@@ -96,7 +97,41 @@ describe("Song", () => {
                 chartData,
                 new Score(10000000 + songNotes.value)
             );
-            expect(song.scoreGrade().equals(new Grade(GradeEnum.PM_PLUS)));
+            expect(song.scoreGrade().equals(new Grade(GradeEnum.PM_PLUS))).toBeTruthy();
+        });
+    });
+
+    describe("フレーム値", () => {
+        it("正しいフレーム値が取得できるか", () => {
+            let song = Song.reconstruct(
+                songId,
+                songData,
+                songMetadata,
+                difficulty,
+                chartData,
+                new Score(10000000)
+            );
+            expect(song.obtainFrameScore().value).toBeCloseTo(new FrameScore(7.5).value);
+
+            song = Song.reconstruct(
+                songId,
+                songData,
+                songMetadata,
+                difficulty,
+                chartData,
+                new Score(10001000)
+            );
+            expect(song.obtainFrameScore().value).toBeCloseTo(new FrameScore(10.0).value);
+
+            song = Song.reconstruct(
+                songId,
+                songData,
+                songMetadata,
+                difficulty,
+                chartData,
+                new Score(10000995)
+            );
+            expect(song.obtainFrameScore().value).toBeCloseTo(new FrameScore(10.0).value);
         });
     });
 });

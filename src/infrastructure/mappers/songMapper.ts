@@ -16,40 +16,78 @@ import { Side, SideEnum } from "@/domain/models/song/songMetadata/side/side";
 import { SongMetadata } from "@/domain/models/song/songMetadata/songMetadata";
 import { Version } from "@/domain/models/song/songMetadata/version/version";
 
+type SongRestoreContext = {
+    sheet: string;
+    row: number;
+};
+
+export class SongReconstructionError extends Error {
+    readonly cause: unknown;
+
+    constructor(
+        readonly context: SongRestoreContext & {
+            song: string;
+            difficulty: string;
+            operation: string;
+        },
+        cause: unknown
+    ) {
+        super(
+            `${context.operation}に失敗しました: sheet=${context.sheet} row=${context.row} song=${context.song} difficulty=${context.difficulty} cause=${describeError(cause)}`
+        );
+        this.name = "SongReconstructionError";
+        this.cause = cause;
+    }
+}
+
 export class SongMapper {
     /**
      * スプレッドシートの1行データをSongドメインオブジェクトに変換する
      */
-    static toDomain(row: unknown[]): Song | null {
+    static toDomain(row: unknown[], context?: SongRestoreContext): Song | null {
         if (row[0] === "") return null;
 
-        const songId = new SongId(String(row[0]));
+        try {
+            const songId = new SongId(String(row[0]));
 
-        const songData = new SongData({
-            nameJp: String(row[1]),
-            nameEn: String(row[2]),
-            composer: String(row[3]),
-        });
+            const songData = new SongData({
+                nameJp: String(row[1]),
+                nameEn: String(row[2]),
+                composer: String(row[3]),
+            });
 
-        const songMetadata = new SongMetadata({
-            pack: new Pack(String(row[4])),
-            version: Version.fromString(String(row[5]).replace(/'/g, "")), // 文字列の ' を削除
-            side: new Side(row[6] as SideEnum),
-        });
+            const songMetadata = new SongMetadata({
+                pack: new Pack(String(row[4])),
+                version: Version.fromString(String(row[5]).replace(/'/g, "")), // 文字列の ' を削除
+                side: new Side(row[6] as SideEnum),
+            });
 
-        const difficulty = new Difficulty({
-            difficultyName: new DifficultyName(row[7] as DifficultyEnum),
-            level: new Level(String(row[8])),
-        });
+            const difficulty = new Difficulty({
+                difficultyName: new DifficultyName(row[7] as DifficultyEnum),
+                level: new Level(String(row[8])),
+            });
 
-        const chartData = new ChartData({
-            songNotes: new SongNotes(Number(row[10])),
-            constant: new Constant(Number(row[9])),
-        });
+            const chartData = new ChartData({
+                songNotes: new SongNotes(Number(row[10])),
+                constant: new Constant(Number(row[9])),
+            });
 
-        const score = new Score(Number(row[11]));
+            const score = new Score(Number(row[11]));
 
-        return Song.reconstruct(songId, songData, songMetadata, difficulty, chartData, score);
+            return Song.reconstruct(songId, songData, songMetadata, difficulty, chartData, score);
+        } catch (cause) {
+            if (!context) throw cause;
+
+            throw new SongReconstructionError(
+                {
+                    ...context,
+                    song: String(row[0]),
+                    difficulty: String(row[7]),
+                    operation: "SongScore復元",
+                },
+                cause
+            );
+        }
     }
 
     /**
@@ -71,4 +109,8 @@ export class SongMapper {
             song.score.value,
         ];
     }
+}
+
+function describeError(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
 }

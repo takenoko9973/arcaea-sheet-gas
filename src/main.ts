@@ -1,25 +1,48 @@
+import { registerNewSongs, syncSongs, updateRegisteredSongs } from "@/app/checkCollectedSong";
+import { logProcessingResult, ProcessingResult } from "@/app/collectionProcessing";
 import { updateDailyStatistics } from "@/app/dailyStatisticsUpdate";
-import { SHEET_BOOK } from "@/const";
+import { registerFromManualEntry } from "@/app/manualRegister";
 import { SheetCellPair } from "@/domain/sheetCellPair";
-import { runTrigger } from "@/trigger/onChangeData";
-import { setDailyTrigger } from "@/trigger/triggerSetting";
+import { dispatchChangeAction } from "@/trigger/spreadsheetChangeDispatcher";
+import { scheduleNextDailyTrigger, setupManagedTriggers } from "@/trigger/triggerSetting";
 
-export { autoRegister, checkCollectedSong, update } from "@/app/checkCollectedSong";
-export { manualRegister } from "@/app/manualRegister";
-
-export function initTriggers() {
-    // 既存のトリガーをすべて削除
-    const allTriggers = ScriptApp.getProjectTriggers();
-    for (const trigger of allTriggers) {
-        ScriptApp.deleteTrigger(trigger);
-    }
-
-    setDailyTrigger();
-    ScriptApp.newTrigger("checkCollectedSong").timeBased().everyHours(1).create();
-    ScriptApp.newTrigger("onChangeData").forSpreadsheet(SHEET_BOOK).onChange().create();
+/** 曲の同期処理を手動で実行する入口 */
+export function runSongSync(): ProcessingResult {
+    return runProcessingEntryPoint("sync songs", syncSongs);
 }
 
-export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
+/** 登録処理だけを手動で実行する入口 */
+export function runNewSongRegistration(): ProcessingResult {
+    return runProcessingEntryPoint("register new songs", registerNewSongs);
+}
+
+/** 更新処理だけを手動で実行する入口 */
+export function runRegisteredSongUpdate(): ProcessingResult {
+    return runProcessingEntryPoint("update registered songs", updateRegisteredSongs);
+}
+
+/** 手動入力シートの内容から曲を登録する入口 */
+export function runManualEntryRegistration() {
+    return registerFromManualEntry();
+}
+
+/** 日次統計更新だけを手動で実行する入口 */
+export function runDailyStatisticsUpdate(): void {
+    updateDailyStatistics();
+}
+
+/** 管理対象の自動triggerを初期化する入口 */
+export function setupTriggers(): void {
+    setupManagedTriggers();
+}
+
+/** 毎時の曲同期を実行するGAS handler */
+export function onHourlySongSync(): ProcessingResult {
+    return runSongSync();
+}
+
+/** Spreadsheet changeを内部dispatcherへ渡すGAS handler */
+export function onSpreadsheetChange(e: GoogleAppsScript.Events.SheetsOnChange): void {
     const sheet = e.source.getActiveSheet();
     const cell = e.source.getActiveRange();
     if (cell === null) return;
@@ -31,21 +54,45 @@ export function onChangeData(e: GoogleAppsScript.Events.SheetsOnChange) {
         const changedPair = new SheetCellPair(sheet.getName(), cell.getA1Notation());
         console.log("Changed %s(%s)", changedPair.cell_location, changedPair.sheet_name);
 
-        runTrigger(changedPair);
+        dispatchChangeAction(changedPair);
+    } catch (cause) {
+        console.error("onSpreadsheetChange fatal: %s", describeError(cause));
+        throw cause;
     } finally {
         lock.releaseLock();
     }
 }
 
-/**
- * 日付変更で実行
- */
-export function setDataByDate() {
+/** 翌日00:00のone-shotから実行される日次GAS handler */
+export function onDailyTasks(): void {
+    // 本処理より先に次回予定を確保し、日次処理の失敗で次回実行を失わないようにする。
+    scheduleNextDailyTrigger();
+
     console.log("Run daily task");
 
-    updateDailyStatistics();
+    runDailyTasks();
 
     console.log("End daily task");
+}
 
-    setDailyTrigger();
+function runDailyTasks(): void {
+    updateDailyStatistics();
+}
+
+function runProcessingEntryPoint(
+    operation: string,
+    process: () => ProcessingResult
+): ProcessingResult {
+    try {
+        const result = process();
+        logProcessingResult(operation, result);
+        return result;
+    } catch (cause) {
+        console.error("%s fatal: %s", operation, describeError(cause));
+        throw cause;
+    }
+}
+
+function describeError(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
 }

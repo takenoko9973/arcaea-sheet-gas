@@ -32,7 +32,8 @@ function getSheetHeader(sheetName: string): string[] {
     console.log("Reading header from sheet: %s", sheetName);
 
     const sheet = getSheet(sheetName);
-    const header = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const values: unknown[] = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const header = values.map(value => String(value));
     headerCache[sheetName] = header;
 
     return header;

@@ -1,17 +1,13 @@
 {
     "compilerOptions": {
         "target": "ES2019",
-        "lib": [
-            "esnext"
-        ],
-        "rootDir": "src",
-        "baseUrl": "src",
+        "lib": ["ESNext"],
         "paths": {
-            "@/*": [
-                "./*"
-            ]
+            "@/*": ["./src/*"]
         },
-        "moduleResolution": "node",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "noEmit": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
@@ -19,14 +15,7 @@
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "strict": true,
-        "types": [
-            "jest",
-            "node",
-            "google-apps-script"
-        ],
-        "allowJs": true
+        "types": ["vitest/globals", "node", "google-apps-script"]
     },
-    "include": [
-        "src/**/*.ts",
-    ]
+    "include": ["src/**/*.ts", "test/setup.ts"]
 }

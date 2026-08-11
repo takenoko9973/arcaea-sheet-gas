@@ -1,3 +1,5 @@
+import { clamp } from "@/utils/math";
+
 import { ChartData as ChartData } from "./chartData/chartData";
 import { Constant } from "./chartData/constant/constant";
 import { PureNotes } from "./chartData/notes/pureNotes";
@@ -6,6 +8,7 @@ import { SongNotes } from "./chartData/notes/songNotes";
 import { Difficulty } from "./difficulty/difficulty";
 import { DifficultyName } from "./difficulty/difficultyName/difficultyName";
 import { Level } from "./difficulty/level/level";
+import { FrameScore } from "./frameScore/potential";
 import { Potential } from "./potential/potential";
 import { Grade, GradeEnum } from "./score/grade/grade";
 import { Score, SCORE_GRADE_BORDERS } from "./score/score";
@@ -125,7 +128,7 @@ export class Song {
      * 楽曲ポテンシャル
      */
     obtainPotential(): Potential {
-        let scorePotential = 0;
+        let scorePotential: number;
 
         if (
             this.scoreGrade().equals(new Grade(GradeEnum.PM)) ||
@@ -140,6 +143,23 @@ export class Song {
         }
 
         return new Potential(Math.max(this.constant.value + scorePotential, 0));
+    }
+
+    /**
+     * フレーム値 (フレーム順位計算に使用)
+     */
+    obtainFrameScore(): FrameScore {
+        const score = this.score.value;
+        const shinyPure = this.hitShinyPureNotes().value;
+        const notes = this.songNotes.value;
+        const constant = this.constant.value;
+
+        const scorePoint = clamp(score / 10000000, 0.99, 1.0) - 0.99;
+        const accuracyPoint = clamp(shinyPure / notes, 0.9, 0.995) - 0.9;
+
+        // 楽曲の理論値 -> 譜面定数 と一致するように調整
+        // (scorePoint * 28.5 + accuracyPoint) * 100 = 38 (最大値)
+        return new FrameScore((constant * ((scorePoint * 28.5 + accuracyPoint) * 100)) / 38);
     }
 
     changeDifficulty(newDifficulty: Difficulty): Song {

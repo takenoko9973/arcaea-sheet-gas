@@ -29,12 +29,12 @@ export class Score extends ValueObject<ScoreValue, "Score"> {
 
         // 辞書配列のfor順番が不明のため、一応全てのグレードで処理
         for (const grade of Object.values(GradeEnum)) {
-            const border_score = SCORE_GRADE_BORDERS[grade as GradeEnum];
+            const border_score = SCORE_GRADE_BORDERS[grade];
 
             if (this.value < border_score) continue; // グレード条件
             if (SCORE_GRADE_BORDERS[nowGrade] > border_score) continue; // 上位のグレードかどうか
 
-            nowGrade = grade as GradeEnum;
+            nowGrade = grade;
         }
 
         return new Grade(nowGrade);

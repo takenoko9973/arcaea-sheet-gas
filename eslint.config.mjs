@@ -1,30 +1,52 @@
-import globals from "globals";
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
-import googleappsscript from "eslint-plugin-googleappsscript";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
+const googleAppsScriptGlobals = {
+    LockService: "readonly",
+    PropertiesService: "readonly",
+    ScriptApp: "readonly",
+    SpreadsheetApp: "readonly",
+    Utilities: "readonly",
+};
 
 export default tseslint.config(
     {
-        files: ["src/**/*.{js,jsx,ts,tsx}", "jest.setup.js"],
+        ignores: [
+            "node_modules/**",
+            "dist/**",
+            "build/**",
+            "coverage/**",
+            ".yarn/**",
+            ".pnp.*",
+            "yarn.lock",
+        ],
+    },
+    {
+        files: ["**/*.{js,mjs,cjs}"],
+        extends: [eslint.configs.recommended],
         languageOptions: {
             globals: {
-                ...globals.browser,
                 ...globals.node,
-                ...globals.es2019,
-                ...globals.jest,
-                ...googleappsscript.environments.googleappsscript.globals,
             },
-            parserOptions: { ecmaVersion: "latest", project: "./tsconfig.json" },
-        },
-        plugins: { "simple-import-sort": simpleImportSort },
-        rules: {
-            "simple-import-sort/imports": "error", // import文をソート
-            "simple-import-sort/exports": "error", // export文をソート
         },
     },
-    eslint.configs.recommended,
-    ...tseslint.configs.recommended,
+    {
+        files: ["src/**/*.ts", "test/setup.ts"],
+        extends: [eslint.configs.recommended, tseslint.configs.recommendedTypeChecked],
+        languageOptions: {
+            globals: {
+                ...globals.es2021,
+                ...globals.vitest,
+                console: "readonly",
+                ...googleAppsScriptGlobals,
+            },
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+    },
     eslintConfigPrettier
 );

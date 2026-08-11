@@ -1,5 +1,10 @@
-import { processCollectionDtos } from "@/app/collectionProcessing";
-import { repositories } from "@/app/dependencies";
+import {
+    createFailureResult,
+    processCollectionDtos,
+    ProcessingResult,
+} from "@/app/collectionProcessing";
+import { providers, repositories } from "@/app/dependencies";
+import { isPersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import {
     DifficultyEnum,
     DifficultyName,
@@ -7,24 +12,37 @@ import {
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 
-import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
+import { IWikiProvider, resolveWikiSongDetails } from "./services/wikiDataFetcherService";
 
-export function registerSongData(difficulty: DifficultyEnum) {
+export function registerSongData(
+    difficulty: DifficultyEnum,
+    wikiProvider: IWikiProvider = providers.wiki()
+): ProcessingResult {
     console.log("Start registering(%s)", difficulty);
 
     const songRepo = repositories.song();
     const songCollectionRepo = repositories.songCollection();
-    const isIgnoreConstant = songRepo.isIgnoreConstant(); // 定数情報が未登録でも強制登録
+    // 設定セルの参照と既存のfatal境界を維持する。この設定はWiki補完前のskip判定には使わない。
+    const ignoreConstant = songRepo.isIgnoreConstant();
 
     // 指定の難易度のみのデータを取り出し
-    const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    let collectionDtos;
+    try {
+        collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    } catch (cause) {
+        if (isPersistenceFatalError(cause)) throw cause;
+
+        console.log("End registering(%s)", difficulty);
+        return createFailureResult({ difficulty, operation: "collection fetch", cause });
+    }
 
     // 共通ループ処理で登録対象だけを処理する
-    const isRegistered = processCollectionDtos({
+    const result = processCollectionDtos({
         dtos: collectionDtos,
         difficulty,
-        // 名前が空、または定数が空で許可設定が無い場合はスキップ
-        shouldSkip: dto => dto.nameJp === "" || (dto.constant === "" && !isIgnoreConstant),
+        operation: "register",
+        // 名前が空の場合はスキップ
+        shouldSkip: dto => dto.nameJp === "",
         process: dto => {
             // 存在確認
             const songId = new SongId(dto.songTitle);
@@ -35,8 +53,13 @@ export function registerSongData(difficulty: DifficultyEnum) {
 
             console.log("getting data of %s(%s)", dto.nameJp, difficulty);
 
-            // Wikiからデータを取得
-            const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, difficulty);
+            // SongCollectionの既知値を優先し、不足値だけをWikiから補完
+            const wikiDetails = resolveWikiSongDetails(
+                dto,
+                difficulty,
+                wikiProvider,
+                ignoreConstant
+            );
 
             // ドメインエンティティを生成
             const newSong = SongFactory.createFromCollectionDto(dto, wikiDetails);
@@ -48,7 +71,8 @@ export function registerSongData(difficulty: DifficultyEnum) {
     });
 
     // シートに書き込み
-    if (isRegistered) songRepo.flush();
+    if (result.changed > 0) songRepo.flush();
 
     console.log("End registering(%s)", difficulty);
+    return result;
 }

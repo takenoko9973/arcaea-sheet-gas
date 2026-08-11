@@ -1,25 +1,23 @@
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 import { DifficultyName } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { SongFactory } from "@/domain/models/song/songFactory";
 import { SongId } from "@/domain/models/song/songId/songId";
 import { ManualRegisterRepository } from "@/infrastructure/repositories/manualRegisterRepository";
 
-import { WikiDataFetcherService } from "./services/wikiDataFetcherService";
+import { IWikiProvider, resolveWikiSongDetails } from "./services/wikiDataFetcherService";
 
-/**
- * 手動登録ルーチン
- */
-export function manualRegister() {
-    console.log("start manual register");
+/** 手動入力から曲を登録する処理 */
+export function registerFromManualEntry(wikiProvider?: IWikiProvider) {
+    console.log("Start register from manual entry");
 
     // 1. 各リポジトリのインスタンスを取得
     const songRepo = repositories.song();
     const manualRegisterRepo = new ManualRegisterRepository();
 
-    // 2. 手動登録シートからエントリ（DTO）を取得
+    // 2. 手動入力シートからエントリ（DTO）を取得
     const dto = manualRegisterRepo.getEntry();
     if (!dto) {
-        console.log("No entry for manual register.");
+        console.log("No entry for register from manual entry.");
         return;
     }
 
@@ -33,10 +31,14 @@ export function manualRegister() {
         return;
     }
 
-    console.log("Manual registering %s(%s)", dto.nameJp, dto.difficulty);
+    console.log("Register from manual entry: %s(%s)", dto.nameJp, dto.difficulty);
 
-    // 4. Wikiから補足データを取得 (DTOを元にした形に修正)
-    const wikiDetails = WikiDataFetcherService.fetchDetails(dto.urlName, dto.difficulty);
+    // 4. DTOの既知値を優先し、不足値だけをWikiから補完
+    const wikiDetails = resolveWikiSongDetails(
+        dto,
+        dto.difficulty,
+        wikiProvider ?? providers.wiki()
+    );
 
     // 5. ドメインエンティティを生成
     const newSong = SongFactory.createFromManualRegisterDto(dto, wikiDetails);
@@ -45,5 +47,5 @@ export function manualRegister() {
     songRepo.save(newSong);
     songRepo.flush();
 
-    console.log("end manual register");
+    console.log("End register from manual entry");
 }

@@ -1,15 +1,15 @@
 {
-  "timeZone": "Asia/Tokyo",
-  "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8",
-  "dependencies": {
-    "libraries": [
-      {
-        "userSymbol": "FetchArcaeaWiki",
-        "libraryId": "1P1lGSAOpbLrT9crK--2VkIbWaYtZa1-JExQ2ZXH4pBo9IwQwTM0Pu01D",
-        "version": "0",
-        "developmentMode": true
-      }
-    ]
-  }
+    "timeZone": "Asia/Tokyo",
+    "exceptionLogging": "STACKDRIVER",
+    "runtimeVersion": "V8",
+    "dependencies": {
+        "libraries": [
+            {
+                "userSymbol": "FetchArcaeaWiki",
+                "libraryId": "1P1lGSAOpbLrT9crK--2VkIbWaYtZa1-JExQ2ZXH4pBo9IwQwTM0Pu01D",
+                "version": "0",
+                "developmentMode": true
+            }
+        ]
+    }
 }

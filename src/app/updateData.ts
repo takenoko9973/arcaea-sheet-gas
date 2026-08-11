@@ -1,6 +1,11 @@
-import { processCollectionDtos } from "@/app/collectionProcessing";
+import {
+    createFailureResult,
+    processCollectionDtos,
+    ProcessingResult,
+} from "@/app/collectionProcessing";
 import { repositories } from "@/app/dependencies";
 import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
+import { isPersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import { ChartData } from "@/domain/models/song/chartData/chartData";
 import { Constant } from "@/domain/models/song/chartData/constant/constant";
 import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
@@ -13,18 +18,27 @@ import { Level } from "@/domain/models/song/difficulty/level/level";
 import { Song } from "@/domain/models/song/song";
 import { SongId } from "@/domain/models/song/songId/songId";
 
-export function updateData(difficulty: DifficultyEnum) {
+export function updateData(difficulty: DifficultyEnum): ProcessingResult {
     console.log("Start updating(%s)", difficulty);
 
     const songRepo = repositories.song();
     const songCollectionRepo = repositories.songCollection();
 
-    const collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    let collectionDtos;
+    try {
+        collectionDtos = songCollectionRepo.fetchByDifficulty(difficulty);
+    } catch (cause) {
+        if (isPersistenceFatalError(cause)) throw cause;
+
+        console.log("End updating(%s)", difficulty);
+        return createFailureResult({ difficulty, operation: "collection fetch", cause });
+    }
 
     // 共通ループ処理で更新対象だけを処理する
-    const isUpdated = processCollectionDtos({
+    const result = processCollectionDtos({
         dtos: collectionDtos,
         difficulty,
+        operation: "update",
         // 名前が空の場合はスキップ
         shouldSkip: dto => !dto.nameJp,
         process: dto => {
@@ -51,11 +65,12 @@ export function updateData(difficulty: DifficultyEnum) {
     });
 
     // 更新があった場合\、最後にシートに書き込む
-    if (isUpdated) {
+    if (result.changed > 0) {
         songRepo.flush();
     }
 
     console.log("End updating(%s)", difficulty);
+    return result;
 }
 
 /**

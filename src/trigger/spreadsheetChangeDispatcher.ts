@@ -1,5 +1,5 @@
-import { checkCollectedSong } from "@/app/checkCollectedSong";
-import { manualRegister } from "@/app/manualRegister";
+import { syncSongs } from "@/app/checkCollectedSong";
+import { registerFromManualEntry } from "@/app/manualRegister";
 import { MANUAL_REGISTER_SHEET_NAME, SHEET_BOOK, SONG_SCORE_SHEET_NAME } from "@/const";
 import { SheetCellPair } from "@/domain/sheetCellPair";
 import { ConfigSheet } from "@/infrastructure/repositories/configSheet";
@@ -7,34 +7,34 @@ import { getColumnIndexByName, getSheet } from "@/utils/sheetHelper";
 
 const configSheet = ConfigSheet.instance;
 
-const triggerList = [
+const changeActions = [
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortVersionCell()),
-        func: versionSort,
+        run: versionSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortDifficultyCell()),
-        func: songDifficultySort,
+        run: songDifficultySort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortSongNameCell()),
-        func: songNameSort,
+        run: songNameSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortLevelCell()),
-        func: songLevelSort,
+        run: songLevelSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.sortConstantCell()),
-        func: songConstantSort,
+        run: songConstantSort,
     },
     {
         pair: new SheetCellPair(SONG_SCORE_SHEET_NAME, configSheet.updateRegisterButtonCell()),
-        func: checkCollectedSong,
+        run: syncSongs,
     },
     {
         pair: new SheetCellPair(MANUAL_REGISTER_SHEET_NAME, configSheet.manualRegisterCell()),
-        func: manualRegister,
+        run: registerFromManualEntry,
     },
 ];
 
@@ -43,7 +43,7 @@ const triggerList = [
  */
 function versionSort() {
     console.log("Sort by Difficulty");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const diffCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "難易度");
@@ -59,7 +59,7 @@ function versionSort() {
  */
 function songDifficultySort() {
     console.log("Sort by Difficulty");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -77,7 +77,7 @@ function songDifficultySort() {
  */
 function songNameSort() {
     console.log("Sort by Song Title");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -92,7 +92,7 @@ function songNameSort() {
  */
 function songLevelSort() {
     console.log("Sort by Level");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -107,7 +107,7 @@ function songLevelSort() {
  */
 function songConstantSort() {
     console.log("Sort by Constant");
-    const sheet = getSheet(SONG_SCORE_SHEET_NAME)!;
+    const sheet = getSheet(SONG_SCORE_SHEET_NAME);
     const filter = sheet.getFilter() || sheet.getDataRange().createFilter();
 
     const titleCol = getColumnIndexByName(SONG_SCORE_SHEET_NAME, "Song Title (English)");
@@ -117,9 +117,9 @@ function songConstantSort() {
     filter.sort(constantCol, true);
 }
 
-export function runTrigger(changedPair: SheetCellPair) {
-    const pairIndex = triggerList.findIndex(pair => pair["pair"].equal(changedPair));
-    if (pairIndex === -1) return;
+export function dispatchChangeAction(changedPair: SheetCellPair): void {
+    const action = changeActions.find(candidate => candidate.pair.equal(changedPair));
+    if (!action) return;
 
     // チェックボックスの場合、falseに変更 (チェックされてない場合は終了)
     if (changedPair.cell_location !== "") {
@@ -130,5 +130,5 @@ export function runTrigger(changedPair: SheetCellPair) {
         cell.setValue(false);
     }
 
-    triggerList[pairIndex]["func"]();
+    action.run();
 }

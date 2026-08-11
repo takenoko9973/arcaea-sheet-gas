@@ -1,5 +1,6 @@
 import { BASE_MAX_SCORE } from "@/const";
-import { GradeData } from "@/domain/models/daily/greadeData/gradeData";
+import { FrameScoreData } from "@/domain/models/daily/frameScoreData/frameScoreData";
+import { GradeData } from "@/domain/models/daily/gradeData/gradeData";
 import { ScoreData } from "@/domain/models/daily/scoreData/scoreData";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 import { Song } from "@/domain/models/song/song";
@@ -72,6 +73,27 @@ export class StatisticsService {
         }
 
         return new ScoreData(sumScore, maximumSumScore - sumScore, farNotes, luckShinyPureNotes);
+    }
+
+    static calculateFrameScoreData(songs: Song[]): FrameScoreData {
+        const targetSongs = StatisticsService.filterPlayableSongs(songs).filter(song => {
+            const difficultyName = song.difficultyName.value;
+            return (
+                difficultyName === DifficultyEnum.FUTURE ||
+                difficultyName === DifficultyEnum.BEYOND ||
+                difficultyName === DifficultyEnum.ETERNAL
+            );
+        });
+
+        let maxFrameScore = 0;
+        let frameScore = 0;
+        for (const song of targetSongs) {
+            maxFrameScore += song.constant.value;
+            frameScore += song.obtainFrameScore().value;
+        }
+
+        const lostFrameScore = maxFrameScore - frameScore;
+        return new FrameScoreData(maxFrameScore, lostFrameScore);
     }
 
     static latestVersion(songs: Song[]): Version {

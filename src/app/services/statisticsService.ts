@@ -75,7 +75,11 @@ export class StatisticsService {
         return new ScoreData(sumScore, maximumSumScore - sumScore, farNotes, luckShinyPureNotes);
     }
 
+    /**
+     * 獲得した合計フレーム値を計算する
+     */
     static calculateFrameScoreData(songs: Song[]): FrameScoreData {
+        // 対称譜面は FTR/BYD/ETR (ver.6.17現在)
         const targetSongs = StatisticsService.filterPlayableSongs(songs).filter(song => {
             const difficultyName = song.difficultyName.value;
             return (
@@ -85,17 +89,20 @@ export class StatisticsService {
             );
         });
 
-        let maxFrameScore = 0;
-        let frameScore = 0;
+        let maxTotalFrameScore = 0;
+        let totalFrameScore = 0;
         for (const song of targetSongs) {
-            maxFrameScore += song.constant.value;
-            frameScore += song.obtainFrameScore().value;
+            maxTotalFrameScore += song.constant.value; // 各楽曲のフレーム値の最大値が譜面定数と同等
+            totalFrameScore += song.obtainFrameScore().value;
         }
 
-        const lostFrameScore = maxFrameScore - frameScore;
-        return new FrameScoreData(maxFrameScore, lostFrameScore);
+        const lostTotalFrameScore = maxTotalFrameScore - totalFrameScore;
+        return new FrameScoreData(maxTotalFrameScore, lostTotalFrameScore);
     }
 
+    /**
+     * 最新の楽曲実装バージョンを取得
+     */
     static latestVersion(songs: Song[]): Version {
         const versions = uniq(songs.map(it => it.version)) as Version[];
 

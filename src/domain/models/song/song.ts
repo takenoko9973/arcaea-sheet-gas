@@ -147,6 +147,7 @@ export class Song {
 
     /**
      * フレーム値 (フレーム順位計算に使用)
+     * 最大値は楽曲の譜面定数となる。
      */
     obtainFrameScore(): FrameScore {
         const score = this.score.value;
@@ -159,7 +160,8 @@ export class Song {
 
         // 楽曲の理論値 -> 譜面定数 と一致するように調整
         // (scorePoint * 28.5 + accuracyPoint) * 100 = 38 (最大値)
-        return new FrameScore((constant * ((scorePoint * 28.5 + accuracyPoint) * 100)) / 38);
+        const raw_frame_score = (scorePoint * 28.5 + accuracyPoint) * 100;
+        return new FrameScore((constant * raw_frame_score) / 38);
     }
 
     changeDifficulty(newDifficulty: Difficulty): Song {

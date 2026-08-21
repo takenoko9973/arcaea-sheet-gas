@@ -6,7 +6,7 @@ export type SongCollectionDto = {
     side: string;
     difficulty: string;
     level: string;
-    constant: string;
+    constant: number;
     notes: string;
     urlName: string;
 };

@@ -118,6 +118,6 @@ export class StatisticsService {
     }
 
     private static filterPlayableSongs(songs: Song[]) {
-        return songs.filter(song => song.level.value !== "?" && !song.isDeleted());
+        return songs.filter(song => song.isRegularlyPlayable());
     }
 }

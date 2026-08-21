@@ -15,7 +15,11 @@ export class SongCollectionMapper {
             notes,
         ] = row;
 
-        const constant = constantNow !== "" ? constantNow : constantOld;
+        const constantText = constantNow !== "" ? constantNow : constantOld;
+        const constant = constantText.trim() === "" ? 0 : Number(constantText);
+        if (!Number.isFinite(constant)) {
+            throw new Error(`譜面定数を数値として解釈できません (${constantText})`);
+        }
 
         return {
             songTitle: songTitle,

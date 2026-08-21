@@ -37,9 +37,7 @@ export class SongFactory {
                 level: new Level(dto.level !== "" ? dto.level : details.level),
             }),
             new ChartData({
-                constant: new Constant(
-                    dto.constant !== "" ? Number(dto.constant) : details.constant
-                ),
+                constant: new Constant(dto.constant !== 0 ? dto.constant : details.constant),
                 songNotes: new SongNotes(dto.notes !== "" ? Number(dto.notes) : details.notes),
             })
         );

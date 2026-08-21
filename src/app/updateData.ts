@@ -3,7 +3,7 @@ import {
     processCollectionDtos,
     ProcessingResult,
 } from "@/app/collectionProcessing";
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 import { SongCollectionDto } from "@/domain/dto/songCollectionDto";
 import { isPersistenceFatalError } from "@/domain/errors/persistenceFatalError";
 import { ChartData } from "@/domain/models/song/chartData/chartData";
@@ -18,7 +18,12 @@ import { Level } from "@/domain/models/song/difficulty/level/level";
 import { Song } from "@/domain/models/song/song";
 import { SongId } from "@/domain/models/song/songId/songId";
 
-export function updateData(difficulty: DifficultyEnum): ProcessingResult {
+import { IWikiProvider, resolveWikiConstant } from "./services/wikiDataFetcherService";
+
+export function updateData(
+    difficulty: DifficultyEnum,
+    wikiProvider?: IWikiProvider
+): ProcessingResult {
     console.log("Start updating(%s)", difficulty);
 
     const songRepo = repositories.song();
@@ -49,7 +54,16 @@ export function updateData(difficulty: DifficultyEnum): ProcessingResult {
             const existingSong = songRepo.findSong(songId, difficultyName);
             if (!existingSong) return false; // 登録されていなければスキップ
 
-            const updatedSong = createUpdatedSongIfChanged(existingSong, dto);
+            let constantValue = existingSong.constant.value;
+            if (constantValue === 0 && existingSong.isRegularlyPlayable()) {
+                const collectionConstant = Number(dto.constant);
+                constantValue =
+                    collectionConstant !== 0
+                        ? collectionConstant
+                        : resolveWikiConstant(dto, difficulty, wikiProvider ?? providers.wiki());
+            }
+
+            const updatedSong = createUpdatedSongIfChanged(existingSong, dto, constantValue);
             if (!updatedSong) return false;
 
             console.log(
@@ -64,7 +78,7 @@ export function updateData(difficulty: DifficultyEnum): ProcessingResult {
         },
     });
 
-    // 更新があった場合\、最後にシートに書き込む
+    // 更新があった場合、最後にシートに書き込む
     if (result.changed > 0) {
         songRepo.flush();
     }
@@ -78,8 +92,13 @@ export function updateData(difficulty: DifficultyEnum): ProcessingResult {
  * 変更がなければnullを返す
  * @param existingSong - DBに保存されている既存のSongエンティティ
  * @param dto - 収集元の楽曲情報DTO
+ * @param constantValue - 更新後の譜面定数。既知定数は維持し、未判明時だけCollection/Wikiで補完する
  */
-function createUpdatedSongIfChanged(existingSong: Song, dto: SongCollectionDto): Song | null {
+function createUpdatedSongIfChanged(
+    existingSong: Song,
+    dto: SongCollectionDto,
+    constantValue: number
+): Song | null {
     let songToUpdate = existingSong;
     let hasChanged = false;
 
@@ -95,16 +114,11 @@ function createUpdatedSongIfChanged(existingSong: Song, dto: SongCollectionDto):
     }
 
     // ChartData (Constant, Notes) の更新チェック
-    const newConstantValue =
-        dto.constant !== "" && isFinite(Number(dto.constant))
-            ? Number(dto.constant)
-            : existingSong.constant.value;
+    const newConstant = new Constant(constantValue);
     const newNotesValue =
         dto.notes !== "" && isFinite(Number(dto.notes))
             ? Number(dto.notes)
             : existingSong.songNotes.value;
-
-    const newConstant = new Constant(newConstantValue);
     const newNotes = new SongNotes(newNotesValue);
     if (!newConstant.equals(existingSong.constant) || !newNotes.equals(existingSong.songNotes)) {
         const newChartData = new ChartData({ constant: newConstant, songNotes: newNotes });

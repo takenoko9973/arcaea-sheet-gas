@@ -22,7 +22,7 @@ import { IWikiProvider, resolveWikiConstant } from "./services/wikiDataFetcherSe
 
 export function updateData(
     difficulty: DifficultyEnum,
-    wikiProvider: IWikiProvider = providers.wiki()
+    wikiProvider?: IWikiProvider
 ): ProcessingResult {
     console.log("Start updating(%s)", difficulty);
 
@@ -51,9 +51,10 @@ export function updateData(
             const existingSong = songRepo.findSong(songId, difficultyName);
             if (!existingSong) return false;
 
+            const collectionConstant = Number(dto.constant);
             const wikiConstant =
-                dto.constant === 0 && existingSong.isRegularlyPlayable()
-                    ? resolveWikiConstant(dto, difficulty, wikiProvider)
+                collectionConstant === 0 && existingSong.isRegularlyPlayable()
+                    ? resolveWikiConstant(dto, difficulty, wikiProvider ?? providers.wiki())
                     : null;
             const updatedSong = createUpdatedSongIfChanged(existingSong, dto, wikiConstant);
             if (!updatedSong) return false;
@@ -95,8 +96,9 @@ function createUpdatedSongIfChanged(
         hasChanged = true;
     }
 
+    const collectionConstant = Number(dto.constant);
     const newConstantValue =
-        dto.constant !== 0 ? dto.constant : (wikiConstant ?? existingSong.constant.value);
+        collectionConstant !== 0 ? collectionConstant : (wikiConstant ?? existingSong.constant.value);
     const newNotesValue =
         dto.notes !== "" && isFinite(Number(dto.notes))
             ? Number(dto.notes)

@@ -17,12 +17,6 @@ import { SongMetadata } from "./songMetadata/songMetadata";
 import { Version } from "./songMetadata/version/version";
 
 export class SongFactory {
-    /**
-     * SongCollectionのDTOからSongエンティティを生成する
-     * @param dto - SongCollectionシートから収集したDTO
-     * @param details - Wikiから補足した情報
-     * @returns 生成されたSongエンティティ
-     */
     static createFromCollectionDto(dto: SongCollectionDto, details: WikiSongDetails): Song {
         return Song.create(
             new SongTitle(dto.songTitle),
@@ -37,20 +31,12 @@ export class SongFactory {
                 level: new Level(dto.level !== "" ? dto.level : details.level),
             }),
             new ChartData({
-                constant: new Constant(
-                    dto.constant !== "" ? Number(dto.constant) : details.constant
-                ),
+                constant: new Constant(dto.constant !== 0 ? dto.constant : details.constant),
                 songNotes: new SongNotes(dto.notes !== "" ? Number(dto.notes) : details.notes),
             })
         );
     }
 
-    /**
-     * 手動登録のDTOからSongエンティティを生成する
-     * @param dto - ManualRegisterシートから収集したDTO
-     * @param details - Wikiから補足した情報
-     * @returns 生成されたSongエンティティ
-     */
     static createFromManualRegisterDto(dto: ManualRegisterDto, details: WikiSongDetails): Song {
         return Song.create(
             new SongTitle(dto.songTitle),

@@ -18,7 +18,6 @@ export function syncSongs(): ProcessingResult {
 export function registerNewSongs(): ProcessingResult {
     console.log("Start register new songs");
 
-    // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
     const wikiProvider = providers.wiki();
@@ -33,10 +32,12 @@ export function registerNewSongs(): ProcessingResult {
 export function updateRegisteredSongs(): ProcessingResult {
     console.log("Start update registered songs");
 
-    // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
-    const result = processDifficulties("update", registeredDifficulties, updateData);
+    const wikiProvider = providers.wiki();
+    const result = processDifficulties("update", registeredDifficulties, difficulty =>
+        updateData(difficulty, wikiProvider)
+    );
 
     console.log("End update registered songs");
     return result;
@@ -55,7 +56,6 @@ function processDifficulties(
         } catch (cause) {
             if (isPersistenceFatalError(cause)) throw cause;
 
-            // 難易度境界での失敗は、次の難易度を処理して診断情報を残す。
             result = mergeProcessingResults(
                 result,
                 createFailureResult({ difficulty, operation, cause })

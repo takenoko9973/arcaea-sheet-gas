@@ -182,7 +182,7 @@ function readKnownNumber(value: string | number | undefined): number | null {
 
     const number = Number(text);
     if (!Number.isFinite(number)) throw new Error(`数値として解釈できない既知値です (${text})`);
-    return number === 0 ? null : number;
+    return number;
 }
 
 function matchesKnownValues(chart: IArcaeaWikiChart, known: KnownChartValues): boolean {

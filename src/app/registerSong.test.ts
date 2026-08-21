@@ -122,6 +122,33 @@ describe("registerSongData", () => {
         expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
     });
 
+    it("登録済みの曲はCollection定数が--でもWiki取得と生成をせずにスキップする", () => {
+        const mockWikiProvider = createWikiProvider();
+        const mockSongDto = {
+            songTitle: "existing-song-with-excluded-constant",
+            nameJp: "定数除外表記の既存曲",
+            nameEn: "existing-song-with-excluded-constant",
+            composer: "Collection Composer",
+            side: "光",
+            difficulty: DifficultyEnum.FUTURE,
+            level: "10",
+            constant: "--",
+            notes: "1000",
+            urlName: "existing-song-with-excluded-constant-url",
+        };
+
+        mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([mockSongDto]);
+        mockSongRepositoryInstance.findSong.mockReturnValue({});
+
+        const result = registerSongData(DifficultyEnum.FUTURE, mockWikiProvider);
+
+        expect(mockWikiProvider.fetchSongData).not.toHaveBeenCalled();
+        expect(mockedSongFactory.createFromCollectionDto).not.toHaveBeenCalled();
+        expect(mockSongRepositoryInstance.save).not.toHaveBeenCalled();
+        expect(mockSongRepositoryInstance.flush).not.toHaveBeenCalled();
+        expect(result).toMatchObject({ processed: 1, changed: 0, skipped: 0, failures: [] });
+    });
+
     it("1曲のWiki失敗後も後続曲の登録を継続する", () => {
         const mockWikiProvider = createWikiProvider();
         mockWikiProvider.fetchSongData

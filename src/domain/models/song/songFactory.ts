@@ -24,6 +24,10 @@ export class SongFactory {
      * @returns 生成されたSongエンティティ
      */
     static createFromCollectionDto(dto: SongCollectionDto, details: WikiSongDetails): Song {
+        if (dto.constant === "--") {
+            throw new Error(`譜面定数を数値として解釈できません (${dto.constant})`);
+        }
+
         return Song.create(
             new SongTitle(dto.songTitle),
             new SongData({ nameJp: dto.nameJp, nameEn: dto.nameEn, composer: details.composer }),

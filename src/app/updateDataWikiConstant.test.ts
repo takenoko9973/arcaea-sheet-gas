@@ -27,7 +27,7 @@ function createExistingSong(isRegularlyPlayable: boolean, constant = 0) {
     return song;
 }
 
-function createDto(constant = 0) {
+function createDto(constant: number | "--" = 0) {
     return {
         songTitle: "song",
         nameJp: "曲",
@@ -109,6 +109,32 @@ describe("updateData wiki constant backfill", () => {
         };
         expect(chartData.constant.value).toBe(10.4);
         expect(songRepository.save).toHaveBeenCalledTimes(1);
+        expect(result).toMatchObject({ changed: 1, failures: [] });
+    });
+
+    it("Collection定数が--でも既存constant 0を維持し、Wikiを取得せずLevelとNotesを更新する", () => {
+        const existingSong = createExistingSong(true);
+        const dto = { ...createDto("--"), level: "10+", notes: "1100" };
+        const songRepository = mockRepositories(existingSong, dto);
+        const wikiProvider = { fetchSongData: vi.fn() };
+
+        const result = updateData(DifficultyEnum.FUTURE, wikiProvider);
+
+        expect(wikiProvider.fetchSongData).not.toHaveBeenCalled();
+        expect(existingSong.changeDifficulty).toHaveBeenCalledTimes(1);
+        expect(
+            (existingSong.changeDifficulty.mock.calls[0][0] as { level: { value: string } }).level
+                .value
+        ).toBe("10+");
+        expect(existingSong.changeChartData).toHaveBeenCalledTimes(1);
+        const chartData = existingSong.changeChartData.mock.calls[0][0] as unknown as {
+            constant: { value: number };
+            songNotes: { value: number };
+        };
+        expect(chartData.constant.value).toBe(0);
+        expect(chartData.songNotes.value).toBe(1100);
+        expect(songRepository.save).toHaveBeenCalledTimes(1);
+        expect(songRepository.flush).toHaveBeenCalledTimes(1);
         expect(result).toMatchObject({ changed: 1, failures: [] });
     });
 

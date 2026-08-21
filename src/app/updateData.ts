@@ -55,7 +55,11 @@ export function updateData(
             if (!existingSong) return false; // 登録されていなければスキップ
 
             let constantValue = existingSong.constant.value;
-            if (constantValue === 0 && existingSong.isRegularlyPlayable()) {
+            if (
+                constantValue === 0 &&
+                dto.constant !== "--" &&
+                existingSong.isRegularlyPlayable()
+            ) {
                 const collectionConstant = dto.constant;
                 constantValue =
                     collectionConstant !== 0

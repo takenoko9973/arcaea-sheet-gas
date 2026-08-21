@@ -21,9 +21,19 @@ describe("SongCollectionMapper", () => {
         expect(SongCollectionMapper.toDto(row, "FTR").constant).toBe(10.6);
     });
 
-    it("譜面定数が数値でなければ失敗する", () => {
+    it.each([
+        ["現在値", 7],
+        ["旧値", 6],
+    ])("$0の--は文字列表現として保持する", (_label, index) => {
         const row = [...baseRow];
-        row[7] = "unknown";
+        row[index] = "--";
+
+        expect(SongCollectionMapper.toDto(row, "FTR").constant).toBe("--");
+    });
+
+    it.each(["unknown", "abc", "10x"])("譜面定数が%sなら失敗する", invalidConstant => {
+        const row = [...baseRow];
+        row[7] = invalidConstant;
 
         expect(() => SongCollectionMapper.toDto(row, "FTR")).toThrow();
     });

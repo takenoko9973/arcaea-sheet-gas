@@ -52,7 +52,7 @@ export function updateData(
             if (!existingSong) return false;
 
             const wikiConstant =
-                existingSong.isRegularlyPlayable() && dto.constant === 0
+                dto.constant === 0 && existingSong.isRegularlyPlayable()
                     ? resolveWikiConstant(dto, difficulty, wikiProvider)
                     : null;
             const updatedSong = createUpdatedSongIfChanged(existingSong, dto, wikiConstant);

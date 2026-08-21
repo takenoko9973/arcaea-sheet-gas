@@ -93,6 +93,11 @@ export class Song {
         return this.pack.equals(DELETED_PACK);
     }
 
+    // 通常時に定常的にプレイ可能な譜面か否か
+    isRegularlyPlayable(): boolean {
+        return this.level.value !== "?" && !this.isDeleted();
+    }
+
     /**
      * Pure数を計算 (Farは0.5として計算)
      */

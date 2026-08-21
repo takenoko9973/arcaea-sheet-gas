@@ -27,6 +27,9 @@ describe("updateData", () => {
     const mockSongCollectionRepositoryInstance = {
         fetchByDifficulty: vi.fn(),
     };
+    const mockWikiProvider = {
+        fetchSongData: vi.fn(),
+    };
 
     beforeAll(() => {
         Object.defineProperty(mockedSongRepository, "instance", {
@@ -64,7 +67,7 @@ describe("updateData", () => {
         mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([dto]);
         mockSongRepositoryInstance.findSong.mockReturnValue(existingSong);
 
-        updateData(DifficultyEnum.FUTURE);
+        updateData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(existingSong.changeDifficulty).toHaveBeenCalledTimes(1);
         expect(existingSong.changeChartData).not.toHaveBeenCalled();
@@ -93,7 +96,7 @@ describe("updateData", () => {
         mockSongCollectionRepositoryInstance.fetchByDifficulty.mockReturnValue([dto]);
         mockSongRepositoryInstance.findSong.mockReturnValue(existingSong);
 
-        updateData(DifficultyEnum.FUTURE);
+        updateData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(existingSong.changeDifficulty).not.toHaveBeenCalled();
         expect(existingSong.changeChartData).not.toHaveBeenCalled();
@@ -135,7 +138,7 @@ describe("updateData", () => {
             })
             .mockReturnValueOnce(changedSong);
 
-        const result = updateData(DifficultyEnum.FUTURE);
+        const result = updateData(DifficultyEnum.FUTURE, mockWikiProvider);
 
         expect(mockSongRepositoryInstance.findSong).toHaveBeenCalledTimes(2);
         expect(mockSongRepositoryInstance.save).toHaveBeenCalledTimes(1);

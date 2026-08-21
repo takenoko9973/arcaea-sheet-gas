@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-import { repositories } from "@/app/dependencies";
+import { providers, repositories } from "@/app/dependencies";
 import { Constant } from "@/domain/models/song/chartData/constant/constant";
 import { SongNotes } from "@/domain/models/song/chartData/notes/songNotes";
 import {
@@ -177,5 +177,70 @@ describe("updateData wiki constant backfill", () => {
         expect(songRepository.save).not.toHaveBeenCalled();
         expect(songRepository.flush).not.toHaveBeenCalled();
         expect(result).toMatchObject({ changed: 0, failures: [] });
+    });
+
+    it("providerを省略したupdateData呼び出しではWiki providerを1回だけ生成する", () => {
+        const existingSong = createExistingSong(true, 10.3);
+        mockRepositories(existingSong, createDto(10.4));
+        const wikiProvider = { fetchSongData: vi.fn() };
+        const wikiProviderFactory = vi.spyOn(providers, "wiki").mockReturnValue(wikiProvider);
+
+        updateData(DifficultyEnum.FUTURE);
+
+        expect(wikiProviderFactory).toHaveBeenCalledTimes(1);
+        expect(wikiProvider.fetchSongData).not.toHaveBeenCalled();
+    });
+
+    it("同一呼び出し内の複数Wiki補完で同じprovider instanceを共有する", () => {
+        const firstSong = createExistingSong(true);
+        const secondSong = createExistingSong(true);
+        const firstDto = { ...createDto(), songTitle: "first-song", urlName: "first-page" };
+        const secondDto = { ...createDto(), songTitle: "second-song", urlName: "second-page" };
+        const songRepository = {
+            findSong: vi.fn().mockReturnValueOnce(firstSong).mockReturnValueOnce(secondSong),
+            save: vi.fn(),
+            flush: vi.fn(),
+        };
+        const collectionRepository = {
+            fetchByDifficulty: vi.fn().mockReturnValue([firstDto, secondDto]),
+        };
+        vi.spyOn(repositories, "song").mockReturnValue(
+            songRepository as unknown as ReturnType<typeof repositories.song>
+        );
+        vi.spyOn(repositories, "songCollection").mockReturnValue(collectionRepository);
+
+        const wikiProvider = {
+            fetchSongData: vi.fn().mockReturnValue({
+                composer: "Composer",
+                pack: "Arcaea",
+                version: "1.0",
+                side: "光(光)",
+                charts: [
+                    {
+                        difficulty: DifficultyEnum.FUTURE,
+                        level: "10",
+                        notes: 1000,
+                        constant: 10.5,
+                    },
+                ],
+            }),
+        };
+        const wikiProviderFactory = vi.spyOn(providers, "wiki").mockReturnValue(wikiProvider);
+
+        updateData(DifficultyEnum.FUTURE);
+
+        expect(wikiProviderFactory).toHaveBeenCalledTimes(1);
+        expect(wikiProvider.fetchSongData).toHaveBeenNthCalledWith(1, "first-page");
+        expect(wikiProvider.fetchSongData).toHaveBeenNthCalledWith(2, "second-page");
+        expect(firstSong.changeChartData).toHaveBeenCalledTimes(1);
+        expect(secondSong.changeChartData).toHaveBeenCalledTimes(1);
+        expect(
+            (firstSong.changeChartData.mock.calls[0][0] as { constant: { value: number } }).constant
+                .value
+        ).toBe(10.5);
+        expect(
+            (secondSong.changeChartData.mock.calls[0][0] as { constant: { value: number } })
+                .constant.value
+        ).toBe(10.5);
     });
 });

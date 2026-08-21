@@ -54,9 +54,7 @@ function mockRepositories(existingSong: ReturnType<typeof createExistingSong>, d
     vi.spyOn(repositories, "song").mockReturnValue(
         songRepository as unknown as ReturnType<typeof repositories.song>
     );
-    vi.spyOn(repositories, "songCollection").mockReturnValue(
-        collectionRepository as unknown as ReturnType<typeof repositories.songCollection>
-    );
+    vi.spyOn(repositories, "songCollection").mockReturnValue(collectionRepository);
     return songRepository;
 }
 
@@ -89,7 +87,9 @@ describe("updateData wiki constant backfill", () => {
 
         expect(wikiProvider.fetchSongData).toHaveBeenCalledWith("song-page");
         expect(existingSong.changeChartData).toHaveBeenCalledTimes(1);
-        const chartData = existingSong.changeChartData.mock.calls[0][0];
+        const chartData = existingSong.changeChartData.mock.calls[0][0] as unknown as {
+            constant: { value: number };
+        };
         expect(chartData.constant.value).toBe(10.5);
         expect(songRepository.save).toHaveBeenCalledTimes(1);
         expect(songRepository.flush).toHaveBeenCalledTimes(1);
@@ -104,15 +104,17 @@ describe("updateData wiki constant backfill", () => {
         const result = updateData(DifficultyEnum.FUTURE, wikiProvider);
 
         expect(wikiProvider.fetchSongData).not.toHaveBeenCalled();
-        const chartData = existingSong.changeChartData.mock.calls[0][0];
+        const chartData = existingSong.changeChartData.mock.calls[0][0] as unknown as {
+            constant: { value: number };
+        };
         expect(chartData.constant.value).toBe(10.4);
         expect(songRepository.save).toHaveBeenCalledTimes(1);
         expect(result).toMatchObject({ changed: 1, failures: [] });
     });
 
-    it("登録済みconstantが非0ならCollectionが0でもWikiを取得しない", () => {
+    it("登録済みconstantが非0ならCollectionが異なってもWikiを取得せず上書きしない", () => {
         const existingSong = createExistingSong(true, 10.3);
-        const songRepository = mockRepositories(existingSong);
+        const songRepository = mockRepositories(existingSong, createDto(10.4));
         const wikiProvider = { fetchSongData: vi.fn() };
 
         const result = updateData(DifficultyEnum.FUTURE, wikiProvider);
@@ -121,6 +123,47 @@ describe("updateData wiki constant backfill", () => {
         expect(existingSong.changeChartData).not.toHaveBeenCalled();
         expect(songRepository.save).not.toHaveBeenCalled();
         expect(result).toMatchObject({ changed: 0, failures: [] });
+    });
+
+    it.each([
+        ["null", null],
+        ["非数値", "not-a-number"],
+        ["0", 0],
+        ["負数", -1],
+    ])("Wiki定数が%sなら曲単位の失敗として記録し、0のまま更新しない", (_label, wikiConstant) => {
+        const existingSong = createExistingSong(true);
+        const songRepository = mockRepositories(existingSong);
+        const wikiProvider = {
+            fetchSongData: vi.fn().mockReturnValue({
+                composer: "Composer",
+                pack: "Arcaea",
+                version: "1.0",
+                side: "光(光)",
+                charts: [
+                    {
+                        difficulty: DifficultyEnum.FUTURE,
+                        level: "10",
+                        notes: 1000,
+                        // Wikiからの実値を型の外側から注入し、定数検証の境界を確認する。
+                        constant: wikiConstant as unknown as number,
+                    },
+                ],
+            }),
+        };
+
+        const result = updateData(DifficultyEnum.FUTURE, wikiProvider);
+
+        expect(wikiProvider.fetchSongData).toHaveBeenCalledWith("song-page");
+        expect(existingSong.changeChartData).not.toHaveBeenCalled();
+        expect(songRepository.save).not.toHaveBeenCalled();
+        expect(songRepository.flush).not.toHaveBeenCalled();
+        expect(result).toMatchObject({ processed: 0, changed: 0, skipped: 0 });
+        expect(result.failures).toHaveLength(1);
+        expect(result.failures[0]).toMatchObject({
+            song: "song",
+            difficulty: DifficultyEnum.FUTURE,
+            operation: "update",
+        });
     });
 
     it("定常的に遊べないconstant 0の譜面はWikiを取得しない", () => {

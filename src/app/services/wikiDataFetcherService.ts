@@ -23,7 +23,7 @@ type CachedWikiSong =
     { status: "success"; data: IArcaeaWikiSong } | { status: "failure"; error: unknown };
 
 /**
- * 1回の登録処理で共有するWiki取得境界。
+ * 1回の登録・更新処理で共有するWiki取得境界。
  * cacheはインスタンスに閉じ、実行をまたいで保持しない。
  */
 export class WikiProvider implements IWikiProvider {
@@ -106,6 +106,37 @@ export function resolveWikiChart(
 }
 
 /**
+ * Collection側で未判明(0)の譜面定数をWikiから解決する。
+ * 定数自身は候補のconstraintにせず、difficultyと既知のlevel/notesで譜面を特定する。
+ */
+export function resolveWikiConstant(
+    dto: SongCollectionDto,
+    difficulty: DifficultyEnum,
+    provider: IWikiProvider
+): number {
+    const wikiSong = provider.fetchSongData(dto.urlName);
+    const known = readKnownChartValues(dto);
+    const candidates = wikiSong.charts.filter(
+        chart =>
+            chart.difficulty === difficulty &&
+            matchesKnownValues(chart, { ...known, constant: null })
+    );
+
+    if (candidates.length !== 1) {
+        throw new Error(
+            `Wiki chart候補を一意に解決できません (${difficulty}, candidates=${candidates.length})`
+        );
+    }
+
+    const constant = candidates[0].constant;
+    if (typeof constant !== "number" || !Number.isFinite(constant) || constant <= 0) {
+        throw new Error(`Wiki chartの譜面定数が欠損しています (${difficulty})`);
+    }
+
+    return constant;
+}
+
+/**
  * SongCollection/ManualRegisterの既知metadataを優先し、不足分をWikiで補完する。
  */
 export function resolveWikiSongDetails(
@@ -138,7 +169,14 @@ function readKnownText(value: string | undefined): string | null {
     return value !== undefined && value.trim() !== "" ? value : null;
 }
 
-function readKnownNumber(value: string | undefined): number | null {
+function readKnownNumber(value: string | number | undefined): number | null {
+    if (value === undefined) return null;
+
+    if (typeof value === "number") {
+        if (!Number.isFinite(value)) throw new Error(`数値として解釈できない既知値です (${value})`);
+        return value === 0 ? null : value;
+    }
+
     const text = readKnownText(value);
     if (text === null) return null;
 

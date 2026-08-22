@@ -36,7 +36,10 @@ export function updateRegisteredSongs(): ProcessingResult {
     // Configシートの設定に従って対象難易度を取得
     const configSheet = repositories.configSheet();
     const registeredDifficulties = configSheet.targetRegisteredDifficulties();
-    const result = processDifficulties("update", registeredDifficulties, updateData);
+    const wikiProvider = providers.wiki();
+    const result = processDifficulties("update", registeredDifficulties, difficulty =>
+        updateData(difficulty, wikiProvider)
+    );
 
     console.log("End update registered songs");
     return result;

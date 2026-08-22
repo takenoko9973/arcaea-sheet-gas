@@ -3,7 +3,12 @@ import { vi } from "vitest";
 import { IArcaeaWikiSong } from "@/@types/fetch-arcaea-wiki";
 import { DifficultyEnum } from "@/domain/models/song/difficulty/difficultyName/difficultyName";
 
-import { resolveWikiChart, resolveWikiSongDetails, WikiProvider } from "./wikiDataFetcherService";
+import {
+    resolveWikiChart,
+    resolveWikiConstant,
+    resolveWikiSongDetails,
+    WikiProvider,
+} from "./wikiDataFetcherService";
 
 function createWikiSong(overrides: Partial<IArcaeaWikiSong> = {}): IArcaeaWikiSong {
     return {
@@ -252,6 +257,72 @@ describe("resolveWikiChart", () => {
                 charts
             )
         ).toEqual({ level: "9+", notes: 1100, constant: 9.7 });
+    });
+});
+
+describe("resolveWikiConstant", () => {
+    const collectionDto = {
+        songTitle: "song",
+        nameJp: "曲",
+        nameEn: "song",
+        composer: "Composer",
+        side: "光",
+        difficulty: DifficultyEnum.BEYOND,
+        level: "9+",
+        constant: 0,
+        notes: "1000",
+        urlName: "song",
+    };
+
+    it("difficultyと既知のlevel/notesで特定し、Collection constantを候補の制約にしない", () => {
+        const provider = {
+            fetchSongData: vi.fn().mockReturnValue(
+                createWikiSong({
+                    charts: [
+                        {
+                            difficulty: DifficultyEnum.FUTURE,
+                            level: "9+",
+                            notes: 1000,
+                            constant: 9.6,
+                        },
+                        {
+                            difficulty: DifficultyEnum.BEYOND,
+                            level: "9+",
+                            notes: 1000,
+                            constant: 9.7,
+                        },
+                    ],
+                })
+            ),
+        };
+
+        expect(resolveWikiConstant(collectionDto, DifficultyEnum.BEYOND, provider)).toBe(9.7);
+    });
+
+    it("level/notesが空で候補が複数なら推測して更新しない", () => {
+        const dto = { ...collectionDto, level: "", notes: "" };
+        const provider = {
+            fetchSongData: vi.fn().mockReturnValue(
+                createWikiSong({
+                    charts: [
+                        {
+                            difficulty: DifficultyEnum.BEYOND,
+                            level: "9+",
+                            notes: 1000,
+                            constant: 9.7,
+                        },
+                        {
+                            difficulty: DifficultyEnum.BEYOND,
+                            level: "9+",
+                            notes: 1001,
+                            constant: 9.8,
+                        },
+                    ],
+                })
+            ),
+        };
+
+        expect(() => resolveWikiConstant(dto, DifficultyEnum.BEYOND, provider)).toThrow();
     });
 });
 
